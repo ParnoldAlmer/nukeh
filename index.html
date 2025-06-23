@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NUKEH - Nuclear Reactor Control Dashboard</title>
+    <title>MERIDIAN - Research Reactor Control Dashboard</title>
     <style>
         /* CSS Reset and Base Styles */
         * {
@@ -872,7 +872,10 @@
     <div class="dashboard">
         <!-- Header Section -->
         <div class="header">
-            <div class="plant-name">NUKEH REACTOR FACILITY</div>
+            <div class="plant-name">MERIDIAN RESEARCH REACTOR</div>
+            <div style="font-size: 10px; color: #888888; margin-top: 2px;">
+                UNIVERSITY OF MERIDIAN • MTR-500 • LICENSE R-125
+            </div>
             <div class="status-indicator">
                 <div class="status-light green"></div>
                 <span>OPERATIONAL</span>
@@ -1472,7 +1475,7 @@
             // Display operator statistics
             displayOperatorStats();
             
-            console.log('NUKEH Research Reactor Control Dashboard Initialized');
+            console.log('MERIDIAN Research Reactor Control Dashboard Initialized');
             console.log('System Status: All primary systems online');
             console.log('Control Room Operator Console Ready');
             console.log('Interactive control rods: Click to adjust positions');
@@ -1569,7 +1572,7 @@
         }
 
         // Persistent memory system for reactor state
-        const REACTOR_MEMORY_KEY = 'nukeh_reactor_state';
+        const REACTOR_MEMORY_KEY = 'meridian_reactor_state';
         
         // Default reactor state
         const defaultReactorState = {
