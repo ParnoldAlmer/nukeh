@@ -1,5 +1,6 @@
 // NUKEH Nuclear Control Panel - Interactive Terminal Game
-// ASCII Art Console Log
+
+// ASCII Logo for Console
 const asciiLogo = `
 ███╗   ██╗██╗   ██╗██╗  ██╗███████╗██╗  ██╗
 ████╗  ██║██║   ██║██║ ██╔╝██╔════╝██║  ██║
@@ -65,7 +66,7 @@ const commands = {
                 '           SYSTEM STATUS REPORT            ',
                 '═══════════════════════════════════════════',
                 `REACTOR CORE:     ${gameState.systemStatus}`,
-                `CORE TEMP:        ${gameState.reactorTemp}°C`,
+                `CORE TEMP:        ${Math.round(gameState.reactorTemp)}°C`,
                 `RADIATION LVL:    ${gameState.radiationLevel} mSv/h`,
                 `COOLANT FLOW:     ${gameState.coolantFlow}`,
                 `SYSTEM UPTIME:    ${uptime}s`,
@@ -141,7 +142,7 @@ const commands = {
                 '║           REACTOR CONTROL            ║',
                 '╚══════════════════════════════════════╝',
                 '',
-                `Core Temperature: ${gameState.reactorTemp}°C`,
+                `Core Temperature: ${Math.round(gameState.reactorTemp)}°C`,
                 `Pressure:         2.1 MPa`,
                 `Control Rods:     75% inserted`,
                 `Power Output:     850 MW`,
@@ -209,12 +210,14 @@ const commands = {
         description: 'Clear terminal',
         execute: () => {
             const output = document.getElementById('terminal-output');
-            output.innerHTML = `
-                <div class="terminal-line">NUKEH v2.1.0 - Nuclear Launch Control System</div>
-                <div class="terminal-line">Terminal cleared by user request.</div>
-                <div class="terminal-line">&nbsp;</div>
-                <div class="terminal-prompt">nukeh@control:~$ <span class="cursor">_</span></div>
-            `;
+            if (output) {
+                output.innerHTML = `
+                    <div class="terminal-line">NUKEH v2.1.0 - Nuclear Launch Control System</div>
+                    <div class="terminal-line">Terminal cleared by user request.</div>
+                    <div class="terminal-line">&nbsp;</div>
+                    <div class="terminal-prompt">nukeh@control:~$ <span class="cursor">_</span></div>
+                `;
+            }
             return [];
         }
     },
@@ -269,278 +272,302 @@ const commands = {
 
 // System status updaters
 function updateSystemStatus() {
-    // Simulate minor fluctuations
-    gameState.reactorTemp += (Math.random() - 0.5) * 5;
-    gameState.reactorTemp = Math.max(2800, Math.min(2900, gameState.reactorTemp));
-    
-    gameState.radiationLevel = (Math.random() * 0.01 + 0.001).toFixed(4);
-    
-    // Update display
-    document.getElementById('reactor-status').textContent = gameState.systemStatus;
-    document.getElementById('core-temp').textContent = `${Math.round(gameState.reactorTemp)}°C`;
-    document.getElementById('radiation-level').textContent = `${gameState.radiationLevel} mSv/h`;
-    document.getElementById('coolant-flow').textContent = gameState.coolantFlow;
-    
-    // Update radiation level color
-    const radiationEl = document.getElementById('radiation-level');
-    if (gameState.radiationLevel > 0.005) {
-        radiationEl.className = 'status-value status-warning radiation-warning';
-    } else {
-        radiationEl.className = 'status-value status-warning';
+    try {
+        // Simulate minor fluctuations
+        gameState.reactorTemp += (Math.random() - 0.5) * 5;
+        gameState.reactorTemp = Math.max(2800, Math.min(2900, gameState.reactorTemp));
+        
+        gameState.radiationLevel = (Math.random() * 0.01 + 0.001).toFixed(4);
+        
+        // Update display elements if they exist
+        const reactorStatus = document.getElementById('reactor-status');
+        const coreTemp = document.getElementById('core-temp');
+        const radiationLevel = document.getElementById('radiation-level');
+        const coolantFlow = document.getElementById('coolant-flow');
+        
+        if (reactorStatus) reactorStatus.textContent = gameState.systemStatus;
+        if (coreTemp) coreTemp.textContent = `${Math.round(gameState.reactorTemp)}°C`;
+        if (radiationLevel) {
+            radiationLevel.textContent = `${gameState.radiationLevel} mSv/h`;
+            
+            // Update radiation level color
+            if (gameState.radiationLevel > 0.005) {
+                radiationLevel.className = 'status-value status-warning radiation-warning';
+            } else {
+                radiationLevel.className = 'status-value status-warning';
+            }
+        }
+        if (coolantFlow) coolantFlow.textContent = gameState.coolantFlow;
+    } catch (error) {
+        console.log('System status update error (non-critical):', error.message);
     }
 }
 
 function updateLaunchStatus(env, status) {
-    gameState.launchReadiness[env] = status;
-    const statusEl = document.getElementById(`${env}-status`);
-    if (statusEl) {
-        statusEl.textContent = status;
-        
-        // Update button state
-        const button = document.querySelector(`[data-env="${env}"]`);
-        if (button) {
-            if (status === 'LAUNCHING') {
-                button.textContent = 'LAUNCHING...';
-                button.disabled = true;
-            } else if (status === 'DEPLOYED') {
-                button.textContent = 'DEPLOYED';
-                button.disabled = true;
-                button.style.background = 'var(--radiation-green)';
-                button.style.color = 'var(--terminal-bg)';
-            } else if (status === 'ABORTED') {
-                button.textContent = 'ABORTED';
-                button.style.background = 'var(--warning-red)';
-                button.style.color = 'var(--terminal-white)';
-            } else {
-                button.textContent = env === 'prod' ? 'LAUNCH' : 'DEPLOY';
-                button.disabled = false;
-                button.style.background = '';
-                button.style.color = '';
+    try {
+        gameState.launchReadiness[env] = status;
+        const statusEl = document.getElementById(`${env}-status`);
+        if (statusEl) {
+            statusEl.textContent = status;
+            
+            // Update button state
+            const button = document.querySelector(`[data-env="${env}"]`);
+            if (button) {
+                if (status === 'LAUNCHING') {
+                    button.textContent = 'LAUNCHING...';
+                    button.disabled = true;
+                } else if (status === 'DEPLOYED') {
+                    button.textContent = 'DEPLOYED';
+                    button.disabled = true;
+                    button.style.background = 'var(--radiation-green)';
+                    button.style.color = 'var(--terminal-bg)';
+                } else if (status === 'ABORTED') {
+                    button.textContent = 'ABORTED';
+                    button.style.background = 'var(--warning-red)';
+                    button.style.color = 'var(--terminal-white)';
+                } else {
+                    button.textContent = env === 'prod' ? 'LAUNCH' : 'DEPLOY';
+                    button.disabled = false;
+                    button.style.background = '';
+                    button.style.color = '';
+                }
             }
         }
+    } catch (error) {
+        console.log('Launch status update error (non-critical):', error.message);
     }
 }
 
 function updateAuthStatus(authorized) {
-    const authStatus = document.getElementById('auth-status');
-    const indicator = authStatus.querySelector('.status-indicator');
-    
-    if (authorized) {
-        indicator.textContent = 'AUTHORIZED';
-        indicator.className = 'status-indicator authorized';
-    } else {
-        indicator.textContent = 'UNAUTHORIZED';
-        indicator.className = 'status-indicator unauthorized';
+    try {
+        const authStatus = document.getElementById('auth-status');
+        if (authStatus) {
+            const indicator = authStatus.querySelector('.status-indicator');
+            if (indicator) {
+                if (authorized) {
+                    indicator.textContent = 'AUTHORIZED';
+                    indicator.className = 'status-indicator authorized';
+                } else {
+                    indicator.textContent = 'UNAUTHORIZED';
+                    indicator.className = 'status-indicator unauthorized';
+                }
+            }
+        }
+    } catch (error) {
+        console.log('Auth status update error (non-critical):', error.message);
     }
 }
 
 function updateRadiationDisplay() {
-    const radiationEl = document.getElementById('radiation-level');
-    radiationEl.textContent = `${gameState.radiationLevel} mSv/h`;
+    try {
+        const radiationEl = document.getElementById('radiation-level');
+        if (radiationEl) {
+            radiationEl.textContent = `${gameState.radiationLevel} mSv/h`;
+        }
+    } catch (error) {
+        console.log('Radiation display update error (non-critical):', error.message);
+    }
 }
 
 // Terminal interface
 function initTerminal() {
-    const terminalInput = document.getElementById('terminal-input');
-    const terminalOutput = document.getElementById('terminal-output');
-    
-    terminalInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-            const command = terminalInput.value.trim();
-            if (command) {
-                processCommand(command);
-                gameState.commandHistory.push(command);
-                terminalInput.value = '';
-            }
-        } else if (e.key === 'ArrowUp') {
-            e.preventDefault();
-            if (gameState.commandHistory.length > 0) {
-                terminalInput.value = gameState.commandHistory[gameState.commandHistory.length - 1];
-            }
+    try {
+        const terminalInput = document.getElementById('terminal-input');
+        
+        if (!terminalInput) {
+            console.log('Terminal input not found');
+            return;
         }
-    });
-    
-    // Auto-focus terminal input
-    terminalInput.focus();
-    document.addEventListener('click', () => {
+        
+        terminalInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const command = terminalInput.value.trim();
+                if (command) {
+                    processCommand(command);
+                    gameState.commandHistory.push(command);
+                    terminalInput.value = '';
+                }
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (gameState.commandHistory.length > 0) {
+                    terminalInput.value = gameState.commandHistory[gameState.commandHistory.length - 1];
+                }
+            }
+        });
+        
+        // Auto-focus terminal input
         terminalInput.focus();
-    });
+        document.addEventListener('click', () => {
+            if (terminalInput) {
+                terminalInput.focus();
+            }
+        });
+    } catch (error) {
+        console.log('Terminal init error:', error.message);
+    }
 }
 
 function processCommand(input) {
-    const output = document.getElementById('terminal-output');
-    const [cmd, ...args] = input.toLowerCase().split(' ');
-    
-    // Add command to output
-    addTerminalLine(`nukeh@control:~$ ${input}`);
-    
-    if (commands[cmd]) {
-        const result = commands[cmd].execute(args);
-        result.forEach(line => addTerminalLine(line));
-    } else {
-        addTerminalLine(`Command not found: ${cmd}`);
-        addTerminalLine('Type "help" for available commands.');
+    try {
+        const output = document.getElementById('terminal-output');
+        if (!output) return;
+        
+        const [cmd, ...args] = input.toLowerCase().split(' ');
+        
+        // Add command to output
+        addTerminalLine(`nukeh@control:~$ ${input}`);
+        
+        if (commands[cmd]) {
+            const result = commands[cmd].execute(args);
+            result.forEach(line => addTerminalLine(line));
+        } else {
+            addTerminalLine(`Command not found: ${cmd}`);
+            addTerminalLine('Type "help" for available commands.');
+        }
+        
+        addTerminalLine('');
+        addTerminalLine('nukeh@control:~$ ', true);
+        
+        // Scroll to bottom
+        output.scrollTop = output.scrollHeight;
+    } catch (error) {
+        console.log('Command processing error:', error.message);
     }
-    
-    addTerminalLine('');
-    addTerminalLine('nukeh@control:~$ ', true);
-    
-    // Scroll to bottom
-    output.scrollTop = output.scrollHeight;
 }
 
 function addTerminalLine(text, isPrompt = false) {
-    const output = document.getElementById('terminal-output');
-    const line = document.createElement('div');
-    
-    if (isPrompt) {
-        line.className = 'terminal-prompt';
-        line.innerHTML = `${text}<span class="cursor">_</span>`;
-    } else {
-        line.className = 'terminal-line';
-        line.textContent = text;
+    try {
+        const output = document.getElementById('terminal-output');
+        if (!output) return;
+        
+        const line = document.createElement('div');
+        
+        if (isPrompt) {
+            line.className = 'terminal-prompt';
+            line.innerHTML = `${text}<span class="cursor">_</span>`;
+        } else {
+            line.className = 'terminal-line';
+            line.textContent = text;
+        }
+        
+        // Remove old prompt if exists
+        const oldPrompt = output.querySelector('.terminal-prompt');
+        if (oldPrompt) {
+            oldPrompt.remove();
+        }
+        
+        output.appendChild(line);
+    } catch (error) {
+        console.log('Terminal line add error:', error.message);
     }
-    
-    // Remove old prompt if exists
-    const oldPrompt = output.querySelector('.terminal-prompt');
-    if (oldPrompt) {
-        oldPrompt.remove();
-    }
-    
-    output.appendChild(line);
 }
 
 // Launch button handlers
 function initLaunchButtons() {
-    document.querySelectorAll('.launch-button').forEach(button => {
-        button.addEventListener('click', () => {
-            const env = button.dataset.env;
-            processCommand(`launch ${env}`);
+    try {
+        document.querySelectorAll('.launch-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const env = button.dataset.env;
+                if (env) {
+                    processCommand(`launch ${env}`);
+                }
+            });
         });
-    });
+    } catch (error) {
+        console.log('Launch buttons init error:', error.message);
+    }
 }
 
 // Authentication panel
 function initAuthPanel() {
-    const authButton = document.getElementById('auth-login');
-    const operatorInput = document.getElementById('operator-id');
-    const accessCodeInput = document.getElementById('access-code');
-    const emergencyButton = document.getElementById('auth-emergency');
-    
-    authButton.addEventListener('click', () => {
-        const operatorId = operatorInput.value.trim();
-        const accessCode = accessCodeInput.value.trim();
+    try {
+        const authButton = document.getElementById('auth-login');
+        const operatorInput = document.getElementById('operator-id');
+        const accessCodeInput = document.getElementById('access-code');
+        const emergencyButton = document.getElementById('auth-emergency');
         
-        if (!operatorId) {
-            addTerminalLine('ERROR: Operator ID required.');
-            return;
+        if (authButton && operatorInput && accessCodeInput) {
+            authButton.addEventListener('click', () => {
+                const operatorId = operatorInput.value.trim();
+                const accessCode = accessCodeInput.value.trim();
+                
+                if (!operatorId) {
+                    addTerminalLine('ERROR: Operator ID required.');
+                    return;
+                }
+                
+                if (!accessCode) {
+                    addTerminalLine('ERROR: Access code required.');
+                    return;
+                }
+                
+                // Simple auth simulation
+                if (accessCode.length >= 6) {
+                    processCommand(`auth ${operatorId}`);
+                    operatorInput.value = '';
+                    accessCodeInput.value = '';
+                } else {
+                    addTerminalLine('ERROR: Invalid access code.');
+                    addTerminalLine('Access codes must be at least 6 characters.');
+                }
+            });
+            
+            // Enter key handling
+            [operatorInput, accessCodeInput].forEach(input => {
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        authButton.click();
+                    }
+                });
+            });
         }
         
-        if (!accessCode) {
-            addTerminalLine('ERROR: Access code required.');
-            return;
+        if (emergencyButton) {
+            emergencyButton.addEventListener('click', () => {
+                processCommand('abort');
+            });
         }
-        
-        // Simple auth simulation
-        if (accessCode.length >= 6) {
-            processCommand(`auth ${operatorId}`);
-            operatorInput.value = '';
-            accessCodeInput.value = '';
-        } else {
-            addTerminalLine('ERROR: Invalid access code.');
-            addTerminalLine('Access codes must be at least 6 characters.');
-        }
-    });
-    
-    emergencyButton.addEventListener('click', () => {
-        processCommand('abort');
-    });
-    
-    // Enter key handling
-    [operatorInput, accessCodeInput].forEach(input => {
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                authButton.click();
-            }
-        });
-    });
+    } catch (error) {
+        console.log('Auth panel init error:', error.message);
+    }
 }
 
 // Time display
 function updateTimeDisplay() {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('en-US', { 
-        hour12: false,
-        timeZone: 'UTC'
-    });
-    const timeEl = document.getElementById('current-time');
-    if (timeEl) {
-        timeEl.textContent = `${timeString} UTC`;
-    }
-    
-    // Update uptime
-    const uptime = Math.floor((Date.now() - gameState.uptime) / 1000);
-    const uptimeEl = document.getElementById('uptime');
-    if (uptimeEl) {
-        const hours = Math.floor(uptime / 3600);
-        const minutes = Math.floor((uptime % 3600) / 60);
-        const seconds = uptime % 60;
-        uptimeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-    
-    // Update last login
-    const lastLoginEl = document.getElementById('last-login');
-    if (lastLoginEl && gameState.lastLogin) {
-        lastLoginEl.textContent = new Date(gameState.lastLogin).toLocaleString();
-    } else if (lastLoginEl) {
-        lastLoginEl.textContent = 'Never';
-    }
-}
-
-// Matrix rain effect (optional)
-function createMatrixRain() {
-    const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    canvas.className = 'matrix-rain';
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    document.body.appendChild(canvas);
-    
-    const drops = [];
-    const fontSize = 14;
-    const columns = canvas.width / fontSize;
-    
-    for (let i = 0; i < columns; i++) {
-        drops[i] = 1;
-    }
-    
-    function drawMatrix() {
-        ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    try {
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('en-US', { 
+            hour12: false,
+            timeZone: 'UTC'
+        });
         
-        ctx.fillStyle = 'rgba(0, 255, 65, 0.8)';
-        ctx.font = `${fontSize}px monospace`;
-        
-        for (let i = 0; i < drops.length; i++) {
-            const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-            
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
-            }
-            drops[i]++;
+        const timeEl = document.getElementById('current-time');
+        if (timeEl) {
+            timeEl.textContent = `${timeString} UTC`;
         }
+        
+        // Update uptime
+        const uptime = Math.floor((Date.now() - gameState.uptime) / 1000);
+        const uptimeEl = document.getElementById('uptime');
+        if (uptimeEl) {
+            const hours = Math.floor(uptime / 3600);
+            const minutes = Math.floor((uptime % 3600) / 60);
+            const seconds = uptime % 60;
+            uptimeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Update last login
+        const lastLoginEl = document.getElementById('last-login');
+        if (lastLoginEl) {
+            if (gameState.lastLogin) {
+                lastLoginEl.textContent = new Date(gameState.lastLogin).toLocaleString();
+            } else {
+                lastLoginEl.textContent = 'Never';
+            }
+        }
+    } catch (error) {
+        console.log('Time display update error (non-critical):', error.message);
     }
-    
-    setInterval(drawMatrix, 35);
-    
-    window.addEventListener('resize', () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    });
 }
 
 // Console welcome message
@@ -556,33 +583,34 @@ function showWelcomeMessage() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('%cInitializing NUKEH Nuclear Control Panel...', 'color: #00ff41; font-weight: bold;');
     
-    // Show welcome message
-    showWelcomeMessage();
-    
-    // Initialize all systems
-    initTerminal();
-    initLaunchButtons();
-    initAuthPanel();
-    
-    // Start system updates
-    updateSystemStatus();
-    updateTimeDisplay();
-    
-    // Set up intervals
-    setInterval(updateSystemStatus, 3000); // Update every 3 seconds
-    setInterval(updateTimeDisplay, 1000);  // Update every second
-    
-    // Optional matrix effect (uncomment to enable)
-    // createMatrixRain();
-    
-    // Auto-type welcome message in terminal
-    setTimeout(() => {
-        addTerminalLine('System initialization complete.');
-        addTerminalLine('Type "help" for available commands.');
-        addTerminalLine('');
-    }, 1000);
-    
-    console.log('%c✅ NUKEH Control Panel initialized successfully!', 'color: #00ff41; font-weight: bold;');
+    try {
+        // Show welcome message
+        showWelcomeMessage();
+        
+        // Initialize all systems
+        initTerminal();
+        initLaunchButtons();
+        initAuthPanel();
+        
+        // Start system updates
+        updateSystemStatus();
+        updateTimeDisplay();
+        
+        // Set up intervals
+        setInterval(updateSystemStatus, 3000); // Update every 3 seconds
+        setInterval(updateTimeDisplay, 1000);  // Update every second
+        
+        // Auto-type welcome message in terminal
+        setTimeout(() => {
+            addTerminalLine('System initialization complete.');
+            addTerminalLine('Type "help" for available commands.');
+            addTerminalLine('');
+        }, 1000);
+        
+        console.log('%c✅ NUKEH Control Panel initialized successfully!', 'color: #00ff41; font-weight: bold;');
+    } catch (error) {
+        console.error('Initialization error:', error);
+    }
 });
 
 // Handle page visibility changes
