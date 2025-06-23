@@ -1309,10 +1309,10 @@
             // Remove all state classes first
             core.classList.remove('critical', 'scrammed', 'overload');
             
-            // Determine reactor state based on readings
-            if (power > 900 || temperature > 2890 || flux > 4.0) {
+            // Determine TRIGA reactor state based on readings
+            if (power > 500 || temperature > 340 || flux > 4.0) {
                 core.classList.add('critical');
-            } else if (power < 100 || temperature < 2000 || flux < 1.0) {
+            } else if (power < 50 || temperature < 280 || flux < 1.0) {
                 core.classList.add('scrammed');
             }
             
@@ -1413,26 +1413,30 @@
                 }, index * 200);
             });
             
-            // Reduce reactor power rapidly
-            let powerLevel = 850;
-            let tempLevel = 2847;
+            // Reduce TRIGA reactor power rapidly
+            let powerLevel = 485; // Current TRIGA power
+            let tempLevel = currentCoreTemp; // Use current temperature
             let fluxLevel = 3.2;
             
             const scramInterval = setInterval(() => {
-                powerLevel = Math.max(0, powerLevel - 85);
-                tempLevel = Math.max(200, tempLevel - 40);
+                powerLevel = Math.max(0, powerLevel - 50);
+                tempLevel = Math.max(280, tempLevel - 3); // Slow cooling
                 fluxLevel = Math.max(0.1, fluxLevel - 0.32);
                 
-                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} MW`;
+                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} kW`;
                 document.getElementById('core-temp').textContent = `${Math.round(tempLevel)}°C`;
                 document.getElementById('neutron-flux').textContent = `${fluxLevel.toFixed(1)}E+13`;
                 
-                // Update needle positions
-                const tempAngle = -135 + ((tempLevel - 2000) / 1500) * 270;
+                // Update needle positions for TRIGA scale
+                const tempAngle = -135 + ((tempLevel - 250) / 150) * 270;
                 const fluxAngle = fluxLevel <= 1.0 ? -135 : -27 + ((fluxLevel - 1.0) / 2.0) * 27;
                 
                 document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
                 document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
+                
+                // Update global temperature variables to prevent jumps
+                currentCoreTemp = tempLevel;
+                targetCoreTemp = tempLevel;
                 
                 // Update core visual states during SCRAM
                 const core = document.querySelector('.reactor-core');
@@ -1543,26 +1547,30 @@
                 button.style.opacity = '1';
             });
             
-            // Gradually restore power
+            // Gradually restore TRIGA power
             let powerLevel = 0;
-            let tempLevel = 200;
+            let tempLevel = 280; // TRIGA cold temperature
             let fluxLevel = 0.1;
             
             const startupInterval = setInterval(() => {
-                powerLevel = Math.min(850, powerLevel + 25);
-                tempLevel = Math.min(2847, tempLevel + 80);
+                powerLevel = Math.min(485, powerLevel + 15); // TRIGA max power
+                tempLevel = Math.min(315, tempLevel + 2); // Slow heating to 315°C
                 fluxLevel = Math.min(3.2, fluxLevel + 0.1);
                 
-                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} MW`;
+                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} kW`;
                 document.getElementById('core-temp').textContent = `${Math.round(tempLevel)}°C`;
                 document.getElementById('neutron-flux').textContent = `${fluxLevel.toFixed(1)}E+13`;
                 
-                // Update needle positions
-                const tempAngle = -135 + ((tempLevel - 2000) / 1500) * 270;
+                // Update needle positions for TRIGA scale
+                const tempAngle = -135 + ((tempLevel - 250) / 150) * 270;
                 const fluxAngle = fluxLevel <= 1.0 ? -135 : -27 + ((fluxLevel - 1.0) / 2.0) * 27;
                 
                 document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
                 document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
+                
+                // Update global temperature variables to prevent jumps
+                currentCoreTemp = tempLevel;
+                targetCoreTemp = tempLevel;
                 
                 // Update core visual states during startup
                 const core = document.querySelector('.reactor-core');
@@ -1586,11 +1594,11 @@
                     }
                 });
                 
-                // Update status indicators
-                document.getElementById('temp-status').textContent = tempLevel > 2500 ? 'NOMINAL' : 'HEATING';
+                // Update TRIGA status indicators
+                document.getElementById('temp-status').textContent = tempLevel > 310 ? 'NOMINAL' : 'HEATING';
                 document.getElementById('flux-status').textContent = fluxLevel > 2.5 ? 'CRITICAL' : 'SUB-CRIT';
                 
-                if (powerLevel >= 850) {
+                if (powerLevel >= 485) {
                     clearInterval(startupInterval);
                     statusIndicator.textContent = 'OPERATIONAL';
                     statusLight.className = 'status-light green';
