@@ -579,36 +579,14 @@ function showWelcomeMessage() {
     console.log('%c🔐 Hint: Try operator ID "ADMIN" with access code "NUKEH2024"', 'color: #ff6600; font-size: 12px;');
 }
 
-// Disable scroll restoration and prevent unwanted scrolling
+// Disable scroll restoration
 if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 
-// Prevent default scroll behavior
-window.addEventListener('scroll', (e) => {
-    window.scrollTo(0, 0);
-}, { passive: false });
-
-// Prevent wheel scrolling on the body
-document.addEventListener('wheel', (e) => {
-    e.preventDefault();
-}, { passive: false });
-
-// Prevent arrow key scrolling
-document.addEventListener('keydown', (e) => {
-    if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End'].includes(e.key)) {
-        if (e.target.id !== 'terminal-input' && !e.target.closest('.terminal-window')) {
-            e.preventDefault();
-        }
-    }
-}, { passive: false });
-
 // Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
     console.log('%cInitializing NUKEH Nuclear Control Panel...', 'color: #00ff41; font-weight: bold;');
-    
-    // Force scroll to top and lock it
-    window.scrollTo(0, 0);
     
     try {
         // Show welcome message

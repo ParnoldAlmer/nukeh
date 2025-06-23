@@ -57,7 +57,13 @@
 html {
     font-size: var(--font-size-base);
     height: 100%;
-    overflow: hidden;
+    overflow: hidden !important;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+html::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }
 
 body {
@@ -65,13 +71,22 @@ body {
     background: var(--terminal-bg);
     color: var(--terminal-green);
     line-height: 1.2;
-    overflow: hidden;
+    overflow: hidden !important;
     cursor: default;
     user-select: none;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
     height: 100vh;
     margin: 0;
     padding: 0;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+}
+
+body::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
 }
 
 /* Scanline Effect */
@@ -185,6 +200,27 @@ body::after {
     height: calc(100vh - 60px);
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: var(--terminal-green) var(--terminal-bg); /* Firefox */
+}
+
+/* Custom scrollbar for terminal container */
+.terminal-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.terminal-container::-webkit-scrollbar-track {
+    background: var(--terminal-bg);
+    border: 1px solid var(--terminal-dark-gray);
+}
+
+.terminal-container::-webkit-scrollbar-thumb {
+    background: var(--terminal-green);
+    border-radius: 2px;
+}
+
+.terminal-container::-webkit-scrollbar-thumb:hover {
+    background: var(--radiation-green);
 }
 
 /* ASCII Logo Section */
@@ -247,9 +283,11 @@ body::after {
 /* Control Panel */
 .control-panel {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: var(--spacing-lg);
     margin-bottom: var(--spacing-xl);
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .panel-section {
