@@ -489,60 +489,154 @@
             }
         }
 
-        /* Control Rod Drive Mechanisms */
+        /* Research Reactor Control Rod System */
         .control-rod-assembly {
             position: absolute;
-            width: 12px;
-            height: 100px;
-            top: 100px;
+            width: 16px;
+            height: 120px;
+            top: 80px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .control-rod-assembly:hover {
+            transform: scale(1.1);
         }
 
         .control-rod-drive {
             position: absolute;
-            top: -30px;
+            top: -40px;
             left: 50%;
-            width: 20px;
-            height: 30px;
-            background: linear-gradient(180deg, #888888 0%, #444444 100%);
-            border: 1px solid #00ff41;
-            border-radius: 4px 4px 0 0;
+            width: 24px;
+            height: 40px;
+            background: linear-gradient(180deg, #888888 0%, #555555 50%, #444444 100%);
+            border: 2px solid #00ff41;
+            border-radius: 6px 6px 0 0;
             transform: translateX(-50%);
+            box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
+        }
+
+        .control-rod-drive::before {
+            content: attr(data-rod-name);
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: #00ffff;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .control-rod-drive::after {
+            content: attr(data-position);
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 7px;
+            color: #ffff00;
+            font-weight: bold;
         }
 
         .control-rod {
             position: absolute;
-            width: 12px;
+            width: 16px;
             height: var(--rod-height, 80px);
-            background: linear-gradient(180deg, #cccccc 0%, #666666 50%, #999999 100%);
-            border: 1px solid #00ffff;
-            border-radius: 0 0 6px 6px;
-            top: 0;
+            background: linear-gradient(180deg, #b0b0b0 0%, #707070 30%, #505050 70%, #808080 100%);
+            border: 2px solid #00ffff;
+            border-radius: 0 0 8px 8px;
+            top: var(--rod-position, 0px);
             left: 0;
-            animation: rod-insertion 6s ease-in-out infinite;
+            transition: top 2s ease-in-out;
+            box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.3);
         }
 
         .control-rod::before {
             content: '';
             position: absolute;
-            top: 5px;
-            left: 2px;
-            right: 2px;
-            height: 3px;
-            background: #00ffff;
+            top: 8px;
+            left: 3px;
+            right: 3px;
+            height: 4px;
+            background: linear-gradient(90deg, #00ffff 0%, #80ffff 50%, #00ffff 100%);
             border-radius: 2px;
-            box-shadow: 0 0 5px #00ffff;
+            box-shadow: 0 0 6px #00ffff;
         }
 
-        @keyframes rod-insertion {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(15px); }
+        .control-rod::after {
+            content: '';
+            position: absolute;
+            bottom: 8px;
+            left: 3px;
+            right: 3px;
+            height: 2px;
+            background: #666666;
+            border-radius: 1px;
         }
 
-        /* Position control rods around core */
-        .control-rod-assembly:nth-of-type(1) { left: 180px; }
-        .control-rod-assembly:nth-of-type(2) { left: 210px; }
-        .control-rod-assembly:nth-of-type(3) { right: 180px; }
-        .control-rod-assembly:nth-of-type(4) { right: 210px; }
+        /* Safety Rod (Red) */
+        .safety-rod .control-rod {
+            background: linear-gradient(180deg, #ff6b6b 0%, #cc5555 30%, #aa4444 70%, #cc5555 100%);
+            border-color: #ff4444;
+            box-shadow: inset 0 0 8px rgba(255, 68, 68, 0.3);
+        }
+
+        .safety-rod .control-rod::before {
+            background: linear-gradient(90deg, #ff4444 0%, #ff8888 50%, #ff4444 100%);
+            box-shadow: 0 0 6px #ff4444;
+        }
+
+        /* Shim Rod (Green) */
+        .shim-rod .control-rod {
+            background: linear-gradient(180deg, #6bff6b 0%, #55cc55 30%, #44aa44 70%, #55cc55 100%);
+            border-color: #44ff44;
+            box-shadow: inset 0 0 8px rgba(68, 255, 68, 0.3);
+        }
+
+        .shim-rod .control-rod::before {
+            background: linear-gradient(90deg, #44ff44 0%, #88ff88 50%, #44ff44 100%);
+            box-shadow: 0 0 6px #44ff44;
+        }
+
+        /* Regulating Rod (Yellow) */
+        .regulating-rod .control-rod {
+            background: linear-gradient(180deg, #ffff6b 0%, #cccc55 30%, #aaaa44 70%, #cccc55 100%);
+            border-color: #ffff44;
+            box-shadow: inset 0 0 8px rgba(255, 255, 68, 0.3);
+        }
+
+        .regulating-rod .control-rod::before {
+            background: linear-gradient(90deg, #ffff44 0%, #ffff88 50%, #ffff44 100%);
+            box-shadow: 0 0 6px #ffff44;
+        }
+
+        /* Position control rods in realistic research reactor pattern */
+        .control-rod-assembly:nth-of-type(1) { 
+            left: 160px; /* Safety Rod 1 */
+        }
+        .control-rod-assembly:nth-of-type(2) { 
+            left: 200px; /* Shim Rod 1 */
+        }
+        .control-rod-assembly:nth-of-type(3) { 
+            right: 160px; /* Safety Rod 2 */
+        }
+        .control-rod-assembly:nth-of-type(4) { 
+            right: 200px; /* Shim Rod 2 */
+        }
+        .control-rod-assembly:nth-of-type(5) { 
+            left: 50%; 
+            transform: translateX(-50%);
+            top: 60px; /* Regulating Rod */
+        }
+        .control-rod-assembly:nth-of-type(6) { 
+            left: 140px;
+            top: 140px; /* Shim Rod 3 */
+        }
+        .control-rod-assembly:nth-of-type(7) { 
+            right: 140px;
+            top: 140px; /* Shim Rod 4 */
+        }
 
         /* Primary Coolant Loop */
         .coolant-inlet {
@@ -897,7 +991,7 @@
 
         <!-- Center Panel - Reactor Schematic -->
         <div class="center-panel">
-            <h2 style="margin-bottom: 15px; color: #00cccc;">REACTOR PRESSURE VESSEL</h2>
+            <h2 style="margin-bottom: 15px; color: #00cccc;">RESEARCH REACTOR CORE</h2>
             <div class="reactor-diagram">
                 <!-- Pressure Vessel Container -->
                 <div class="pressure-vessel"></div>
@@ -927,22 +1021,34 @@
                     </div>
                 </div>
                 
-                <!-- Control Rod Assemblies -->
-                <div class="control-rod-assembly">
-                    <div class="control-rod-drive"></div>
-                    <div class="control-rod"></div>
+                <!-- Research Reactor Control Rod System -->
+                <div class="control-rod-assembly safety-rod" data-rod="safety-1">
+                    <div class="control-rod-drive" data-rod-name="SAFETY-1" data-position="75%"></div>
+                    <div class="control-rod" style="--rod-position: 20px;"></div>
                 </div>
-                <div class="control-rod-assembly">
-                    <div class="control-rod-drive"></div>
-                    <div class="control-rod"></div>
+                <div class="control-rod-assembly shim-rod" data-rod="shim-1">
+                    <div class="control-rod-drive" data-rod-name="SHIM-1" data-position="82%"></div>
+                    <div class="control-rod" style="--rod-position: 14px;"></div>
                 </div>
-                <div class="control-rod-assembly">
-                    <div class="control-rod-drive"></div>
-                    <div class="control-rod"></div>
+                <div class="control-rod-assembly safety-rod" data-rod="safety-2">
+                    <div class="control-rod-drive" data-rod-name="SAFETY-2" data-position="75%"></div>
+                    <div class="control-rod" style="--rod-position: 20px;"></div>
                 </div>
-                <div class="control-rod-assembly">
-                    <div class="control-rod-drive"></div>
-                    <div class="control-rod"></div>
+                <div class="control-rod-assembly shim-rod" data-rod="shim-2">
+                    <div class="control-rod-drive" data-rod-name="SHIM-2" data-position="78%"></div>
+                    <div class="control-rod" style="--rod-position: 18px;"></div>
+                </div>
+                <div class="control-rod-assembly regulating-rod" data-rod="reg-1">
+                    <div class="control-rod-drive" data-rod-name="REG-1" data-position="45%"></div>
+                    <div class="control-rod" style="--rod-position: 44px;"></div>
+                </div>
+                <div class="control-rod-assembly shim-rod" data-rod="shim-3">
+                    <div class="control-rod-drive" data-rod-name="SHIM-3" data-position="80%"></div>
+                    <div class="control-rod" style="--rod-position: 16px;"></div>
+                </div>
+                <div class="control-rod-assembly shim-rod" data-rod="shim-4">
+                    <div class="control-rod-drive" data-rod-name="SHIM-4" data-position="77%"></div>
+                    <div class="control-rod" style="--rod-position: 19px;"></div>
                 </div>
                 
                 <!-- Neutron Detectors -->
@@ -951,11 +1057,13 @@
                 <div class="neutron-detector"></div>
                 <div class="neutron-detector"></div>
             </div>
-            <div style="margin-top: 15px; text-align: center; font-size: 12px; line-height: 1.4;">
-                <div style="color: #00ffff;">CONTROL RODS: 75% INSERTED</div>
-                <div style="color: #0099ff;">PRIMARY COOLANT: 315°C → 325°C</div>
-                <div style="color: #00ff41;">CONTAINMENT INTEGRITY: SECURE</div>
-                <div style="color: #ffff00;">NEUTRON FLUX: STABLE</div>
+            <div style="margin-top: 15px; text-align: center; font-size: 10px; line-height: 1.3;">
+                <div style="color: #ff4444; margin-bottom: 3px;">SAFETY RODS: 75% INSERTED</div>
+                <div style="color: #44ff44; margin-bottom: 3px;">SHIM RODS: 79% INSERTED</div>
+                <div style="color: #ffff44; margin-bottom: 3px;">REG ROD: 45% INSERTED</div>
+                <div style="color: #0099ff; margin-bottom: 3px;">COOLANT: 315°C → 325°C</div>
+                <div style="color: #00ff41; margin-bottom: 3px;">CONTAINMENT: SECURE</div>
+                <div style="color: #ffff00;">REACTOR: CRITICAL</div>
             </div>
         </div>
 
@@ -1328,15 +1436,19 @@
             updateDateTime();
             updateSensorData();
             
+            // Initialize control rod system
+            initializeControlRods();
+            
             // Update time every second
             setInterval(updateDateTime, 1000);
             
             // Update sensor data every 2 seconds
             setInterval(updateSensorData, 2000);
             
-            console.log('NUKEH Reactor Control Dashboard Initialized');
+            console.log('NUKEH Research Reactor Control Dashboard Initialized');
             console.log('System Status: All primary systems online');
             console.log('Control Room Operator Console Ready');
+            console.log('Interactive control rods: Click to adjust positions');
         });
 
         // Reactor restart function
@@ -1426,6 +1538,128 @@
                     console.log('All systems nominal');
                 }
             }, 800);
+        }
+
+        // Global variables for control rod positions and reactor physics
+        let controlRodPositions = {
+            'safety-1': 75,
+            'safety-2': 75,
+            'shim-1': 82,
+            'shim-2': 78,
+            'shim-3': 80,
+            'shim-4': 77,
+            'reg-1': 45
+        };
+        
+        let reactorCriticality = 1.0; // k-effective
+        
+        // Control rod interaction system
+        function initializeControlRods() {
+            document.querySelectorAll('.control-rod-assembly').forEach(assembly => {
+                assembly.addEventListener('click', function() {
+                    const rodId = this.getAttribute('data-rod');
+                    adjustControlRod(rodId);
+                });
+            });
+        }
+        
+        function adjustControlRod(rodId) {
+            const currentPosition = controlRodPositions[rodId];
+            let newPosition;
+            
+            // Different behavior for different rod types
+            if (rodId.includes('reg')) {
+                // Regulating rod: fine adjustments ±5%
+                newPosition = currentPosition + (Math.random() > 0.5 ? 5 : -5);
+            } else if (rodId.includes('shim')) {
+                // Shim rods: medium adjustments ±10%
+                newPosition = currentPosition + (Math.random() > 0.5 ? 10 : -10);
+            } else {
+                // Safety rods: don't move unless in emergency
+                console.log(`Safety rod ${rodId} movement requires authorization`);
+                return;
+            }
+            
+            // Clamp position between 0% (fully withdrawn) and 100% (fully inserted)
+            newPosition = Math.max(0, Math.min(100, newPosition));
+            controlRodPositions[rodId] = newPosition;
+            
+            // Update visual position
+            updateControlRodPosition(rodId, newPosition);
+            
+            // Update reactor criticality
+            updateReactorPhysics();
+            
+            console.log(`${rodId.toUpperCase()}: moved to ${newPosition}% insertion`);
+        }
+        
+        function updateControlRodPosition(rodId, position) {
+            const assembly = document.querySelector(`[data-rod="${rodId}"]`);
+            const rod = assembly.querySelector('.control-rod');
+            const drive = assembly.querySelector('.control-rod-drive');
+            
+            // Calculate visual position (0px = fully withdrawn, 80px = fully inserted)
+            const visualPosition = (100 - position) * 0.8; // Invert because higher % = deeper insertion
+            rod.style.setProperty('--rod-position', `${visualPosition}px`);
+            
+            // Update position display
+            drive.setAttribute('data-position', `${Math.round(position)}%`);
+        }
+        
+        function updateReactorPhysics() {
+            // Calculate average rod insertion
+            const rodValues = Object.values(controlRodPositions);
+            const avgInsertion = rodValues.reduce((a, b) => a + b, 0) / rodValues.length;
+            
+            // Calculate criticality (simplified model)
+            // More insertion = lower k-effective
+            reactorCriticality = 1.2 - (avgInsertion / 100) * 0.4;
+            
+            // Update neutron flux based on criticality
+            if (reactorCriticality > 1.0) {
+                // Supercritical - increasing power
+                currentNeutronFlux = Math.min(4.5, currentNeutronFlux * 1.02);
+            } else if (reactorCriticality < 1.0) {
+                // Subcritical - decreasing power
+                currentNeutronFlux = Math.max(0.5, currentNeutronFlux * 0.98);
+            }
+            
+            // Update status display
+            updateReactorStatus();
+        }
+        
+        // Global variable for neutron flux simulation
+        let currentNeutronFlux = 3.2;
+        
+        function updateReactorStatus() {
+            // Update rod position displays
+            const safetyRods = [controlRodPositions['safety-1'], controlRodPositions['safety-2']];
+            const shimRods = [controlRodPositions['shim-1'], controlRodPositions['shim-2'], 
+                             controlRodPositions['shim-3'], controlRodPositions['shim-4']];
+            const regRod = controlRodPositions['reg-1'];
+            
+            const avgSafety = Math.round(safetyRods.reduce((a, b) => a + b, 0) / safetyRods.length);
+            const avgShim = Math.round(shimRods.reduce((a, b) => a + b, 0) / shimRods.length);
+            
+            // Update status text
+            const statusLines = document.querySelectorAll('.center-panel div[style*="margin-top"] div');
+            if (statusLines.length >= 6) {
+                statusLines[0].innerHTML = `<span style="color: #ff4444;">SAFETY RODS: ${avgSafety}% INSERTED</span>`;
+                statusLines[1].innerHTML = `<span style="color: #44ff44;">SHIM RODS: ${avgShim}% INSERTED</span>`;
+                statusLines[2].innerHTML = `<span style="color: #ffff44;">REG ROD: ${regRod}% INSERTED</span>`;
+                
+                // Update reactor state based on criticality
+                let reactorState = 'CRITICAL';
+                let stateColor = '#ffff00';
+                if (reactorCriticality > 1.05) {
+                    reactorState = 'SUPER-CRITICAL';
+                    stateColor = '#ff8800';
+                } else if (reactorCriticality < 0.95) {
+                    reactorState = 'SUB-CRITICAL';
+                    stateColor = '#8888ff';
+                }
+                statusLines[5].innerHTML = `<span style="color: ${stateColor};">REACTOR: ${reactorState}</span>`;
+            }
         }
 
         // Easter egg functions
