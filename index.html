@@ -294,81 +294,274 @@
 
         .reactor-diagram {
             position: relative;
-            width: 300px;
-            height: 400px;
+            width: 400px;
+            height: 500px;
             margin: 20px auto;
+            border: 2px solid #00ff41;
+            background: linear-gradient(135deg, #001100 0%, #000600 100%);
+            border-radius: 8px;
         }
 
+        /* Reactor Pressure Vessel */
+        .pressure-vessel {
+            position: absolute;
+            top: 50px;
+            left: 50%;
+            width: 200px;
+            height: 350px;
+            background: linear-gradient(180deg, #333333 0%, #666666 50%, #333333 100%);
+            border: 3px solid #00ff41;
+            border-radius: 15px;
+            transform: translateX(-50%);
+        }
+
+        .pressure-vessel::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            width: 220px;
+            height: 30px;
+            background: linear-gradient(90deg, #444444 0%, #777777 50%, #444444 100%);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            transform: translateX(-50%);
+        }
+
+        .pressure-vessel::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            width: 220px;
+            height: 30px;
+            background: linear-gradient(90deg, #444444 0%, #777777 50%, #444444 100%);
+            border: 2px solid #00ff41;
+            border-radius: 15px;
+            transform: translateX(-50%);
+        }
+
+        /* Reactor Core Grid */
         .reactor-core {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #ffff00 0%, #ff6600 50%, #ff0000 100%);
-            border: 3px solid #00ff41;
-            border-radius: 50%;
+            width: 140px;
+            height: 140px;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 0, 0.8) 0%, transparent 20%),
+                radial-gradient(circle at 70% 30%, rgba(255, 165, 0, 0.8) 0%, transparent 20%),
+                radial-gradient(circle at 50% 70%, rgba(255, 0, 0, 0.8) 0%, transparent 20%),
+                linear-gradient(45deg, #ff6600 0%, #ff0000 50%, #ff6600 100%);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
             transform: translate(-50%, -50%);
-            animation: core-pulse 2s ease-in-out infinite;
+            animation: core-heat 3s ease-in-out infinite alternate;
         }
 
-        @keyframes core-pulse {
-            0%, 100% { 
-                box-shadow: 0 0 20px #ff6600;
-                transform: translate(-50%, -50%) scale(1);
+        .reactor-core::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 255, 0, 0.3) 0px,
+                rgba(255, 255, 0, 0.3) 8px,
+                transparent 8px,
+                transparent 16px
+            ),
+            repeating-linear-gradient(
+                90deg,
+                rgba(255, 255, 0, 0.3) 0px,
+                rgba(255, 255, 0, 0.3) 8px,
+                transparent 8px,
+                transparent 16px
+            );
+            border-radius: 4px;
+        }
+
+        @keyframes core-heat {
+            0% { 
+                box-shadow: 0 0 30px rgba(255, 100, 0, 0.8);
+                filter: brightness(1);
             }
-            50% { 
-                box-shadow: 0 0 40px #ff6600;
-                transform: translate(-50%, -50%) scale(1.05);
+            100% { 
+                box-shadow: 0 0 50px rgba(255, 0, 0, 1);
+                filter: brightness(1.2);
             }
+        }
+
+        /* Control Rod Drive Mechanisms */
+        .control-rod-assembly {
+            position: absolute;
+            width: 12px;
+            height: 100px;
+            top: 100px;
+        }
+
+        .control-rod-drive {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            width: 20px;
+            height: 30px;
+            background: linear-gradient(180deg, #888888 0%, #444444 100%);
+            border: 1px solid #00ff41;
+            border-radius: 4px 4px 0 0;
+            transform: translateX(-50%);
         }
 
         .control-rod {
             position: absolute;
-            width: 20px;
-            height: 80px;
-            background: linear-gradient(180deg, #cccccc 0%, #666666 100%);
-            border: 1px solid #00ff41;
-            animation: rod-movement 4s ease-in-out infinite;
+            width: 12px;
+            height: var(--rod-height, 80px);
+            background: linear-gradient(180deg, #cccccc 0%, #666666 50%, #999999 100%);
+            border: 1px solid #00ffff;
+            border-radius: 0 0 6px 6px;
+            top: 0;
+            left: 0;
+            animation: rod-insertion 6s ease-in-out infinite;
         }
 
-        .control-rod:nth-child(2) { top: 50px; left: 80px; }
-        .control-rod:nth-child(3) { top: 50px; right: 80px; }
-        .control-rod:nth-child(4) { bottom: 50px; left: 80px; }
-        .control-rod:nth-child(5) { bottom: 50px; right: 80px; }
+        .control-rod::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 2px;
+            right: 2px;
+            height: 3px;
+            background: #00ffff;
+            border-radius: 2px;
+            box-shadow: 0 0 5px #00ffff;
+        }
 
-        @keyframes rod-movement {
+        @keyframes rod-insertion {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(15px); }
+        }
+
+        /* Position control rods around core */
+        .control-rod-assembly:nth-of-type(1) { left: 180px; }
+        .control-rod-assembly:nth-of-type(2) { left: 210px; }
+        .control-rod-assembly:nth-of-type(3) { right: 180px; }
+        .control-rod-assembly:nth-of-type(4) { right: 210px; }
+
+        /* Primary Coolant Loop */
+        .coolant-inlet {
+            position: absolute;
+            left: 20px;
+            top: 150px;
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(90deg, #0066ff 0%, #00aaff 100%);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+        }
+
+        .coolant-inlet::before {
+            content: 'INLET';
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 8px;
+            color: #00ffff;
+            font-weight: bold;
+        }
+
+        .coolant-outlet {
+            position: absolute;
+            right: 20px;
+            top: 150px;
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(90deg, #ff6600 0%, #ff9900 100%);
+            border: 2px solid #00ff41;
+            border-radius: 10px;
+        }
+
+        .coolant-outlet::before {
+            content: 'OUTLET';
+            position: absolute;
+            top: -20px;
+            right: 0;
+            font-size: 8px;
+            color: #ff9900;
+            font-weight: bold;
         }
 
         .coolant-pipe {
             position: absolute;
-            width: 400px;
-            height: 20px;
-            background: linear-gradient(90deg, #0066ff 0%, #00ccff 50%, #0066ff 100%);
-            border: 2px solid #00ff41;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            width: 140px;
+            height: 8px;
+            background: linear-gradient(90deg, #0066ff 0%, #ff6600 100%);
+            border: 1px solid #00ff41;
+            top: 156px;
+            left: 80px;
         }
 
         .coolant-flow {
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, 
-                transparent 0%, 
-                rgba(0, 255, 255, 0.8) 25%, 
-                transparent 50%, 
-                rgba(0, 255, 255, 0.8) 75%, 
-                transparent 100%);
-            animation: flow 2s linear infinite;
+                rgba(0, 255, 255, 0.8) 0%, 
+                transparent 25%, 
+                transparent 75%,
+                rgba(255, 153, 0, 0.8) 100%);
+            animation: coolant-flow 3s linear infinite;
         }
 
-        @keyframes flow {
+        @keyframes coolant-flow {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
+
+        /* Steam Generator Indicators */
+        .steam-line {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            width: 4px;
+            height: 40px;
+            background: repeating-linear-gradient(
+                0deg,
+                #ffffff 0px,
+                #ffffff 3px,
+                transparent 3px,
+                transparent 6px
+            );
+            transform: translateX(-50%);
+            animation: steam-flow 1s linear infinite;
+        }
+
+        @keyframes steam-flow {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* Neutron Detector Positions */
+        .neutron-detector {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffff00;
+            border: 1px solid #00ff41;
+            border-radius: 50%;
+            animation: detector-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes detector-pulse {
+            0%, 100% { box-shadow: 0 0 5px #ffff00; }
+            50% { box-shadow: 0 0 15px #ffff00; }
+        }
+
+        .neutron-detector:nth-of-type(1) { top: 120px; left: 150px; }
+        .neutron-detector:nth-of-type(2) { top: 120px; right: 150px; }
+        .neutron-detector:nth-of-type(3) { bottom: 120px; left: 150px; }
+        .neutron-detector:nth-of-type(4) { bottom: 120px; right: 150px; }
 
         /* Right Panel - Status Indicators */
         .right-panel {
@@ -609,21 +802,53 @@
 
         <!-- Center Panel - Reactor Schematic -->
         <div class="center-panel">
-            <h2 style="margin-bottom: 20px; color: #00cccc;">REACTOR CORE SCHEMATIC</h2>
+            <h2 style="margin-bottom: 15px; color: #00cccc;">REACTOR PRESSURE VESSEL</h2>
             <div class="reactor-diagram">
+                <!-- Pressure Vessel Container -->
+                <div class="pressure-vessel"></div>
+                
+                <!-- Steam Line -->
+                <div class="steam-line"></div>
+                
+                <!-- Primary Coolant Loop -->
+                <div class="coolant-inlet"></div>
                 <div class="coolant-pipe">
                     <div class="coolant-flow"></div>
                 </div>
-                <div class="control-rod"></div>
-                <div class="control-rod"></div>
-                <div class="control-rod"></div>
-                <div class="control-rod"></div>
+                <div class="coolant-outlet"></div>
+                
+                <!-- Reactor Core -->
                 <div class="reactor-core"></div>
+                
+                <!-- Control Rod Assemblies -->
+                <div class="control-rod-assembly">
+                    <div class="control-rod-drive"></div>
+                    <div class="control-rod"></div>
+                </div>
+                <div class="control-rod-assembly">
+                    <div class="control-rod-drive"></div>
+                    <div class="control-rod"></div>
+                </div>
+                <div class="control-rod-assembly">
+                    <div class="control-rod-drive"></div>
+                    <div class="control-rod"></div>
+                </div>
+                <div class="control-rod-assembly">
+                    <div class="control-rod-drive"></div>
+                    <div class="control-rod"></div>
+                </div>
+                
+                <!-- Neutron Detectors -->
+                <div class="neutron-detector"></div>
+                <div class="neutron-detector"></div>
+                <div class="neutron-detector"></div>
+                <div class="neutron-detector"></div>
             </div>
-            <div style="margin-top: 20px; text-align: center; font-size: 14px;">
-                <div>CONTROL RODS: 75% INSERTED</div>
-                <div>COOLANT FLOW: NOMINAL</div>
-                <div>CONTAINMENT: SECURE</div>
+            <div style="margin-top: 15px; text-align: center; font-size: 12px; line-height: 1.4;">
+                <div style="color: #00ffff;">CONTROL RODS: 75% INSERTED</div>
+                <div style="color: #0099ff;">PRIMARY COOLANT: 315°C → 325°C</div>
+                <div style="color: #00ff41;">CONTAINMENT INTEGRITY: SECURE</div>
+                <div style="color: #ffff00;">NEUTRON FLUX: STABLE</div>
             </div>
         </div>
 
