@@ -302,46 +302,75 @@
             border-radius: 8px;
         }
 
-        /* Reactor Pressure Vessel */
-        .pressure-vessel {
+        /* TRIGA Reactor Pool and Core Tank */
+        .reactor-pool {
             position: absolute;
-            top: 50px;
+            top: 20px;
             left: 50%;
-            width: 200px;
-            height: 350px;
-            background: linear-gradient(180deg, #333333 0%, #666666 50%, #333333 100%);
+            width: 320px;
+            height: 450px;
+            background: linear-gradient(180deg, #001144 0%, #002288 30%, #0033aa 100%);
             border: 3px solid #00ff41;
-            border-radius: 15px;
+            border-radius: 8px;
             transform: translateX(-50%);
+            box-shadow: inset 0 0 30px rgba(0, 100, 255, 0.3);
         }
 
-        .pressure-vessel::before {
-            content: '';
+        .reactor-pool::before {
+            content: 'REACTOR POOL';
             position: absolute;
-            top: -15px;
+            top: -25px;
             left: 50%;
-            width: 220px;
-            height: 30px;
-            background: linear-gradient(90deg, #444444 0%, #777777 50%, #444444 100%);
-            border: 2px solid #00ff41;
-            border-radius: 15px;
             transform: translateX(-50%);
+            font-size: 10px;
+            color: #00ffff;
+            font-weight: bold;
         }
 
-        .pressure-vessel::after {
-            content: '';
+        .core-tank {
             position: absolute;
-            bottom: -15px;
+            top: 50%;
             left: 50%;
-            width: 220px;
-            height: 30px;
-            background: linear-gradient(90deg, #444444 0%, #777777 50%, #444444 100%);
+            width: 180px;
+            height: 200px;
+            background: linear-gradient(180deg, #333333 0%, #555555 50%, #333333 100%);
             border: 2px solid #00ff41;
-            border-radius: 15px;
-            transform: translateX(-50%);
+            border-radius: 90px;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
         }
 
-        /* Reactor Core - Realistic Fuel Assembly Grid */
+        .core-tank::before {
+            content: 'CORE TANK';
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 8px;
+            color: #00cccc;
+            font-weight: bold;
+        }
+
+        /* Water level indicators */
+        .water-level {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            height: 2px;
+            background: rgba(0, 150, 255, 0.6);
+            animation: water-shimmer 3s ease-in-out infinite alternate;
+        }
+
+        .water-level:nth-of-type(1) { top: 80px; }
+        .water-level:nth-of-type(2) { top: 120px; }
+        .water-level:nth-of-type(3) { top: 160px; }
+
+        @keyframes water-shimmer {
+            0% { opacity: 0.4; }
+            100% { opacity: 0.8; }
+        }
+
+        /* TRIGA Reactor Core - Circular Configuration */
         .reactor-core {
             position: absolute;
             top: 50%;
@@ -349,111 +378,97 @@
             width: 140px;
             height: 140px;
             background: 
-                radial-gradient(circle at center, rgba(0, 100, 255, 0.3) 0%, transparent 70%),
-                linear-gradient(45deg, #001a33 0%, #003366 50%, #001a33 100%);
+                radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0%, transparent 80%),
+                radial-gradient(circle at center, rgba(0, 100, 255, 0.2) 0%, transparent 60%);
             border: 3px solid #00ff41;
-            border-radius: 8px;
+            border-radius: 50%;
             transform: translate(-50%, -50%);
             cursor: pointer;
             transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
         }
 
-        /* Fuel Assembly Grid */
+        /* TRIGA Fuel Element Ring Pattern */
         .fuel-assemblies {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            grid-template-rows: repeat(8, 1fr);
-            gap: 1px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .fuel-rod {
-            background: var(--fuel-color, #4a90e2);
-            border: 1px solid var(--fuel-border, #00aaff);
-            border-radius: 2px;
-            position: relative;
-            transition: all 0.2s ease;
-        }
-
-        .fuel-rod::before {
-            content: '';
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 4px;
-            height: 4px;
-            background: var(--fuel-glow, #80d4ff);
-            border-radius: 50%;
+            width: 120px;
+            height: 120px;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 3px var(--fuel-glow, #80d4ff);
+            border-radius: 50%;
+        }
+
+        /* TRIGA Fuel Elements - Individual circular rods */
+        .fuel-element {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--fuel-color, #4a90e2);
+            border: 1px solid var(--fuel-border, #00aaff);
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            box-shadow: 0 0 4px var(--fuel-glow, #80d4ff);
             animation: neutron-flux 2s ease-in-out infinite alternate;
         }
 
-        /* Different fuel enrichment levels */
-        .fuel-rod:nth-child(4n+1) {
+        /* TRIGA fuel element types */
+        .fuel-element.standard {
             --fuel-color: #3498db;
             --fuel-border: #2980b9;
             --fuel-glow: #5dade2;
         }
 
-        .fuel-rod:nth-child(4n+2) {
+        .fuel-element.instrumented {
             --fuel-color: #e74c3c;
             --fuel-border: #c0392b;
             --fuel-glow: #ec7063;
         }
 
-        .fuel-rod:nth-child(4n+3) {
-            --fuel-color: #f39c12;
-            --fuel-border: #e67e22;
-            --fuel-glow: #f7dc6f;
+        .fuel-element.graphite {
+            --fuel-color: #2c3e50;
+            --fuel-border: #34495e;
+            --fuel-glow: #7f8c8d;
         }
 
-        .fuel-rod:nth-child(4n) {
-            --fuel-color: #2ecc71;
-            --fuel-border: #27ae60;
-            --fuel-glow: #58d68d;
+        /* Position TRIGA fuel elements in rings */
+        /* Center element */
+        .fuel-element:nth-child(1) { 
+            top: 50%; left: 50%; 
+            transform: translate(-50%, -50%);
         }
+
+        /* Inner ring (6 elements) */
+        .fuel-element:nth-child(2) { top: 20%; left: 50%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(3) { top: 35%; left: 80%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(4) { top: 65%; left: 80%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(5) { top: 80%; left: 50%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(6) { top: 65%; left: 20%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(7) { top: 35%; left: 20%; transform: translate(-50%, -50%); }
+
+        /* Outer ring (12 elements) */
+        .fuel-element:nth-child(8) { top: 5%; left: 50%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(9) { top: 15%; left: 75%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(10) { top: 30%; left: 90%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(11) { top: 50%; left: 95%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(12) { top: 70%; left: 90%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(13) { top: 85%; left: 75%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(14) { top: 95%; left: 50%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(15) { top: 85%; left: 25%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(16) { top: 70%; left: 10%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(17) { top: 50%; left: 5%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(18) { top: 30%; left: 10%; transform: translate(-50%, -50%); }
+        .fuel-element:nth-child(19) { top: 15%; left: 25%; transform: translate(-50%, -50%); }
 
         @keyframes neutron-flux {
             0% { 
-                opacity: 0.6;
-                transform: translate(-50%, -50%) scale(1);
+                opacity: 0.7;
+                box-shadow: 0 0 4px var(--fuel-glow);
             }
             100% { 
                 opacity: 1;
-                transform: translate(-50%, -50%) scale(1.2);
+                box-shadow: 0 0 8px var(--fuel-glow);
             }
-        }
-
-        /* Control Rod Guide Tubes */
-        .control-guide {
-            background: #2c3e50 !important;
-            border: 1px solid #34495e !important;
-        }
-
-        .control-guide::before {
-            background: #7f8c8d !important;
-            box-shadow: 0 0 2px #95a5a6 !important;
-        }
-
-        .fuel-rod:nth-child(9), .fuel-rod:nth-child(17), .fuel-rod:nth-child(25),
-        .fuel-rod:nth-child(33), .fuel-rod:nth-child(41), .fuel-rod:nth-child(49),
-        .fuel-rod:nth-child(57) {
-            background: #2c3e50 !important;
-            border: 1px solid #34495e !important;
-        }
-
-        .fuel-rod:nth-child(9)::before, .fuel-rod:nth-child(17)::before, .fuel-rod:nth-child(25)::before,
-        .fuel-rod:nth-child(33)::before, .fuel-rod:nth-child(41)::before, .fuel-rod:nth-child(49)::before,
-        .fuel-rod:nth-child(57)::before {
-            background: #7f8c8d !important;
-            box-shadow: 0 0 2px #95a5a6 !important;
         }
 
         /* Reactor Core States */
@@ -611,31 +626,35 @@
             box-shadow: 0 0 6px #ffff44;
         }
 
-        /* Position control rods in realistic research reactor pattern */
+        /* Position TRIGA control rods around circular core */
         .control-rod-assembly:nth-of-type(1) { 
-            left: 160px; /* Safety Rod 1 */
+            left: 50px; 
+            top: 150px; /* Safety Rod 1 */
         }
         .control-rod-assembly:nth-of-type(2) { 
-            left: 200px; /* Shim Rod 1 */
+            left: 120px; 
+            top: 80px; /* Shim Rod 1 */
         }
         .control-rod-assembly:nth-of-type(3) { 
-            right: 160px; /* Safety Rod 2 */
+            right: 50px; 
+            top: 150px; /* Safety Rod 2 */
         }
         .control-rod-assembly:nth-of-type(4) { 
-            right: 200px; /* Shim Rod 2 */
+            right: 120px; 
+            top: 80px; /* Shim Rod 2 */
         }
         .control-rod-assembly:nth-of-type(5) { 
             left: 50%; 
             transform: translateX(-50%);
-            top: 60px; /* Regulating Rod */
+            top: 40px; /* Regulating Rod - Top */
         }
         .control-rod-assembly:nth-of-type(6) { 
-            left: 140px;
-            top: 140px; /* Shim Rod 3 */
+            left: 80px;
+            top: 200px; /* Shim Rod 3 */
         }
         .control-rod-assembly:nth-of-type(7) { 
-            right: 140px;
-            top: 140px; /* Shim Rod 4 */
+            right: 80px;
+            top: 200px; /* Shim Rod 4 */
         }
 
         /* Primary Coolant Loop */
@@ -1001,34 +1020,48 @@
 
         <!-- Center Panel - Reactor Schematic -->
         <div class="center-panel">
-            <h2 style="margin-bottom: 15px; color: #00cccc;">RESEARCH REACTOR CORE</h2>
+            <h2 style="margin-bottom: 15px; color: #00cccc;">TRIGA REACTOR POOL</h2>
             <div class="reactor-diagram">
-                <!-- Pressure Vessel Container -->
-                <div class="pressure-vessel"></div>
-                
-                <!-- Steam Line -->
-                <div class="steam-line"></div>
-                
-                <!-- Primary Coolant Loop -->
-                <div class="coolant-inlet"></div>
-                <div class="coolant-pipe">
-                    <div class="coolant-flow"></div>
-                </div>
-                <div class="coolant-outlet"></div>
-                
-                <!-- Reactor Core -->
-                <div class="reactor-core" id="reactor-core">
-                    <div class="fuel-assemblies">
-                        <!-- 8x8 Fuel Assembly Grid -->
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
-                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                <!-- TRIGA Reactor Pool -->
+                <div class="reactor-pool">
+                    <div class="water-level"></div>
+                    <div class="water-level"></div>
+                    <div class="water-level"></div>
+                    
+                    <!-- TRIGA Core Tank -->
+                    <div class="core-tank">
+                        <!-- TRIGA Reactor Core -->
+                        <div class="reactor-core" id="reactor-core">
+                            <div class="fuel-assemblies">
+                                <!-- TRIGA Fuel Elements in Circular Pattern -->
+                                <div class="fuel-element standard"></div> <!-- Center -->
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element instrumented"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element graphite"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element instrumented"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element graphite"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element instrumented"></div>
+                                <div class="fuel-element standard"></div>
+                                <div class="fuel-element standard"></div>
+                            </div>
+                        </div>
                     </div>
+                    
+                    <!-- Pool Cooling System -->
+                    <div class="pool-cooling"></div>
+                    <div class="heat-exchanger"></div>
+                    <div class="circulation-arrow"></div>
+                    <div class="circulation-arrow"></div>
                 </div>
                 
                 <!-- Research Reactor Control Rod System -->
@@ -1071,8 +1104,9 @@
                 <div style="color: #ff4444; margin-bottom: 3px;">SAFETY RODS: 75% INSERTED</div>
                 <div style="color: #44ff44; margin-bottom: 3px;">SHIM RODS: 79% INSERTED</div>
                 <div style="color: #ffff44; margin-bottom: 3px;">REG ROD: 45% INSERTED</div>
-                <div style="color: #0099ff; margin-bottom: 3px;">COOLANT: 315°C → 325°C</div>
-                <div style="color: #00ff41; margin-bottom: 3px;">CONTAINMENT: SECURE</div>
+                <div style="color: #0099ff; margin-bottom: 3px;">POOL TEMP: 38°C NORMAL</div>
+                <div style="color: #00aaff; margin-bottom: 3px;">CORE TEMP: 315°C NOMINAL</div>
+                <div style="color: #00ff41; margin-bottom: 3px;">POOL LEVEL: NORMAL</div>
                 <div style="color: #ffff00;">REACTOR: CRITICAL</div>
             </div>
         </div>
@@ -1282,30 +1316,30 @@
                 core.classList.add('scrammed');
             }
             
-            // Update individual fuel rod appearance
-            fuelRods.forEach((rod, index) => {
-                // Skip control rod guide tubes
-                const isControlGuide = [8, 16, 24, 32, 40, 48, 56].includes(index);
-                if (isControlGuide) return;
+            // Update individual TRIGA fuel element appearance
+            const fuelElements = document.querySelectorAll('.fuel-element');
+            fuelElements.forEach((element, index) => {
+                // Skip graphite reflector elements
+                if (element.classList.contains('graphite')) return;
                 
-                // Calculate fuel rod intensity based on neutron flux and power
+                // Calculate TRIGA fuel element intensity based on neutron flux and power
                 const fluxIntensity = Math.max(0.3, Math.min(1.2, flux / 3.2));
-                const powerIntensity = Math.max(0.2, Math.min(1.0, power / 850));
+                const powerIntensity = Math.max(0.2, Math.min(1.0, power / 485)); // TRIGA 485kW
                 const combinedIntensity = (fluxIntensity + powerIntensity) / 2;
                 
-                rod.style.filter = `brightness(${0.4 + combinedIntensity * 0.8})`;
+                element.style.filter = `brightness(${0.4 + combinedIntensity * 0.8})`;
                 
                 // Adjust animation speed based on neutron flux
                 const animationSpeed = Math.max(1, 4 - (flux / 3.2) * 2);
-                rod.style.animationDuration = `${animationSpeed}s`;
+                element.style.animationDuration = `${animationSpeed}s`;
                 
-                // Add temperature-based color shift
-                if (temperature > 2880) {
-                    rod.style.boxShadow = `0 0 3px rgba(255, 165, 0, ${(temperature - 2800) / 200})`;
-                } else if (temperature < 2820) {
-                    rod.style.boxShadow = `0 0 2px rgba(0, 150, 255, ${(2850 - temperature) / 100})`;
+                // Add temperature-based glow for TRIGA temperatures
+                if (temperature > 330) {
+                    element.style.boxShadow = `0 0 6px rgba(255, 165, 0, ${(temperature - 300) / 100})`;
+                } else if (temperature < 300) {
+                    element.style.boxShadow = `0 0 4px rgba(0, 150, 255, ${(320 - temperature) / 50})`;
                 } else {
-                    rod.style.boxShadow = '';
+                    element.style.boxShadow = '0 0 4px var(--fuel-glow)';
                 }
             });
         }
