@@ -873,40 +873,47 @@
         <!-- Header Section -->
         <div class="header">
             <div class="plant-name">MERIDIAN RESEARCH REACTOR</div>
-            <div style="font-size: 10px; color: #888888; margin-top: 2px;">
-                UNIVERSITY OF MERIDIAN • MTR-500 • LICENSE R-125
+            <div style="font-size: 9px; color: #888888; margin-top: 2px; line-height: 1.2;">
+                TRIGA MARK III • 500kW THERMAL • DOCKET 50-186<br>
+                UNIVERSITY OF MERIDIAN NUCLEAR ENGINEERING DEPT.
             </div>
             <div class="status-indicator">
                 <div class="status-light green"></div>
                 <span>OPERATIONAL</span>
             </div>
             <div class="datetime" id="datetime"></div>
+            <div style="font-size: 8px; color: #666666; margin-top: 8px;">
+                <div>LICENSE: R-125 EXP: 12/2029</div>
+                <div>FUEL: LEU 20% U-235</div>
+                <div>OPERATOR: <span id="operator-badge">SRO-2489</span></div>
+            </div>
         </div>
 
         <!-- Left Panel - Meters and Gauges -->
         <div class="left-panel">
             <div class="meter-section">
                 <div class="meter-title">Core Temperature</div>
-                <div class="digital-display" id="core-temp">2847°C</div>
+                <div class="digital-display" id="core-temp">315°C</div>
                 <div class="meter" id="temp-meter">
                     <div class="meter-scale">
-                        <!-- Temperature scale from 2000°C to 3500°C -->
+                        <!-- Temperature scale from 250°C to 400°C for TRIGA -->
                         <div class="meter-tick major" style="transform: rotate(-135deg);"></div>
-                        <div class="meter-number" style="top: 80%; left: 25%;">2000</div>
+                        <div class="meter-number" style="top: 80%; left: 25%;">250</div>
                         
                         <div class="meter-tick" style="transform: rotate(-108deg);"></div>
                         <div class="meter-tick" style="transform: rotate(-81deg);"></div>
                         <div class="meter-tick major" style="transform: rotate(-54deg);"></div>
-                        <div class="meter-number" style="top: 35%; left: 80%;">2750</div>
+                        <div class="meter-number" style="top: 35%; left: 80%;">300</div>
                         
                         <div class="meter-tick" style="transform: rotate(-27deg);"></div>
                         <div class="meter-tick" style="transform: rotate(0deg);"></div>
                         <div class="meter-tick major" style="transform: rotate(27deg);"></div>
-                        <div class="meter-number" style="top: 35%; right: 80%;">3500</div>
+                        <div class="meter-number" style="top: 35%; right: 80%;">350</div>
                         
                         <div class="meter-tick" style="transform: rotate(54deg);"></div>
                         <div class="meter-tick" style="transform: rotate(81deg);"></div>
                         <div class="meter-tick major" style="transform: rotate(108deg);"></div>
+                        <div class="meter-number" style="top: 80%; right: 25%;">400</div>
                         <div class="meter-tick" style="transform: rotate(135deg);"></div>
                     </div>
                     <div class="meter-needle" id="temp-needle" style="--rotation: -20deg;"></div>
@@ -988,7 +995,7 @@
 
             <div class="meter-section">
                 <div class="meter-title">Power Output</div>
-                <div class="digital-display" id="power-output">850 MW</div>
+                <div class="digital-display" id="power-output">485 kW</div>
             </div>
         </div>
 
@@ -1170,20 +1177,20 @@
             document.getElementById('datetime').innerHTML = `${dateStr}<br>${timeStr}`;
         }
 
-        // Global variables for realistic thermal simulation
-        let currentCoreTemp = 2847;
-        let targetCoreTemp = 2847;
-        let tempChangeRate = 0.5; // °C per update cycle
+        // Global variables for realistic thermal simulation (TRIGA reactor)
+        let currentCoreTemp = 315; // TRIGA operates at much lower temps
+        let targetCoreTemp = 315;
+        let tempChangeRate = 0.2; // °C per update cycle
         
         // Simulate dynamic data updates
         function updateSensorData() {
-            // Realistic core temperature simulation with thermal inertia
-            // Temperature changes slowly over time toward a target
+            // Realistic TRIGA core temperature simulation with thermal inertia
+            // TRIGA reactors operate at much lower temperatures (300-400°C)
             if (Math.abs(currentCoreTemp - targetCoreTemp) < 1) {
                 // Set new target temperature occasionally
                 if (Math.random() < 0.1) { // 10% chance to change target
-                    targetCoreTemp = 2847 + (Math.random() - 0.5) * 40; // ±20°C range
-                    targetCoreTemp = Math.max(2820, Math.min(2880, targetCoreTemp));
+                    targetCoreTemp = 315 + (Math.random() - 0.5) * 20; // ±10°C range
+                    targetCoreTemp = Math.max(305, Math.min(325, targetCoreTemp));
                 }
             }
             
@@ -1194,19 +1201,19 @@
                 currentCoreTemp = Math.max(targetCoreTemp, currentCoreTemp - tempChangeRate);
             }
             
-            // Add minor random fluctuations (±2°C)
-            const tempNoise = (Math.random() - 0.5) * 4;
-            const displayTemp = Math.max(2800, Math.min(2900, currentCoreTemp + tempNoise));
+            // Add minor random fluctuations (±1°C)
+            const tempNoise = (Math.random() - 0.5) * 2;
+            const displayTemp = Math.max(300, Math.min(350, currentCoreTemp + tempNoise));
             
             document.getElementById('core-temp').textContent = `${Math.round(displayTemp)}°C`;
             
-            // Update temperature needle position (2000-3500°C scale, -135° to +135°)
-            const tempRange = 3500 - 2000;
-            const tempAngle = -135 + ((displayTemp - 2000) / tempRange) * 270;
+            // Update temperature needle position (250-400°C scale for TRIGA, -135° to +135°)
+            const tempRange = 400 - 250;
+            const tempAngle = -135 + ((displayTemp - 250) / tempRange) * 270;
             document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
             
-            // Update temperature status
-            const tempStatus = displayTemp > 2880 ? 'HIGH' : displayTemp < 2820 ? 'LOW' : 'NOMINAL';
+            // Update temperature status for TRIGA operating range
+            const tempStatus = displayTemp > 330 ? 'HIGH' : displayTemp < 300 ? 'LOW' : 'NOMINAL';
             document.getElementById('temp-status').textContent = tempStatus;
 
             // Pressure fluctuation with realistic ranges
@@ -1250,11 +1257,11 @@
             const fluxStatus = clampedFlux > 4.0 ? 'SUPER-CRIT' : clampedFlux < 2.5 ? 'SUB-CRIT' : 'CRITICAL';
             document.getElementById('flux-status').textContent = fluxStatus;
 
-            // Power output fluctuation
-            const basePower = 850;
-            const power = basePower + (Math.random() - 0.5) * 60;
-            const clampedPower = Math.max(800, Math.min(950, power));
-            document.getElementById('power-output').textContent = `${Math.round(clampedPower)} MW`;
+            // Power output fluctuation (500kW TRIGA reactor)
+            const basePower = 485; // 485kW nominal for 500kW licensed
+            const power = basePower + (Math.random() - 0.5) * 30;
+            const clampedPower = Math.max(450, Math.min(520, power));
+            document.getElementById('power-output').textContent = `${Math.round(clampedPower)} kW`;
             
             // Update reactor core appearance based on readings
             updateReactorCoreVisuals(displayTemp, clampedPressure, clampedFlux, clampedPower);
@@ -1476,10 +1483,13 @@
             displayOperatorStats();
             
             console.log('MERIDIAN Research Reactor Control Dashboard Initialized');
+            console.log('TRIGA Mark III - 500kW Thermal Power Licensed');
             console.log('System Status: All primary systems online');
+            console.log('LEU Fuel: 20% Enriched U-235 Elements');
             console.log('Control Room Operator Console Ready');
             console.log('Interactive control rods: Click to adjust positions');
             console.log('Memory system: Auto-saving every 30 seconds');
+            console.log('Operating License R-125 valid through December 2029');
         });
 
         // Reactor restart function
@@ -1585,8 +1595,8 @@
                 'shim-4': 77,
                 'reg-1': 45
             },
-            coreTemperature: 2847,
-            targetCoreTemperature: 2847,
+            coreTemperature: 315,
+            targetCoreTemperature: 315,
             neutronFlux: 3.2,
             reactorCriticality: 1.0,
             reactorStatus: 'OPERATIONAL',
