@@ -1324,6 +1324,11 @@
         function emergencyShutdown() {
             console.log('EMERGENCY SCRAM INITIATED');
             
+            // Record SCRAM event in memory
+            reactorMemory.scramCount = (reactorMemory.scramCount || 0) + 1;
+            reactorMemory.lastScramTime = Date.now();
+            reactorMemory.reactorStatus = 'SCRAMMED';
+            
             // Flash button effect
             event.target.style.background = 'linear-gradient(135deg, #440000 0%, #330000 100%)';
             setTimeout(() => {
@@ -1429,10 +1434,19 @@
             console.log('All control rods fully inserted');
             console.log('Primary systems offline');
             console.log('Reactor in cold shutdown state');
+            
+            // Save SCRAM event to memory
+            saveReactorState();
         }
 
         // Initialize and start intervals
         document.addEventListener('DOMContentLoaded', function() {
+            // Load reactor state from memory first
+            loadReactorState();
+            
+            // Restore visual state
+            restoreVisualState();
+            
             updateDateTime();
             updateSensorData();
             
@@ -1445,10 +1459,17 @@
             // Update sensor data every 2 seconds
             setInterval(updateSensorData, 2000);
             
+            // Auto-save every 30 seconds
+            setInterval(saveReactorState, 30000);
+            
+            // Display operator statistics
+            displayOperatorStats();
+            
             console.log('NUKEH Research Reactor Control Dashboard Initialized');
             console.log('System Status: All primary systems online');
             console.log('Control Room Operator Console Ready');
             console.log('Interactive control rods: Click to adjust positions');
+            console.log('Memory system: Auto-saving every 30 seconds');
         });
 
         // Reactor restart function
@@ -1540,18 +1561,136 @@
             }, 800);
         }
 
-        // Global variables for control rod positions and reactor physics
-        let controlRodPositions = {
-            'safety-1': 75,
-            'safety-2': 75,
-            'shim-1': 82,
-            'shim-2': 78,
-            'shim-3': 80,
-            'shim-4': 77,
-            'reg-1': 45
+        // Persistent memory system for reactor state
+        const REACTOR_MEMORY_KEY = 'nukeh_reactor_state';
+        
+        // Default reactor state
+        const defaultReactorState = {
+            controlRodPositions: {
+                'safety-1': 75,
+                'safety-2': 75,
+                'shim-1': 82,
+                'shim-2': 78,
+                'shim-3': 80,
+                'shim-4': 77,
+                'reg-1': 45
+            },
+            coreTemperature: 2847,
+            targetCoreTemperature: 2847,
+            neutronFlux: 3.2,
+            reactorCriticality: 1.0,
+            reactorStatus: 'OPERATIONAL',
+            lastOperatorId: 'UNKNOWN',
+            sessionStartTime: Date.now(),
+            totalOperatingHours: 0,
+            scramCount: 0,
+            lastScramTime: null
         };
         
+        // Global variables for control rod positions and reactor physics
+        let controlRodPositions = {};
         let reactorCriticality = 1.0; // k-effective
+        let reactorMemory = {};
+        
+        // Memory management functions
+        function saveReactorState() {
+            reactorMemory = {
+                ...reactorMemory,
+                controlRodPositions: { ...controlRodPositions },
+                coreTemperature: currentCoreTemp,
+                targetCoreTemperature: targetCoreTemp,
+                neutronFlux: currentNeutronFlux,
+                reactorCriticality: reactorCriticality,
+                lastSaveTime: Date.now(),
+                totalOperatingHours: reactorMemory.totalOperatingHours + ((Date.now() - reactorMemory.sessionStartTime) / 3600000)
+            };
+            
+            try {
+                localStorage.setItem(REACTOR_MEMORY_KEY, JSON.stringify(reactorMemory));
+                console.log('✅ Reactor state saved to memory');
+            } catch (error) {
+                console.warn('⚠️ Failed to save reactor state:', error);
+            }
+        }
+        
+        function loadReactorState() {
+            try {
+                const savedState = localStorage.getItem(REACTOR_MEMORY_KEY);
+                if (savedState) {
+                    reactorMemory = { ...defaultReactorState, ...JSON.parse(savedState) };
+                    console.log('📁 Reactor state loaded from memory');
+                    console.log(`🕐 Last session: ${new Date(reactorMemory.lastSaveTime || 0).toLocaleString()}`);
+                    console.log(`⏱️ Total operating hours: ${reactorMemory.totalOperatingHours.toFixed(1)}h`);
+                    console.log(`🚨 SCRAM events: ${reactorMemory.scramCount}`);
+                } else {
+                    reactorMemory = { ...defaultReactorState };
+                    reactorMemory.sessionStartTime = Date.now();
+                    console.log('🆕 Initializing new reactor memory');
+                }
+            } catch (error) {
+                console.warn('⚠️ Failed to load reactor state, using defaults:', error);
+                reactorMemory = { ...defaultReactorState };
+                reactorMemory.sessionStartTime = Date.now();
+            }
+            
+            // Restore global variables
+            controlRodPositions = { ...reactorMemory.controlRodPositions };
+            currentCoreTemp = reactorMemory.coreTemperature || 2847;
+            targetCoreTemp = reactorMemory.targetCoreTemperature || 2847;
+            currentNeutronFlux = reactorMemory.neutronFlux || 3.2;
+            reactorCriticality = reactorMemory.reactorCriticality || 1.0;
+        }
+        
+        function resetReactorMemory() {
+            reactorMemory = { ...defaultReactorState };
+            reactorMemory.sessionStartTime = Date.now();
+            localStorage.removeItem(REACTOR_MEMORY_KEY);
+            console.log('🗑️ Reactor memory reset to factory defaults');
+        }
+        
+        function getOperatorStats() {
+            const sessionHours = (Date.now() - reactorMemory.sessionStartTime) / 3600000;
+            const totalHours = reactorMemory.totalOperatingHours + sessionHours;
+            
+            return {
+                sessionTime: sessionHours.toFixed(2),
+                totalTime: totalHours.toFixed(1),
+                scramCount: reactorMemory.scramCount,
+                lastScram: reactorMemory.lastScramTime ? new Date(reactorMemory.lastScramTime).toLocaleString() : 'None',
+                efficiency: Math.max(0, 100 - (reactorMemory.scramCount * 5)).toFixed(1)
+            };
+        }
+        
+        function restoreVisualState() {
+            // Restore control rod positions
+            Object.keys(controlRodPositions).forEach(rodId => {
+                updateControlRodPosition(rodId, controlRodPositions[rodId]);
+            });
+            
+            // Update reactor physics and visuals
+            updateReactorPhysics();
+            
+            console.log('🔄 Visual state restored from memory');
+        }
+        
+        function displayOperatorStats() {
+            const stats = getOperatorStats();
+            console.log('👨‍💼 OPERATOR STATISTICS:');
+            console.log(`   Session Time: ${stats.sessionTime} hours`);
+            console.log(`   Total Time: ${stats.totalTime} hours`);
+            console.log(`   SCRAM Events: ${stats.scramCount}`);
+            console.log(`   Last SCRAM: ${stats.lastScram}`);
+            console.log(`   Efficiency: ${stats.efficiency}%`);
+            
+            // Add stats to header if space allows
+            const plantInfo = document.querySelector('.plant-info');
+            if (plantInfo) {
+                const statsDiv = document.createElement('div');
+                statsDiv.style.cssText = 'font-size: 10px; color: #888888; margin-top: 5px;';
+                statsDiv.innerHTML = `Session: ${stats.sessionTime}h | Total: ${stats.totalTime}h | SCRAMs: ${stats.scramCount} | Eff: ${stats.efficiency}%`;
+                plantInfo.appendChild(statsDiv);
+            }
+        }
         
         // Control rod interaction system
         function initializeControlRods() {
@@ -1589,6 +1728,9 @@
             
             // Update reactor criticality
             updateReactorPhysics();
+            
+            // Save state after rod adjustment
+            saveReactorState();
             
             console.log(`${rodId.toUpperCase()}: moved to ${newPosition}% insertion`);
         }
@@ -1944,6 +2086,21 @@
                 case 'Escape':
                     emergencyShutdown();
                     break;
+                case 's':
+                case 'S':
+                    if (event.ctrlKey) {
+                        event.preventDefault();
+                        saveReactorState();
+                        console.log('💾 Manual save completed');
+                    }
+                    break;
+                case 'Delete':
+                    if (event.ctrlKey && event.shiftKey) {
+                        event.preventDefault();
+                        resetReactorMemory();
+                        location.reload();
+                    }
+                    break;
                 // Easter egg shortcuts
                 case 'F1':
                     event.preventDefault();
@@ -2018,6 +2175,17 @@
                 secretOperatorMessages();
             }
         }, 10000);
+        
+        // Save state when user leaves the page
+        window.addEventListener('beforeunload', function(event) {
+            saveReactorState();
+            console.log('💾 Auto-saved reactor state before page unload');
+        });
+        
+        // Save state when window loses focus (user switches tabs)
+        window.addEventListener('blur', function() {
+            saveReactorState();
+        });
     </script>
 </body>
 </html>
