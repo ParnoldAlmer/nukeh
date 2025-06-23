@@ -1059,21 +1059,43 @@
             document.getElementById('datetime').innerHTML = `${dateStr}<br>${timeStr}`;
         }
 
+        // Global variables for realistic thermal simulation
+        let currentCoreTemp = 2847;
+        let targetCoreTemp = 2847;
+        let tempChangeRate = 0.5; // °C per update cycle
+        
         // Simulate dynamic data updates
         function updateSensorData() {
-            // Core temperature fluctuation (2800-2900°C range)
-            const baseTemp = 2847;
-            const temp = baseTemp + (Math.random() - 0.5) * 80;
-            const clampedTemp = Math.max(2800, Math.min(2900, temp));
-            document.getElementById('core-temp').textContent = `${Math.round(clampedTemp)}°C`;
+            // Realistic core temperature simulation with thermal inertia
+            // Temperature changes slowly over time toward a target
+            if (Math.abs(currentCoreTemp - targetCoreTemp) < 1) {
+                // Set new target temperature occasionally
+                if (Math.random() < 0.1) { // 10% chance to change target
+                    targetCoreTemp = 2847 + (Math.random() - 0.5) * 40; // ±20°C range
+                    targetCoreTemp = Math.max(2820, Math.min(2880, targetCoreTemp));
+                }
+            }
+            
+            // Move current temperature slowly toward target
+            if (currentCoreTemp < targetCoreTemp) {
+                currentCoreTemp = Math.min(targetCoreTemp, currentCoreTemp + tempChangeRate);
+            } else if (currentCoreTemp > targetCoreTemp) {
+                currentCoreTemp = Math.max(targetCoreTemp, currentCoreTemp - tempChangeRate);
+            }
+            
+            // Add minor random fluctuations (±2°C)
+            const tempNoise = (Math.random() - 0.5) * 4;
+            const displayTemp = Math.max(2800, Math.min(2900, currentCoreTemp + tempNoise));
+            
+            document.getElementById('core-temp').textContent = `${Math.round(displayTemp)}°C`;
             
             // Update temperature needle position (2000-3500°C scale, -135° to +135°)
             const tempRange = 3500 - 2000;
-            const tempAngle = -135 + ((clampedTemp - 2000) / tempRange) * 270;
+            const tempAngle = -135 + ((displayTemp - 2000) / tempRange) * 270;
             document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
             
             // Update temperature status
-            const tempStatus = clampedTemp > 2880 ? 'HIGH' : clampedTemp < 2820 ? 'LOW' : 'NOMINAL';
+            const tempStatus = displayTemp > 2880 ? 'HIGH' : displayTemp < 2820 ? 'LOW' : 'NOMINAL';
             document.getElementById('temp-status').textContent = tempStatus;
 
             // Pressure fluctuation (14-18 MPa range)
@@ -1117,7 +1139,7 @@
             document.getElementById('power-output').textContent = `${Math.round(clampedPower)} MW`;
             
             // Update reactor core appearance based on readings
-            updateReactorCoreVisuals(clampedTemp, clampedPressure, clampedFlux, clampedPower);
+            updateReactorCoreVisuals(displayTemp, clampedPressure, clampedFlux, clampedPower);
         }
 
         // Update reactor core visuals based on sensor readings
