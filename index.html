@@ -925,6 +925,9 @@
             <button class="control-button" onclick="maintenance()">
                 MAINTENANCE
             </button>
+            <button class="control-button" onclick="restartReactor()" style="background: linear-gradient(135deg, #002200 0%, #001100 100%); border-color: #00ff00;">
+                REACTOR START
+            </button>
             <button class="control-button emergency" onclick="emergencyShutdown()">
                 EMERGENCY SCRAM
             </button>
@@ -1037,14 +1040,103 @@
 
         function emergencyShutdown() {
             console.log('EMERGENCY SCRAM INITIATED');
+            
             // Flash button effect
             event.target.style.background = 'linear-gradient(135deg, #440000 0%, #330000 100%)';
             setTimeout(() => {
                 event.target.style.background = '';
             }, 200);
             
-            // Show alert
-            alert('EMERGENCY SHUTDOWN PROTOCOL ACTIVATED\n\nThis is a simulation - no actual reactor controls.');
+            // Initiate SCRAM sequence
+            initiateScramSequence();
+        }
+
+        function initiateScramSequence() {
+            // Update system status to SCRAMMING
+            const statusIndicator = document.querySelector('.status-indicator span');
+            const statusLight = document.querySelector('.status-light');
+            
+            statusIndicator.textContent = 'SCRAMMING';
+            statusLight.className = 'status-light red';
+            
+            // Disable all launch buttons
+            document.querySelectorAll('.launch-button').forEach(button => {
+                button.disabled = true;
+                button.style.opacity = '0.5';
+            });
+            
+            // Rapidly insert all control rods
+            document.querySelectorAll('.control-rod').forEach((rod, index) => {
+                setTimeout(() => {
+                    rod.style.animation = 'none';
+                    rod.style.transform = 'translateY(60px)';
+                    rod.style.transition = 'transform 2s ease-out';
+                }, index * 200);
+            });
+            
+            // Reduce reactor power rapidly
+            let powerLevel = 850;
+            let tempLevel = 2847;
+            let fluxLevel = 3.2;
+            
+            const scramInterval = setInterval(() => {
+                powerLevel = Math.max(0, powerLevel - 85);
+                tempLevel = Math.max(200, tempLevel - 40);
+                fluxLevel = Math.max(0.1, fluxLevel - 0.32);
+                
+                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} MW`;
+                document.getElementById('core-temp').textContent = `${Math.round(tempLevel)}°C`;
+                document.getElementById('neutron-flux').textContent = `${fluxLevel.toFixed(1)}E+13`;
+                
+                // Update needle positions
+                const tempAngle = -135 + ((tempLevel - 2000) / 1500) * 270;
+                const fluxAngle = fluxLevel <= 1.0 ? -135 : -27 + ((fluxLevel - 1.0) / 2.0) * 27;
+                
+                document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
+                document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
+                
+                // Update core visual
+                const core = document.querySelector('.reactor-core');
+                core.style.filter = `brightness(${0.3 + (powerLevel/850) * 0.7})`;
+                
+                // Update status indicators
+                document.getElementById('temp-status').textContent = tempLevel < 500 ? 'COLD' : 'COOLING';
+                document.getElementById('flux-status').textContent = fluxLevel < 1.0 ? 'SHUTDOWN' : 'SUB-CRIT';
+                
+                if (powerLevel <= 0) {
+                    clearInterval(scramInterval);
+                    completeScram();
+                }
+            }, 500);
+        }
+
+        function completeScram() {
+            // Update final status
+            const statusIndicator = document.querySelector('.status-indicator span');
+            statusIndicator.textContent = 'SHUTDOWN';
+            
+            // Update system status displays
+            document.querySelectorAll('.status-value').forEach(element => {
+                if (element.textContent.includes('ONLINE') || element.textContent.includes('ACTIVE')) {
+                    element.textContent = 'OFFLINE';
+                    element.style.color = '#ff0000';
+                }
+            });
+            
+            // Update warning lights
+            document.querySelectorAll('.warning-light').forEach(light => {
+                light.style.background = '#ff0000';
+                light.classList.add('active');
+            });
+            
+            // Update alerts count
+            document.querySelector('.status-item:nth-last-child(3) .status-value').textContent = '1';
+            document.querySelector('.status-item:nth-last-child(3) .status-value').style.color = '#ff0000';
+            
+            console.log('REACTOR SHUTDOWN COMPLETE');
+            console.log('All control rods fully inserted');
+            console.log('Primary systems offline');
+            console.log('Reactor in cold shutdown state');
         }
 
         // Initialize and start intervals
@@ -1059,8 +1151,80 @@
             setInterval(updateSensorData, 2000);
             
             console.log('NUKEH Reactor Control Dashboard Initialized');
-            console.log('WARNING: This is a fictional simulation for demonstration purposes only.');
+            console.log('System Status: All primary systems online');
+            console.log('Control Room Operator Console Ready');
         });
+
+        // Reactor restart function
+        function restartReactor() {
+            console.log('REACTOR RESTART SEQUENCE INITIATED');
+            
+            // Reset all systems to operational
+            const statusIndicator = document.querySelector('.status-indicator span');
+            const statusLight = document.querySelector('.status-light');
+            
+            statusIndicator.textContent = 'STARTING UP';
+            statusLight.className = 'status-light yellow';
+            
+            // Re-enable buttons
+            document.querySelectorAll('.launch-button').forEach(button => {
+                button.disabled = false;
+                button.style.opacity = '1';
+            });
+            
+            // Gradually restore power
+            let powerLevel = 0;
+            let tempLevel = 200;
+            let fluxLevel = 0.1;
+            
+            const startupInterval = setInterval(() => {
+                powerLevel = Math.min(850, powerLevel + 25);
+                tempLevel = Math.min(2847, tempLevel + 80);
+                fluxLevel = Math.min(3.2, fluxLevel + 0.1);
+                
+                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} MW`;
+                document.getElementById('core-temp').textContent = `${Math.round(tempLevel)}°C`;
+                document.getElementById('neutron-flux').textContent = `${fluxLevel.toFixed(1)}E+13`;
+                
+                // Update needle positions
+                const tempAngle = -135 + ((tempLevel - 2000) / 1500) * 270;
+                const fluxAngle = fluxLevel <= 1.0 ? -135 : -27 + ((fluxLevel - 1.0) / 2.0) * 27;
+                
+                document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
+                document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
+                
+                // Update core visual
+                const core = document.querySelector('.reactor-core');
+                core.style.filter = `brightness(${0.3 + (powerLevel/850) * 0.7})`;
+                
+                // Update status indicators
+                document.getElementById('temp-status').textContent = tempLevel > 2500 ? 'NOMINAL' : 'HEATING';
+                document.getElementById('flux-status').textContent = fluxLevel > 2.5 ? 'CRITICAL' : 'SUB-CRIT';
+                
+                if (powerLevel >= 850) {
+                    clearInterval(startupInterval);
+                    statusIndicator.textContent = 'OPERATIONAL';
+                    statusLight.className = 'status-light green';
+                    
+                    // Reset system status displays
+                    document.querySelectorAll('.status-value').forEach(element => {
+                        if (element.textContent.includes('OFFLINE')) {
+                            element.textContent = 'ONLINE';
+                            element.style.color = '#00ff41';
+                        }
+                    });
+                    
+                    // Reset warning lights
+                    document.querySelectorAll('.warning-light').forEach(light => {
+                        light.style.background = '#00ff41';
+                        light.classList.remove('active');
+                    });
+                    
+                    console.log('REACTOR STARTUP COMPLETE');
+                    console.log('All systems nominal');
+                }
+            }, 800);
+        }
 
         // Add some keyboard shortcuts for interactivity
         document.addEventListener('keydown', function(event) {
@@ -1076,6 +1240,10 @@
                 case 'm':
                 case 'M':
                     maintenance();
+                    break;
+                case 'r':
+                case 'R':
+                    restartReactor();
                     break;
                 case 'Escape':
                     emergencyShutdown();
