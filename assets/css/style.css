@@ -5,6 +5,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scroll-behavior: auto !important;
 }
 
 :root {
@@ -56,7 +57,7 @@
 html {
     font-size: var(--font-size-base);
     height: 100%;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
 body {
@@ -64,11 +65,13 @@ body {
     background: var(--terminal-bg);
     color: var(--terminal-green);
     line-height: 1.2;
-    overflow-x: hidden;
+    overflow: hidden;
     cursor: default;
     user-select: none;
     position: relative;
-    min-height: 100vh;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
 /* Scanline Effect */
@@ -179,7 +182,9 @@ body::after {
 /* Main Terminal Container */
 .terminal-container {
     padding: var(--spacing-lg);
-    min-height: calc(100vh - 60px);
+    height: calc(100vh - 60px);
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* ASCII Logo Section */
