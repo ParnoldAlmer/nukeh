@@ -1,3 +1,4 @@
+// NUKEH Nuclear Control Panel - Interactive Terminal Game
 // ASCII Art Console Log
 const asciiLogo = `
 ███╗   ██╗██╗   ██╗██╗  ██╗███████╗██╗  ██╗
@@ -7,374 +8,601 @@ const asciiLogo = `
 ██║ ╚████║╚██████╔╝██║  ██╗███████╗██║  ██║
 ╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 
-Deploy. Destroy. Iterate.
+NUCLEAR LAUNCH CONTROL SYSTEM v2.1.0
+ACCESS LEVEL: CLASSIFIED
+WARNING: AUTHORIZED PERSONNEL ONLY
 `;
 
-// Console styling
-const consoleStyles = [
-    'color: #00FFB4',
-    'font-family: monospace',
-    'font-size: 12px',
-    'font-weight: bold'
-].join(';');
+// Global game state
+const gameState = {
+    authenticated: false,
+    systemStatus: 'NOMINAL',
+    reactorTemp: 2847,
+    radiationLevel: 0.0032,
+    coolantFlow: 'NOMINAL',
+    launchReadiness: {
+        dev: 'READY',
+        staging: 'READY', 
+        prod: 'READY'
+    },
+    uptime: Date.now(),
+    lastLogin: null,
+    commandHistory: [],
+    currentUser: null,
+    securityLevel: 0
+};
 
-// Log the ASCII art on page load
-console.log(`%c${asciiLogo}`, consoleStyles);
-console.log('%cWelcome to NUKEH! 🚀', 'color: #00FFB4; font-size: 16px; font-weight: bold;');
-console.log('%cReady to revolutionize your deployment pipeline?', 'color: #c9d1d9; font-size: 14px;');
-
-// Smooth scroll polyfill for older browsers
-function smoothScrollTo(element) {
-    if ('scrollBehavior' in document.documentElement.style) {
-        element.scrollIntoView({ behavior: 'smooth' });
-    } else {
-        // Fallback for older browsers
-        const targetPosition = element.offsetTop - 80; // Account for fixed nav
-        const startPosition = window.pageYOffset;
-        const distance = targetPosition - startPosition;
-        const duration = 1000;
-        let start = null;
-
-        function animation(currentTime) {
-            if (start === null) start = currentTime;
-            const timeElapsed = currentTime - start;
-            const run = ease(timeElapsed, startPosition, distance, duration);
-            window.scrollTo(0, run);
-            if (timeElapsed < duration) requestAnimationFrame(animation);
+// Terminal command system
+const commands = {
+    help: {
+        description: 'Show available commands',
+        execute: () => {
+            return [
+                'NUKEH CONTROL PANEL - Available Commands:',
+                '',
+                'help         - Show this help message',
+                'status       - Display system status',
+                'launch <env> - Initiate launch sequence (dev/staging/prod)',
+                'abort        - Emergency abort sequence',
+                'auth <id>    - Authenticate with operator ID',
+                'reactor      - Reactor control panel',
+                'radiation    - Radiation monitoring',
+                'clear        - Clear terminal',
+                'exit         - Logout from system',
+                'nuke         - [CLASSIFIED] Nuclear launch protocol',
+                '',
+                'WARNING: Unauthorized access is strictly prohibited.'
+            ];
         }
-
-        function ease(t, b, c, d) {
-            t /= d / 2;
-            if (t < 1) return c / 2 * t * t + b;
-            t--;
-            return -c / 2 * (t * (t - 2) - 1) + b;
-        }
-
-        requestAnimationFrame(animation);
-    }
-}
-
-// Scroll Reveal Observer
-class ScrollReveal {
-    constructor() {
-        this.observer = null;
-        this.init();
-    }
-
-    init() {
-        // Check if Intersection Observer is supported
-        if ('IntersectionObserver' in window) {
-            this.observer = new IntersectionObserver(
-                (entries) => this.handleIntersection(entries),
-                {
-                    threshold: 0.1,
-                    rootMargin: '0px 0px -50px 0px'
-                }
-            );
-
-            this.observeElements();
-        } else {
-            // Fallback for older browsers
-            this.fallbackReveal();
-        }
-    }
-
-    handleIntersection(entries) {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('active');
-                // Add staggered animation delay for multiple elements
-                const delay = Array.from(entry.target.parentNode.children)
-                    .indexOf(entry.target) * 100;
-                entry.target.style.transitionDelay = `${delay}ms`;
-                
-                // Stop observing once revealed
-                this.observer.unobserve(entry.target);
-            }
-        });
-    }
-
-    observeElements() {
-        const elements = document.querySelectorAll('.reveal');
-        elements.forEach(element => {
-            this.observer.observe(element);
-        });
-    }
-
-    fallbackReveal() {
-        // Simple fallback that reveals elements immediately
-        const elements = document.querySelectorAll('.reveal');
-        elements.forEach(element => {
-            element.classList.add('active');
-        });
-    }
-}
-
-// Navigation scroll effect
-function handleNavScroll() {
-    const nav = document.querySelector('.nav');
-    const scrollThreshold = 100;
-
-    function updateNav() {
-        if (window.scrollY > scrollThreshold) {
-            nav.style.background = 'rgba(13, 17, 23, 0.95)';
-            nav.style.backdropFilter = 'blur(20px) saturate(180%)';
-        } else {
-            nav.style.background = 'rgba(13, 17, 23, 0.8)';
-            nav.style.backdropFilter = 'blur(20px)';
-        }
-    }
-
-    window.addEventListener('scroll', updateNav, { passive: true });
-}
-
-// Smooth scroll for navigation links
-function initSmoothScroll() {
-    const navLinks = document.querySelectorAll('a[href^="#"]');
+    },
     
-    navLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const targetId = link.getAttribute('href').substring(1);
-            const targetElement = document.getElementById(targetId);
-            
-            if (targetElement) {
-                smoothScrollTo(targetElement);
+    status: {
+        description: 'Display system status',
+        execute: () => {
+            const uptime = Math.floor((Date.now() - gameState.uptime) / 1000);
+            return [
+                '═══════════════════════════════════════════',
+                '           SYSTEM STATUS REPORT            ',
+                '═══════════════════════════════════════════',
+                `REACTOR CORE:     ${gameState.systemStatus}`,
+                `CORE TEMP:        ${gameState.reactorTemp}°C`,
+                `RADIATION LVL:    ${gameState.radiationLevel} mSv/h`,
+                `COOLANT FLOW:     ${gameState.coolantFlow}`,
+                `SYSTEM UPTIME:    ${uptime}s`,
+                `AUTH STATUS:      ${gameState.authenticated ? 'AUTHORIZED' : 'UNAUTHORIZED'}`,
+                `SECURITY LVL:     ${gameState.securityLevel}`,
+                '═══════════════════════════════════════════'
+            ];
+        }
+    },
+    
+    launch: {
+        description: 'Launch deployment sequence',
+        execute: (args) => {
+            if (!gameState.authenticated) {
+                return ['ERROR: Authentication required for launch operations.'];
             }
+            
+            const env = args[0];
+            if (!env || !['dev', 'staging', 'prod'].includes(env)) {
+                return ['ERROR: Invalid environment. Use: dev, staging, or prod'];
+            }
+            
+            if (env === 'prod' && gameState.securityLevel < 5) {
+                return ['ERROR: Insufficient clearance for production launch.'];
+            }
+            
+            // Simulate launch sequence
+            setTimeout(() => updateLaunchStatus(env, 'LAUNCHING'), 1000);
+            setTimeout(() => updateLaunchStatus(env, 'DEPLOYED'), 3000);
+            
+            return [
+                `INITIATING LAUNCH SEQUENCE FOR ${env.toUpperCase()}...`,
+                'WARNING: Launch sequence initiated.',
+                'Stand by for deployment confirmation...'
+            ];
+        }
+    },
+    
+    auth: {
+        description: 'Authenticate user',
+        execute: (args) => {
+            const operatorId = args[0];
+            if (!operatorId) {
+                return ['ERROR: Operator ID required. Usage: auth <operator_id>'];
+            }
+            
+            // Simulate authentication
+            gameState.authenticated = true;
+            gameState.currentUser = operatorId;
+            gameState.lastLogin = new Date().toISOString();
+            gameState.securityLevel = operatorId.length; // Simple security level
+            
+            updateAuthStatus(true);
+            
+            return [
+                `Authentication successful for operator: ${operatorId}`,
+                `Security clearance level: ${gameState.securityLevel}`,
+                'Welcome to NUKEH Control Panel.',
+                'Type "help" for available commands.'
+            ];
+        }
+    },
+    
+    reactor: {
+        description: 'Reactor control panel',
+        execute: () => {
+            if (!gameState.authenticated) {
+                return ['ERROR: Authentication required for reactor access.'];
+            }
+            
+            return [
+                '╔══════════════════════════════════════╗',
+                '║           REACTOR CONTROL            ║',
+                '╚══════════════════════════════════════╝',
+                '',
+                `Core Temperature: ${gameState.reactorTemp}°C`,
+                `Pressure:         2.1 MPa`,
+                `Control Rods:     75% inserted`,
+                `Power Output:     850 MW`,
+                `Efficiency:       94.2%`,
+                '',
+                'WARNING: Core temperature elevated.',
+                'Coolant systems operating normally.'
+            ];
+        }
+    },
+    
+    radiation: {
+        description: 'Radiation monitoring',
+        execute: () => {
+            // Simulate fluctuating radiation
+            gameState.radiationLevel = (Math.random() * 0.01 + 0.001).toFixed(4);
+            updateRadiationDisplay();
+            
+            return [
+                '☢ RADIATION MONITORING SYSTEM ☢',
+                '',
+                `Current Level: ${gameState.radiationLevel} mSv/h`,
+                `Status: ${gameState.radiationLevel > 0.005 ? 'ELEVATED' : 'NORMAL'}`,
+                `Containment: SECURE`,
+                `Detectors: ONLINE`,
+                '',
+                'Background radiation within acceptable limits.'
+            ];
+        }
+    },
+    
+    abort: {
+        description: 'Emergency abort sequence',
+        execute: () => {
+            if (!gameState.authenticated) {
+                return ['ERROR: Authentication required for abort sequence.'];
+            }
+            
+            // Reset all launch statuses
+            Object.keys(gameState.launchReadiness).forEach(env => {
+                gameState.launchReadiness[env] = 'ABORTED';
+                updateLaunchStatus(env, 'ABORTED');
+            });
+            
+            setTimeout(() => {
+                Object.keys(gameState.launchReadiness).forEach(env => {
+                    gameState.launchReadiness[env] = 'READY';
+                    updateLaunchStatus(env, 'READY');
+                });
+            }, 5000);
+            
+            return [
+                '🚨 EMERGENCY ABORT SEQUENCE INITIATED 🚨',
+                '',
+                'All launch operations terminated.',
+                'Systems returning to standby mode.',
+                'Emergency protocols engaged.',
+                '',
+                'Systems will reset in 5 seconds.'
+            ];
+        }
+    },
+    
+    clear: {
+        description: 'Clear terminal',
+        execute: () => {
+            const output = document.getElementById('terminal-output');
+            output.innerHTML = `
+                <div class="terminal-line">NUKEH v2.1.0 - Nuclear Launch Control System</div>
+                <div class="terminal-line">Terminal cleared by user request.</div>
+                <div class="terminal-line">&nbsp;</div>
+                <div class="terminal-prompt">nukeh@control:~$ <span class="cursor">_</span></div>
+            `;
+            return [];
+        }
+    },
+    
+    exit: {
+        description: 'Logout from system',
+        execute: () => {
+            gameState.authenticated = false;
+            gameState.currentUser = null;
+            gameState.securityLevel = 0;
+            updateAuthStatus(false);
+            
+            return [
+                'Logging out...',
+                'Session terminated.',
+                'Thank you for using NUKEH Control Panel.',
+                '',
+                '⚛️ SYSTEM LOCKED ⚛️'
+            ];
+        }
+    },
+    
+    nuke: {
+        description: '[CLASSIFIED] Nuclear launch protocol',
+        execute: () => {
+            if (!gameState.authenticated) {
+                return ['ERROR: Authentication required.'];
+            }
+            
+            if (gameState.securityLevel < 8) {
+                return [
+                    'ACCESS DENIED: Insufficient security clearance.',
+                    'This incident will be reported.',
+                    '⚠️ SECURITY ALERT ⚠️'
+                ];
+            }
+            
+            return [
+                '🚀 NUCLEAR LAUNCH PROTOCOL ACTIVATED 🚀',
+                '',
+                'WARNING: This is a simulation.',
+                'No actual nuclear weapons involved.',
+                '',
+                'Congratulations! You found the easter egg!',
+                'NUKEH is just a fun retro terminal interface.',
+                '',
+                '💚 Thanks for playing! 💚'
+            ];
+        }
+    }
+};
+
+// System status updaters
+function updateSystemStatus() {
+    // Simulate minor fluctuations
+    gameState.reactorTemp += (Math.random() - 0.5) * 5;
+    gameState.reactorTemp = Math.max(2800, Math.min(2900, gameState.reactorTemp));
+    
+    gameState.radiationLevel = (Math.random() * 0.01 + 0.001).toFixed(4);
+    
+    // Update display
+    document.getElementById('reactor-status').textContent = gameState.systemStatus;
+    document.getElementById('core-temp').textContent = `${Math.round(gameState.reactorTemp)}°C`;
+    document.getElementById('radiation-level').textContent = `${gameState.radiationLevel} mSv/h`;
+    document.getElementById('coolant-flow').textContent = gameState.coolantFlow;
+    
+    // Update radiation level color
+    const radiationEl = document.getElementById('radiation-level');
+    if (gameState.radiationLevel > 0.005) {
+        radiationEl.className = 'status-value status-warning radiation-warning';
+    } else {
+        radiationEl.className = 'status-value status-warning';
+    }
+}
+
+function updateLaunchStatus(env, status) {
+    gameState.launchReadiness[env] = status;
+    const statusEl = document.getElementById(`${env}-status`);
+    if (statusEl) {
+        statusEl.textContent = status;
+        
+        // Update button state
+        const button = document.querySelector(`[data-env="${env}"]`);
+        if (button) {
+            if (status === 'LAUNCHING') {
+                button.textContent = 'LAUNCHING...';
+                button.disabled = true;
+            } else if (status === 'DEPLOYED') {
+                button.textContent = 'DEPLOYED';
+                button.disabled = true;
+                button.style.background = 'var(--radiation-green)';
+                button.style.color = 'var(--terminal-bg)';
+            } else if (status === 'ABORTED') {
+                button.textContent = 'ABORTED';
+                button.style.background = 'var(--warning-red)';
+                button.style.color = 'var(--terminal-white)';
+            } else {
+                button.textContent = env === 'prod' ? 'LAUNCH' : 'DEPLOY';
+                button.disabled = false;
+                button.style.background = '';
+                button.style.color = '';
+            }
+        }
+    }
+}
+
+function updateAuthStatus(authorized) {
+    const authStatus = document.getElementById('auth-status');
+    const indicator = authStatus.querySelector('.status-indicator');
+    
+    if (authorized) {
+        indicator.textContent = 'AUTHORIZED';
+        indicator.className = 'status-indicator authorized';
+    } else {
+        indicator.textContent = 'UNAUTHORIZED';
+        indicator.className = 'status-indicator unauthorized';
+    }
+}
+
+function updateRadiationDisplay() {
+    const radiationEl = document.getElementById('radiation-level');
+    radiationEl.textContent = `${gameState.radiationLevel} mSv/h`;
+}
+
+// Terminal interface
+function initTerminal() {
+    const terminalInput = document.getElementById('terminal-input');
+    const terminalOutput = document.getElementById('terminal-output');
+    
+    terminalInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const command = terminalInput.value.trim();
+            if (command) {
+                processCommand(command);
+                gameState.commandHistory.push(command);
+                terminalInput.value = '';
+            }
+        } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            if (gameState.commandHistory.length > 0) {
+                terminalInput.value = gameState.commandHistory[gameState.commandHistory.length - 1];
+            }
+        }
+    });
+    
+    // Auto-focus terminal input
+    terminalInput.focus();
+    document.addEventListener('click', () => {
+        terminalInput.focus();
+    });
+}
+
+function processCommand(input) {
+    const output = document.getElementById('terminal-output');
+    const [cmd, ...args] = input.toLowerCase().split(' ');
+    
+    // Add command to output
+    addTerminalLine(`nukeh@control:~$ ${input}`);
+    
+    if (commands[cmd]) {
+        const result = commands[cmd].execute(args);
+        result.forEach(line => addTerminalLine(line));
+    } else {
+        addTerminalLine(`Command not found: ${cmd}`);
+        addTerminalLine('Type "help" for available commands.');
+    }
+    
+    addTerminalLine('');
+    addTerminalLine('nukeh@control:~$ ', true);
+    
+    // Scroll to bottom
+    output.scrollTop = output.scrollHeight;
+}
+
+function addTerminalLine(text, isPrompt = false) {
+    const output = document.getElementById('terminal-output');
+    const line = document.createElement('div');
+    
+    if (isPrompt) {
+        line.className = 'terminal-prompt';
+        line.innerHTML = `${text}<span class="cursor">_</span>`;
+    } else {
+        line.className = 'terminal-line';
+        line.textContent = text;
+    }
+    
+    // Remove old prompt if exists
+    const oldPrompt = output.querySelector('.terminal-prompt');
+    if (oldPrompt) {
+        oldPrompt.remove();
+    }
+    
+    output.appendChild(line);
+}
+
+// Launch button handlers
+function initLaunchButtons() {
+    document.querySelectorAll('.launch-button').forEach(button => {
+        button.addEventListener('click', () => {
+            const env = button.dataset.env;
+            processCommand(`launch ${env}`);
         });
     });
 }
 
-// Newsletter form handling
-function initNewsletterForm() {
-    const form = document.querySelector('.newsletter-form');
-    const input = form.querySelector('input[type="email"]');
-    const button = form.querySelector('button');
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+// Authentication panel
+function initAuthPanel() {
+    const authButton = document.getElementById('auth-login');
+    const operatorInput = document.getElementById('operator-id');
+    const accessCodeInput = document.getElementById('access-code');
+    const emergencyButton = document.getElementById('auth-emergency');
+    
+    authButton.addEventListener('click', () => {
+        const operatorId = operatorInput.value.trim();
+        const accessCode = accessCodeInput.value.trim();
         
-        const email = input.value.trim();
-        if (!email || !isValidEmail(email)) {
-            showNotification('Please enter a valid email address', 'error');
+        if (!operatorId) {
+            addTerminalLine('ERROR: Operator ID required.');
             return;
         }
-
-        // Disable form during submission
-        button.disabled = true;
-        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Joining...';
-
-        try {
-            // Simulate API call (replace with actual endpoint)
-            await simulateAPICall(email);
-            
-            showNotification('Thank you! You\'ve been added to our early access list.', 'success');
-            input.value = '';
-        } catch (error) {
-            showNotification('Something went wrong. Please try again.', 'error');
-        } finally {
-            // Re-enable form
-            button.disabled = false;
-            button.innerHTML = '<i class="fas fa-paper-plane"></i> Get Early Access';
+        
+        if (!accessCode) {
+            addTerminalLine('ERROR: Access code required.');
+            return;
+        }
+        
+        // Simple auth simulation
+        if (accessCode.length >= 6) {
+            processCommand(`auth ${operatorId}`);
+            operatorInput.value = '';
+            accessCodeInput.value = '';
+        } else {
+            addTerminalLine('ERROR: Invalid access code.');
+            addTerminalLine('Access codes must be at least 6 characters.');
         }
     });
-}
-
-function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-}
-
-async function simulateAPICall(email) {
-    // Simulate API delay
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simulate 90% success rate
-            if (Math.random() > 0.1) {
-                console.log(`Email registered: ${email}`);
-                resolve();
-            } else {
-                reject(new Error('API Error'));
-            }
-        }, 1500);
-    });
-}
-
-function showNotification(message, type = 'info') {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `notification notification-${type}`;
-    notification.innerHTML = `
-        <div class="notification-content">
-            <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
-            <span>${message}</span>
-        </div>
-    `;
-
-    // Add styles
-    Object.assign(notification.style, {
-        position: 'fixed',
-        top: '20px',
-        right: '20px',
-        background: type === 'success' ? 'rgba(0, 255, 180, 0.9)' : 
-                   type === 'error' ? 'rgba(255, 99, 132, 0.9)' : 
-                   'rgba(99, 180, 255, 0.9)',
-        color: '#ffffff',
-        padding: '1rem 1.5rem',
-        borderRadius: '0.5rem',
-        backdropFilter: 'blur(10px)',
-        zIndex: '9999',
-        transform: 'translateX(100%)',
-        transition: 'transform 0.3s ease-in-out',
-        maxWidth: '400px',
-        fontSize: '0.9rem',
-        fontWeight: '500',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.3)'
-    });
-
-    document.body.appendChild(notification);
-
-    // Animate in
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 100);
-
-    // Auto remove
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => {
-            if (notification.parentNode) {
-                notification.parentNode.removeChild(notification);
-            }
-        }, 300);
-    }, 4000);
-}
-
-// Particle effect for hero section
-function initParticleEffect() {
-    const hero = document.querySelector('.hero');
-    const particlesContainer = document.createElement('div');
-    particlesContainer.className = 'particles';
     
-    Object.assign(particlesContainer.style, {
-        position: 'absolute',
-        top: '0',
-        left: '0',
-        width: '100%',
-        height: '100%',
-        pointerEvents: 'none',
-        overflow: 'hidden'
+    emergencyButton.addEventListener('click', () => {
+        processCommand('abort');
     });
+    
+    // Enter key handling
+    [operatorInput, accessCodeInput].forEach(input => {
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                authButton.click();
+            }
+        });
+    });
+}
 
-    hero.appendChild(particlesContainer);
-
-    // Create floating particles
-    for (let i = 0; i < 50; i++) {
-        createParticle(particlesContainer);
+// Time display
+function updateTimeDisplay() {
+    const now = new Date();
+    const timeString = now.toLocaleTimeString('en-US', { 
+        hour12: false,
+        timeZone: 'UTC'
+    });
+    const timeEl = document.getElementById('current-time');
+    if (timeEl) {
+        timeEl.textContent = `${timeString} UTC`;
+    }
+    
+    // Update uptime
+    const uptime = Math.floor((Date.now() - gameState.uptime) / 1000);
+    const uptimeEl = document.getElementById('uptime');
+    if (uptimeEl) {
+        const hours = Math.floor(uptime / 3600);
+        const minutes = Math.floor((uptime % 3600) / 60);
+        const seconds = uptime % 60;
+        uptimeEl.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+    
+    // Update last login
+    const lastLoginEl = document.getElementById('last-login');
+    if (lastLoginEl && gameState.lastLogin) {
+        lastLoginEl.textContent = new Date(gameState.lastLogin).toLocaleString();
+    } else if (lastLoginEl) {
+        lastLoginEl.textContent = 'Never';
     }
 }
 
-function createParticle(container) {
-    const particle = document.createElement('div');
-    const size = Math.random() * 4 + 1;
-    const duration = Math.random() * 20 + 10;
-    const delay = Math.random() * 5;
-
-    Object.assign(particle.style, {
-        position: 'absolute',
-        width: `${size}px`,
-        height: `${size}px`,
-        background: '#00FFB4',
-        borderRadius: '50%',
-        opacity: Math.random() * 0.5 + 0.1,
-        left: `${Math.random() * 100}%`,
-        top: '100%',
-        animation: `float ${duration}s linear ${delay}s infinite`
-    });
-
-    container.appendChild(particle);
-
-    // Remove particle after animation
-    setTimeout(() => {
-        if (particle.parentNode) {
-            particle.parentNode.removeChild(particle);
-            createParticle(container); // Create new particle
-        }
-    }, (duration + delay) * 1000);
-}
-
-// Add CSS for particle animation
-function addParticleStyles() {
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes float {
-            from {
-                transform: translateY(0) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            to {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-    `;
-    document.head.appendChild(style);
-}
-
-// Performance monitoring
-function initPerformanceMonitoring() {
-    // Log page load performance
-    window.addEventListener('load', () => {
-        if ('performance' in window) {
-            const perfData = performance.timing;
-            const loadTime = perfData.loadEventEnd - perfData.navigationStart;
-            console.log(`%cPage loaded in ${loadTime}ms`, 'color: #00FFB4; font-weight: bold;');
-        }
-    });
-
-    // Monitor scroll performance
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            // Scroll ended
-        }, 100);
-    }, { passive: true });
-}
-
-// Initialize everything when DOM is ready
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('%cInitializing NUKEH...', 'color: #00FFB4; font-weight: bold;');
+// Matrix rain effect (optional)
+function createMatrixRain() {
+    const matrixChars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
     
-    // Initialize all features
-    new ScrollReveal();
-    handleNavScroll();
-    initSmoothScroll();
-    initNewsletterForm();
-    addParticleStyles();
-    initParticleEffect();
-    initPerformanceMonitoring();
+    canvas.className = 'matrix-rain';
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    document.body.appendChild(canvas);
+    
+    const drops = [];
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    
+    for (let i = 0; i < columns; i++) {
+        drops[i] = 1;
+    }
+    
+    function drawMatrix() {
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.fillStyle = 'rgba(0, 255, 65, 0.8)';
+        ctx.font = `${fontSize}px monospace`;
+        
+        for (let i = 0; i < drops.length; i++) {
+            const text = matrixChars[Math.floor(Math.random() * matrixChars.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
+    }
+    
+    setInterval(drawMatrix, 35);
+    
+    window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    });
+}
 
-    console.log('%cNUKEH initialized successfully! 🎉', 'color: #00FFB4; font-weight: bold;');
+// Console welcome message
+function showWelcomeMessage() {
+    console.log('%c' + asciiLogo, 'color: #00ff41; font-family: monospace; font-size: 12px;');
+    console.log('%c🚀 NUKEH Nuclear Control Panel Loaded!', 'color: #00ff41; font-size: 16px; font-weight: bold;');
+    console.log('%c⚠️ WARNING: This is a simulation for educational purposes only.', 'color: #ffff00; font-size: 14px;');
+    console.log('%c🎮 Try typing "help" in the terminal for available commands!', 'color: #00ffff; font-size: 14px;');
+    console.log('%c🔐 Hint: Try operator ID "ADMIN" with access code "NUKEH2024"', 'color: #ff6600; font-size: 12px;');
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('%cInitializing NUKEH Nuclear Control Panel...', 'color: #00ff41; font-weight: bold;');
+    
+    // Show welcome message
+    showWelcomeMessage();
+    
+    // Initialize all systems
+    initTerminal();
+    initLaunchButtons();
+    initAuthPanel();
+    
+    // Start system updates
+    updateSystemStatus();
+    updateTimeDisplay();
+    
+    // Set up intervals
+    setInterval(updateSystemStatus, 3000); // Update every 3 seconds
+    setInterval(updateTimeDisplay, 1000);  // Update every second
+    
+    // Optional matrix effect (uncomment to enable)
+    // createMatrixRain();
+    
+    // Auto-type welcome message in terminal
+    setTimeout(() => {
+        addTerminalLine('System initialization complete.');
+        addTerminalLine('Type "help" for available commands.');
+        addTerminalLine('');
+    }, 1000);
+    
+    console.log('%c✅ NUKEH Control Panel initialized successfully!', 'color: #00ff41; font-weight: bold;');
 });
 
 // Handle page visibility changes
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) {
-        console.log('%cNUKEH is now hidden', 'color: #656c76;');
+        console.log('%c⏸️ NUKEH Control Panel suspended', 'color: #808080;');
     } else {
-        console.log('%cWelcome back to NUKEH! 👋', 'color: #00FFB4; font-weight: bold;');
+        console.log('%c▶️ NUKEH Control Panel resumed', 'color: #00ff41; font-weight: bold;');
+        // Re-focus terminal when page becomes visible
+        const terminalInput = document.getElementById('terminal-input');
+        if (terminalInput) {
+            terminalInput.focus();
+        }
     }
 });
 
-// Export for potential use by other scripts
+// Export for potential external use
 window.NUKEH = {
-    scrollTo: smoothScrollTo,
-    showNotification
+    gameState,
+    commands,
+    processCommand,
+    updateSystemStatus
 };

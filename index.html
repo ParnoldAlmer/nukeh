@@ -3,186 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Nukeh - Deploy. Destroy. Iterate. The future of rapid development cycles.">
-    <title>Nukeh - Deploy. Destroy. Iterate.</title>
+    <meta name="description" content="NUKEH - Nuclear Launch Control Panel - Retro Terminal Interface">
+    <title>NUKEH - Nuclear Launch Control Panel</title>
     
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Monospace Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     
     <!-- Custom CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
-    <header class="hero">
-        <nav class="nav">
-            <div class="nav-brand">
-                <h1>NUKEH</h1>
+    <!-- Terminal Header -->
+    <div class="terminal-header">
+        <div class="terminal-bar">
+            <div class="terminal-buttons">
+                <span class="terminal-button close"></span>
+                <span class="terminal-button minimize"></span>
+                <span class="terminal-button maximize"></span>
             </div>
-            <div class="nav-links">
-                <a href="#features" class="nav-link">Features</a>
-                <a href="#newsletter" class="nav-link">Early Access</a>
-            </div>
-        </nav>
-        
-        <div class="hero-content">
-            <h1 class="hero-title reveal">
-                Deploy. Destroy. Iterate.
-            </h1>
-            <p class="hero-subtitle reveal">
-                Break free from traditional development cycles. Build, test, and deploy at the speed of thought with intelligent automation that learns from every iteration.
-            </p>
-            <div class="hero-cta reveal">
-                <a href="#newsletter" class="btn-primary">
-                    <i class="fas fa-rocket"></i>
-                    Get Early Access
-                </a>
-                <a href="#features" class="btn-secondary">
-                    <i class="fas fa-play"></i>
-                    Watch Demo
-                </a>
+            <div class="terminal-title">NUKEH CONTROL PANEL v2.1.0 - CLASSIFIED</div>
+            <div class="terminal-status">
+                <span id="current-time"></span>
+                <span class="connection-status">SECURE CONNECTION</span>
             </div>
         </div>
-        
-        <div class="hero-scroll">
-            <i class="fas fa-chevron-down"></i>
-        </div>
-    </header>
+    </div>
 
-    <section id="features" class="features">
-        <div class="container">
-            <h2 class="section-title reveal">Revolutionary Features</h2>
-            <div class="features-grid">
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3>Lightning Deploy</h3>
-                    <p>Deploy in seconds, not minutes. Our edge-first architecture ensures your code is live before you finish your coffee.</p>
-                </div>
-                
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <i class="fas fa-brain"></i>
-                    </div>
-                    <h3>Smart Destruction</h3>
-                    <p>AI-powered rollback that learns from failures. When things break, we fix them before you even notice.</p>
-                </div>
-                
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <i class="fas fa-infinity"></i>
-                    </div>
-                    <h3>Infinite Iteration</h3>
-                    <p>Continuous integration that never sleeps. Every commit is a stepping stone to perfection.</p>
-                </div>
-                
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h3>Zero Downtime</h3>
-                    <p>Seamless blue-green deployments with automatic health checks. Your users never see the chaos behind the scenes.</p>
-                </div>
-                
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Real-time Analytics</h3>
-                    <p>Performance metrics that matter. See exactly how your changes impact user experience in real-time.</p>
-                </div>
-                
-                <div class="feature-card reveal">
-                    <div class="feature-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3>Team Sync</h3>
-                    <p>Collaborative workflows that just work. No more merge conflicts, no more deployment headaches.</p>
-                </div>
+    <!-- Main Terminal Content -->
+    <div class="terminal-container">
+        <!-- ASCII Logo Section -->
+        <div class="logo-section">
+            <pre class="ascii-logo" id="main-logo">
+███╗   ██╗██╗   ██╗██╗  ██╗███████╗██╗  ██╗
+████╗  ██║██║   ██║██║ ██╔╝██╔════╝██║  ██║
+██╔██╗ ██║██║   ██║█████╔╝ █████╗  ███████║
+██║╚██╗██║██║   ██║██╔═██╗ ██╔══╝  ██╔══██║
+██║ ╚████║╚██████╔╝██║  ██╗███████╗██║  ██║
+╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
+            </pre>
+            <div class="logo-subtitle">
+                <span class="typing-text">NUCLEAR LAUNCH CONTROL SYSTEM</span>
+            </div>
+            <div class="atomic-symbol">
+                <pre class="atom-ascii">
+      ⚛︎
+   ╭─────╮
+  ╱ ⚛︎ ⚛︎ ⚛︎ ╲
+ ╱ ⚛︎ ⚛︎ ⚛︎ ⚛︎ ╲
+╱ ⚛︎ ⚛︎ ⚛︎ ⚛︎ ⚛︎ ╲
+╲ ⚛︎ ⚛︎ ⚛︎ ⚛︎ ⚛︎ ╱
+ ╲ ⚛︎ ⚛︎ ⚛︎ ⚛︎ ╱
+  ╲ ⚛︎ ⚛︎ ⚛︎ ╱
+   ╰─────╯
+                </pre>
             </div>
         </div>
-    </section>
 
-    <section id="newsletter" class="newsletter">
-        <div class="container">
-            <div class="newsletter-content reveal">
-                <h2>Ready to Transform Your Workflow?</h2>
-                <p>Join thousands of developers who've already revolutionized their deployment pipeline.</p>
+        <!-- Control Panel Grid -->
+        <div class="control-panel">
+            <div class="panel-section">
+                <h2 class="section-header">╔══════════════════════════════════════╗</h2>
+                <h2 class="section-title">║           SYSTEM STATUS              ║</h2>
+                <h2 class="section-header">╚══════════════════════════════════════╝</h2>
                 
-                <form class="newsletter-form">
-                    <div class="form-group">
-                        <input type="email" placeholder="Enter your email" required>
-                        <button type="submit" class="btn-primary">
-                            <i class="fas fa-paper-plane"></i>
-                            Get Early Access
-                        </button>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <span class="status-label">REACTOR CORE:</span>
+                        <span class="status-value status-active" id="reactor-status">ACTIVE</span>
                     </div>
-                </form>
-                
-                <div class="newsletter-stats">
-                    <div class="stat">
-                        <span class="stat-number">10,000+</span>
-                        <span class="stat-label">Developers</span>
+                    <div class="status-item">
+                        <span class="status-label">RADIATION LVL:</span>
+                        <span class="status-value status-warning" id="radiation-level">0.0032 mSv/h</span>
                     </div>
-                    <div class="stat">
-                        <span class="stat-number">1M+</span>
-                        <span class="stat-label">Deployments</span>
+                    <div class="status-item">
+                        <span class="status-label">CORE TEMP:</span>
+                        <span class="status-value status-nominal" id="core-temp">2847°C</span>
                     </div>
-                    <div class="stat">
-                        <span class="stat-number">99.9%</span>
-                        <span class="stat-label">Uptime</span>
+                    <div class="status-item">
+                        <span class="status-label">COOLANT FLOW:</span>
+                        <span class="status-value status-active" id="coolant-flow">NOMINAL</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>NUKEH</h3>
-                    <p>Deploy. Destroy. Iterate.</p>
-                </div>
+            <div class="panel-section">
+                <h2 class="section-header">╔══════════════════════════════════════╗</h2>
+                <h2 class="section-title">║        LAUNCH SEQUENCES             ║</h2>
+                <h2 class="section-header">╚══════════════════════════════════════╝</h2>
                 
-                <div class="footer-links">
-                    <div class="footer-column">
-                        <h4>Product</h4>
-                        <a href="#">Features</a>
-                        <a href="#">Pricing</a>
-                        <a href="#">Documentation</a>
+                <div class="launch-grid">
+                    <div class="launch-option" data-target="dev">
+                        <div class="launch-header">
+                            <span class="launch-label">[DEV]</span>
+                            <span class="launch-status" id="dev-status">READY</span>
+                        </div>
+                        <div class="launch-description">Development Environment</div>
+                        <button class="launch-button" data-env="dev">DEPLOY</button>
                     </div>
                     
-                    <div class="footer-column">
-                        <h4>Company</h4>
-                        <a href="#">About</a>
-                        <a href="#">Blog</a>
-                        <a href="#">Careers</a>
+                    <div class="launch-option" data-target="staging">
+                        <div class="launch-header">
+                            <span class="launch-label">[STAGING]</span>
+                            <span class="launch-status" id="staging-status">READY</span>
+                        </div>
+                        <div class="launch-description">Staging Environment</div>
+                        <button class="launch-button" data-env="staging">DEPLOY</button>
                     </div>
                     
-                    <div class="footer-column">
-                        <h4>Support</h4>
-                        <a href="#">Help Center</a>
-                        <a href="#">Community</a>
-                        <a href="#">Contact</a>
+                    <div class="launch-option" data-target="prod">
+                        <div class="launch-header">
+                            <span class="launch-label">[PROD]</span>
+                            <span class="launch-status" id="prod-status">READY</span>
+                        </div>
+                        <div class="launch-description">Production Environment</div>
+                        <button class="launch-button critical" data-env="prod">LAUNCH</button>
                     </div>
                 </div>
+            </div>
+
+            <div class="panel-section">
+                <h2 class="section-header">╔══════════════════════════════════════╗</h2>
+                <h2 class="section-title">║         COMMAND TERMINAL            ║</h2>
+                <h2 class="section-header">╚══════════════════════════════════════╝</h2>
                 
-                <div class="footer-social">
-                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                    <a href="#" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                    <a href="#" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                <div class="terminal-window">
+                    <div class="terminal-output" id="terminal-output">
+                        <div class="terminal-line">NUKEH v2.1.0 - Nuclear Launch Control System</div>
+                        <div class="terminal-line">Copyright (c) 2024 NUKEH Corporation</div>
+                        <div class="terminal-line">All rights reserved. CLASSIFIED SYSTEM.</div>
+                        <div class="terminal-line">&nbsp;</div>
+                        <div class="terminal-line">Type 'help' for available commands.</div>
+                        <div class="terminal-line">&nbsp;</div>
+                        <div class="terminal-prompt">nukeh@control:~$ <span class="cursor">_</span></div>
+                    </div>
+                    <div class="terminal-input-area">
+                        <span class="terminal-prompt-input">nukeh@control:~$ </span>
+                        <input type="text" class="terminal-input" id="terminal-input" placeholder="Enter command..." autocomplete="off">
+                    </div>
                 </div>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2024 Nukeh. All rights reserved.</p>
+
+            <div class="panel-section">
+                <h2 class="section-header">╔══════════════════════════════════════╗</h2>
+                <h2 class="section-title">║       AUTHORIZATION PANEL           ║</h2>
+                <h2 class="section-header">╚══════════════════════════════════════╝</h2>
+                
+                <div class="auth-panel">
+                    <div class="auth-field">
+                        <label>OPERATOR ID:</label>
+                        <input type="text" class="auth-input" id="operator-id" placeholder="Enter operator ID..." maxlength="8">
+                    </div>
+                    <div class="auth-field">
+                        <label>ACCESS CODE:</label>
+                        <input type="password" class="auth-input" id="access-code" placeholder="Enter access code..." maxlength="12">
+                    </div>
+                    <div class="auth-actions">
+                        <button class="auth-button" id="auth-login">AUTHENTICATE</button>
+                        <button class="auth-button danger" id="auth-emergency">EMERGENCY STOP</button>
+                    </div>
+                    <div class="auth-status" id="auth-status">
+                        <span class="status-indicator unauthorized">UNAUTHORIZED</span>
+                    </div>
+                </div>
             </div>
         </div>
-    </footer>
+
+        <!-- Footer Terminal Info -->
+        <div class="terminal-footer">
+            <div class="footer-line">
+                ┌─────────────────────────────────────────────────────────────────────────────────────────────────┐
+            </div>
+            <div class="footer-line">
+                │ NUKEH CONTROL PANEL - HANDLE WITH EXTREME CAUTION - AUTHORIZED PERSONNEL ONLY │
+            </div>
+            <div class="footer-line">
+                │ Last Login: <span id="last-login"></span> | System Uptime: <span id="uptime"></span> | Build: v2.1.0-stable │
+            </div>
+            <div class="footer-line">
+                └─────────────────────────────────────────────────────────────────────────────────────────────────┘
+            </div>
+        </div>
+    </div>
 
     <script src="assets/js/main.js"></script>
 </body>
