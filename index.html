@@ -1206,18 +1206,25 @@
             const tempStatus = displayTemp > 2880 ? 'HIGH' : displayTemp < 2820 ? 'LOW' : 'NOMINAL';
             document.getElementById('temp-status').textContent = tempStatus;
 
-            // Pressure fluctuation (14-18 MPa range)
-            const basePressure = 15.7;
-            const pressure = basePressure + (Math.random() - 0.5) * 3;
-            const clampedPressure = Math.max(14, Math.min(18, pressure));
+            // Pressure fluctuation with realistic ranges
+            const basePressure = 15.7; // Nominal operating pressure
+            const pressure = basePressure + (Math.random() - 0.5) * 1.2; // ±0.6 MPa variation
+            const clampedPressure = Math.max(15.0, Math.min(16.5, pressure)); // Keep in stable range mostly
             document.getElementById('pressure').textContent = `${clampedPressure.toFixed(1)} MPa`;
             
-            // Update pressure needle position (0-20 MPa scale)
+            // Update pressure needle position (0-20 MPa scale, -135° to +135°)
             const pressureAngle = -135 + (clampedPressure / 20) * 270;
             document.getElementById('pressure-needle').style.setProperty('--rotation', `${pressureAngle}deg`);
             
-            // Update pressure status
-            const pressureStatus = clampedPressure > 17 ? 'HIGH' : clampedPressure < 15 ? 'LOW' : 'STABLE';
+            // Update pressure status with proper thresholds matching gauge
+            let pressureStatus;
+            if (clampedPressure >= 16.2) {
+                pressureStatus = 'HIGH';
+            } else if (clampedPressure <= 15.2) {
+                pressureStatus = 'LOW';
+            } else {
+                pressureStatus = 'STABLE';
+            }
             document.getElementById('pressure-status').textContent = pressureStatus;
 
             // Neutron flux fluctuation (logarithmic scale)
