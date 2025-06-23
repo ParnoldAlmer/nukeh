@@ -1226,8 +1226,268 @@
             }, 800);
         }
 
-        // Add some keyboard shortcuts for interactivity
+        // Easter egg functions
+        let konamiCode = [];
+        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
+        let clickSequence = [];
+        let lastClickTime = 0;
+
+        function activateGodMode() {
+            console.log('🎮 GOD MODE ACTIVATED');
+            console.log('⚡ Unlimited power generation enabled');
+            console.log('🛡️ All safety systems bypassed');
+            
+            // Override power generation
+            document.getElementById('power-output').textContent = '9999 MW';
+            document.getElementById('core-temp').textContent = '∞°C';
+            document.getElementById('neutron-flux').textContent = '∞E+∞';
+            
+            // Add god mode visual effects
+            const core = document.querySelector('.reactor-core');
+            core.style.animation = 'god-mode-pulse 0.5s infinite alternate';
+            core.style.filter = 'brightness(3) saturate(2)';
+            
+            // Add CSS for god mode
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes god-mode-pulse {
+                    0% { box-shadow: 0 0 50px #ff0000, 0 0 100px #ffff00; }
+                    100% { box-shadow: 0 0 100px #ff0000, 0 0 200px #ffff00; }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // Show temporary message
+            showEasterEggMessage('⚡ GOD MODE ACTIVATED ⚡', '#ffff00');
+        }
+
+        function activateMatrixMode() {
+            console.log('💊 MATRIX MODE ACTIVATED');
+            console.log('🔍 Reality distortion field enabled');
+            
+            // Change all text to matrix-style
+            document.body.style.fontFamily = 'monospace';
+            document.body.style.filter = 'hue-rotate(120deg)';
+            
+            // Add falling characters
+            createMatrixRain();
+            
+            showEasterEggMessage('💊 WELCOME TO THE MATRIX 💊', '#00ff41');
+        }
+
+        function activateRetroMode() {
+            console.log('📺 RETRO MODE ACTIVATED');
+            console.log('🕹️ Enabling maximum nostalgia');
+            
+            // Enhance CRT effects
+            document.body.style.filter = 'sepia(20%) contrast(1.2)';
+            const scanlines = document.body.querySelector('::before');
+            
+            // Add retro sound effect simulation
+            let frequency = 400;
+            const beepInterval = setInterval(() => {
+                console.log(`BEEP ${frequency}Hz`);
+                frequency += 100;
+                if (frequency > 1000) {
+                    clearInterval(beepInterval);
+                }
+            }, 200);
+            
+            showEasterEggMessage('📺 RETRO MODE ENGAGED 📺', '#00ffff');
+        }
+
+        function activateDebugMode() {
+            console.log('🐛 DEBUG MODE ACTIVATED');
+            console.log('🔧 Developer tools enabled');
+            
+            // Show hidden debug info
+            const debugPanel = document.createElement('div');
+            debugPanel.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 10px;
+                background: rgba(0, 0, 0, 0.9);
+                color: #00ff41;
+                padding: 10px;
+                border: 1px solid #00ff41;
+                font-family: monospace;
+                font-size: 10px;
+                z-index: 10000;
+                max-width: 200px;
+            `;
+            
+            function updateDebugInfo() {
+                const uptime = Math.floor((Date.now() - gameState.uptime) / 1000);
+                debugPanel.innerHTML = `
+                    <div>🐛 DEBUG PANEL</div>
+                    <div>FPS: ${Math.floor(Math.random() * 60 + 30)}</div>
+                    <div>Memory: ${Math.floor(Math.random() * 100 + 50)}MB</div>
+                    <div>Uptime: ${uptime}s</div>
+                    <div>Threads: ${Math.floor(Math.random() * 8 + 4)}</div>
+                    <div>Temp: ${Math.floor(Math.random() * 20 + 45)}°C</div>
+                `;
+            }
+            
+            updateDebugInfo();
+            setInterval(updateDebugInfo, 1000);
+            document.body.appendChild(debugPanel);
+            
+            showEasterEggMessage('🐛 DEBUG MODE ENABLED 🐛', '#ff6600');
+        }
+
+        function createMatrixRain() {
+            const canvas = document.createElement('canvas');
+            canvas.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                pointer-events: none;
+                z-index: 5;
+                opacity: 0.1;
+            `;
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const ctx = canvas.getContext('2d');
+            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            const fontSize = 14;
+            const columns = canvas.width / fontSize;
+            const drops = [];
+            
+            for (let i = 0; i < columns; i++) {
+                drops[i] = 1;
+            }
+            
+            function draw() {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.fillStyle = '#00ff41';
+                ctx.font = `${fontSize}px monospace`;
+                
+                for (let i = 0; i < drops.length; i++) {
+                    const text = chars[Math.floor(Math.random() * chars.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                    
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
+            }
+            
+            document.body.appendChild(canvas);
+            setInterval(draw, 35);
+            
+            // Remove after 30 seconds
+            setTimeout(() => {
+                document.body.removeChild(canvas);
+            }, 30000);
+        }
+
+        function showEasterEggMessage(message, color) {
+            const msgDiv = document.createElement('div');
+            msgDiv.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: rgba(0, 0, 0, 0.9);
+                color: ${color};
+                padding: 20px 40px;
+                border: 2px solid ${color};
+                font-size: 24px;
+                font-weight: bold;
+                font-family: monospace;
+                z-index: 10000;
+                text-align: center;
+                box-shadow: 0 0 30px ${color};
+                animation: easter-egg-flash 3s ease-out;
+            `;
+            msgDiv.textContent = message;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes easter-egg-flash {
+                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+                    20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
+                    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(msgDiv);
+            
+            setTimeout(() => {
+                document.body.removeChild(msgDiv);
+                document.head.removeChild(style);
+            }, 3000);
+        }
+
+        function secretOperatorMessages() {
+            const messages = [
+                "🤫 Operator: Did you hear about the coffee machine in sector 7?",
+                "☕ Operator: The night shift leaves the best snacks in the break room",
+                "🎮 Operator: Someone's been playing games on the backup terminal",
+                "🍕 Operator: Pizza delivery guy got lost in the reactor building again",
+                "🐱 Operator: The facility cat triggered the motion sensors last night",
+                "🎵 Operator: Day shift changed the emergency alert sound to Rick Roll",
+                "🔧 Operator: Maintenance found a rubber duck in the cooling system",
+                "📱 Operator: WiFi password is still 'password123' - don't tell management"
+            ];
+            
+            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+            console.log(randomMessage);
+            
+            // Show message in corner briefly
+            const cornerMsg = document.createElement('div');
+            cornerMsg.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                background: rgba(0, 255, 65, 0.1);
+                color: #00ff41;
+                padding: 10px;
+                border: 1px solid #00ff41;
+                font-size: 12px;
+                font-family: monospace;
+                max-width: 300px;
+                z-index: 1000;
+                animation: slide-in 0.5s ease-out;
+            `;
+            cornerMsg.textContent = randomMessage.replace(/🤫|☕|🎮|🍕|🐱|🎵|🔧|📱/, '');
+            
+            const slideStyle = document.createElement('style');
+            slideStyle.textContent = `
+                @keyframes slide-in {
+                    from { transform: translateX(-100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(slideStyle);
+            document.body.appendChild(cornerMsg);
+            
+            setTimeout(() => {
+                document.body.removeChild(cornerMsg);
+                document.head.removeChild(slideStyle);
+            }, 4000);
+        }
+
+        // Add some keyboard shortcuts for interactivity and easter eggs
         document.addEventListener('keydown', function(event) {
+            // Track Konami code
+            konamiCode.push(event.code);
+            if (konamiCode.length > konamiSequence.length) {
+                konamiCode.shift();
+            }
+            
+            if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
+                activateGodMode();
+                konamiCode = [];
+            }
+            
             switch(event.key) {
                 case 'a':
                 case 'A':
@@ -1248,8 +1508,80 @@
                 case 'Escape':
                     emergencyShutdown();
                     break;
+                // Easter egg shortcuts
+                case 'F1':
+                    event.preventDefault();
+                    activateDebugMode();
+                    break;
+                case 'F12':
+                    event.preventDefault();
+                    activateMatrixMode();
+                    break;
+                case '`':
+                case '~':
+                    secretOperatorMessages();
+                    break;
+            }
+            
+            // Secret key combinations
+            if (event.ctrlKey && event.shiftKey && event.key === 'R') {
+                event.preventDefault();
+                activateRetroMode();
             }
         });
+
+        // Click sequence easter egg
+        document.addEventListener('click', function(event) {
+            const currentTime = Date.now();
+            
+            if (currentTime - lastClickTime < 500) {
+                clickSequence.push(event.target.tagName);
+                if (clickSequence.length > 10) {
+                    clickSequence.shift();
+                }
+                
+                // Secret click pattern on reactor core
+                if (event.target.classList.contains('reactor-core')) {
+                    clickSequence.push('CORE');
+                    
+                    if (clickSequence.filter(x => x === 'CORE').length >= 5) {
+                        console.log('🎯 REACTOR CORE EASTER EGG ACTIVATED');
+                        const core = document.querySelector('.reactor-core');
+                        core.style.animation = 'core-easter-egg 2s ease-in-out';
+                        
+                        const eggStyle = document.createElement('style');
+                        eggStyle.textContent = `
+                            @keyframes core-easter-egg {
+                                0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+                                25% { transform: translate(-50%, -50%) rotate(90deg) scale(1.2); }
+                                50% { transform: translate(-50%, -50%) rotate(180deg) scale(0.8); }
+                                75% { transform: translate(-50%, -50%) rotate(270deg) scale(1.2); }
+                            }
+                        `;
+                        document.head.appendChild(eggStyle);
+                        
+                        showEasterEggMessage('🎯 CORE OVERLOAD! 🎯', '#ff6600');
+                        clickSequence = [];
+                        
+                        setTimeout(() => {
+                            core.style.animation = 'core-heat 3s ease-in-out infinite alternate';
+                            document.head.removeChild(eggStyle);
+                        }, 2000);
+                    }
+                }
+            } else {
+                clickSequence = [];
+            }
+            
+            lastClickTime = currentTime;
+        });
+
+        // Random secret messages during normal operation
+        setInterval(() => {
+            if (Math.random() < 0.001) { // Very rare
+                secretOperatorMessages();
+            }
+        }, 10000);
     </script>
 </body>
 </html>
