@@ -341,7 +341,7 @@
             transform: translateX(-50%);
         }
 
-        /* Reactor Core Grid */
+        /* Reactor Core - Realistic Fuel Assembly Grid */
         .reactor-core {
             position: absolute;
             top: 50%;
@@ -349,48 +349,143 @@
             width: 140px;
             height: 140px;
             background: 
-                radial-gradient(circle at 30% 30%, rgba(255, 255, 0, 0.8) 0%, transparent 20%),
-                radial-gradient(circle at 70% 30%, rgba(255, 165, 0, 0.8) 0%, transparent 20%),
-                radial-gradient(circle at 50% 70%, rgba(255, 0, 0, 0.8) 0%, transparent 20%),
-                linear-gradient(45deg, #ff6600 0%, #ff0000 50%, #ff6600 100%);
-            border: 2px solid #00ff41;
+                radial-gradient(circle at center, rgba(0, 100, 255, 0.3) 0%, transparent 70%),
+                linear-gradient(45deg, #001a33 0%, #003366 50%, #001a33 100%);
+            border: 3px solid #00ff41;
             border-radius: 8px;
             transform: translate(-50%, -50%);
-            animation: core-heat 3s ease-in-out infinite alternate;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .reactor-core::before {
-            content: '';
+        /* Fuel Assembly Grid */
+        .fuel-assemblies {
             position: absolute;
             top: 10px;
             left: 10px;
             right: 10px;
             bottom: 10px;
-            background: repeating-linear-gradient(
-                0deg,
-                rgba(255, 255, 0, 0.3) 0px,
-                rgba(255, 255, 0, 0.3) 8px,
-                transparent 8px,
-                transparent 16px
-            ),
-            repeating-linear-gradient(
-                90deg,
-                rgba(255, 255, 0, 0.3) 0px,
-                rgba(255, 255, 0, 0.3) 8px,
-                transparent 8px,
-                transparent 16px
-            );
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            grid-template-rows: repeat(8, 1fr);
+            gap: 1px;
             border-radius: 4px;
+            overflow: hidden;
         }
 
-        @keyframes core-heat {
+        .fuel-rod {
+            background: var(--fuel-color, #4a90e2);
+            border: 1px solid var(--fuel-border, #00aaff);
+            border-radius: 2px;
+            position: relative;
+            transition: all 0.2s ease;
+        }
+
+        .fuel-rod::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: var(--fuel-glow, #80d4ff);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 3px var(--fuel-glow, #80d4ff);
+            animation: neutron-flux 2s ease-in-out infinite alternate;
+        }
+
+        /* Different fuel enrichment levels */
+        .fuel-rod:nth-child(4n+1) {
+            --fuel-color: #3498db;
+            --fuel-border: #2980b9;
+            --fuel-glow: #5dade2;
+        }
+
+        .fuel-rod:nth-child(4n+2) {
+            --fuel-color: #e74c3c;
+            --fuel-border: #c0392b;
+            --fuel-glow: #ec7063;
+        }
+
+        .fuel-rod:nth-child(4n+3) {
+            --fuel-color: #f39c12;
+            --fuel-border: #e67e22;
+            --fuel-glow: #f7dc6f;
+        }
+
+        .fuel-rod:nth-child(4n) {
+            --fuel-color: #2ecc71;
+            --fuel-border: #27ae60;
+            --fuel-glow: #58d68d;
+        }
+
+        @keyframes neutron-flux {
             0% { 
-                box-shadow: 0 0 30px rgba(255, 100, 0, 0.8);
-                filter: brightness(1);
+                opacity: 0.6;
+                transform: translate(-50%, -50%) scale(1);
             }
             100% { 
-                box-shadow: 0 0 50px rgba(255, 0, 0, 1);
-                filter: brightness(1.2);
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+        }
+
+        /* Control Rod Guide Tubes */
+        .control-guide {
+            background: #2c3e50 !important;
+            border: 1px solid #34495e !important;
+        }
+
+        .control-guide::before {
+            background: #7f8c8d !important;
+            box-shadow: 0 0 2px #95a5a6 !important;
+        }
+
+        .fuel-rod:nth-child(9), .fuel-rod:nth-child(17), .fuel-rod:nth-child(25),
+        .fuel-rod:nth-child(33), .fuel-rod:nth-child(41), .fuel-rod:nth-child(49),
+        .fuel-rod:nth-child(57) {
+            background: #2c3e50 !important;
+            border: 1px solid #34495e !important;
+        }
+
+        .fuel-rod:nth-child(9)::before, .fuel-rod:nth-child(17)::before, .fuel-rod:nth-child(25)::before,
+        .fuel-rod:nth-child(33)::before, .fuel-rod:nth-child(41)::before, .fuel-rod:nth-child(49)::before,
+        .fuel-rod:nth-child(57)::before {
+            background: #7f8c8d !important;
+            box-shadow: 0 0 2px #95a5a6 !important;
+        }
+
+        /* Reactor Core States */
+        .reactor-core.critical {
+            background: 
+                radial-gradient(circle at center, rgba(255, 165, 0, 0.4) 0%, transparent 70%),
+                linear-gradient(45deg, #331a00 0%, #663300 50%, #331a00 100%);
+            box-shadow: 0 0 40px rgba(255, 165, 0, 0.6);
+        }
+
+        .reactor-core.scrammed {
+            background: 
+                radial-gradient(circle at center, rgba(255, 0, 0, 0.2) 0%, transparent 70%),
+                linear-gradient(45deg, #330000 0%, #660000 50%, #330000 100%);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+        }
+
+        .reactor-core.overload {
+            animation: core-overload 0.5s ease-in-out infinite;
+            background: 
+                radial-gradient(circle at center, rgba(255, 0, 0, 0.8) 0%, transparent 70%),
+                linear-gradient(45deg, #ff0000 0%, #ff6600 50%, #ff0000 100%);
+        }
+
+        @keyframes core-overload {
+            0%, 100% { 
+                box-shadow: 0 0 60px rgba(255, 0, 0, 1);
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% { 
+                box-shadow: 0 0 80px rgba(255, 255, 0, 1);
+                transform: translate(-50%, -50%) scale(1.05);
             }
         }
 
@@ -818,7 +913,19 @@
                 <div class="coolant-outlet"></div>
                 
                 <!-- Reactor Core -->
-                <div class="reactor-core"></div>
+                <div class="reactor-core" id="reactor-core">
+                    <div class="fuel-assemblies">
+                        <!-- 8x8 Fuel Assembly Grid -->
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                        <div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div><div class="fuel-rod"></div>
+                    </div>
+                </div>
                 
                 <!-- Control Rod Assemblies -->
                 <div class="control-rod-assembly">
@@ -1008,6 +1115,52 @@
             const power = basePower + (Math.random() - 0.5) * 60;
             const clampedPower = Math.max(800, Math.min(950, power));
             document.getElementById('power-output').textContent = `${Math.round(clampedPower)} MW`;
+            
+            // Update reactor core appearance based on readings
+            updateReactorCoreVisuals(clampedTemp, clampedPressure, clampedFlux, clampedPower);
+        }
+
+        // Update reactor core visuals based on sensor readings
+        function updateReactorCoreVisuals(temperature, pressure, flux, power) {
+            const core = document.querySelector('.reactor-core');
+            const fuelRods = document.querySelectorAll('.fuel-rod');
+            
+            // Remove all state classes first
+            core.classList.remove('critical', 'scrammed', 'overload');
+            
+            // Determine reactor state based on readings
+            if (power > 900 || temperature > 2890 || flux > 4.0) {
+                core.classList.add('critical');
+            } else if (power < 100 || temperature < 2000 || flux < 1.0) {
+                core.classList.add('scrammed');
+            }
+            
+            // Update individual fuel rod appearance
+            fuelRods.forEach((rod, index) => {
+                // Skip control rod guide tubes
+                const isControlGuide = [8, 16, 24, 32, 40, 48, 56].includes(index);
+                if (isControlGuide) return;
+                
+                // Calculate fuel rod intensity based on neutron flux and power
+                const fluxIntensity = Math.max(0.3, Math.min(1.2, flux / 3.2));
+                const powerIntensity = Math.max(0.2, Math.min(1.0, power / 850));
+                const combinedIntensity = (fluxIntensity + powerIntensity) / 2;
+                
+                rod.style.filter = `brightness(${0.4 + combinedIntensity * 0.8})`;
+                
+                // Adjust animation speed based on neutron flux
+                const animationSpeed = Math.max(1, 4 - (flux / 3.2) * 2);
+                rod.style.animationDuration = `${animationSpeed}s`;
+                
+                // Add temperature-based color shift
+                if (temperature > 2880) {
+                    rod.style.boxShadow = `0 0 3px rgba(255, 165, 0, ${(temperature - 2800) / 200})`;
+                } else if (temperature < 2820) {
+                    rod.style.boxShadow = `0 0 2px rgba(0, 150, 255, ${(2850 - temperature) / 100})`;
+                } else {
+                    rod.style.boxShadow = '';
+                }
+            });
         }
 
         // Control button functions
@@ -1095,9 +1248,18 @@
                 document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
                 document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
                 
-                // Update core visual
+                // Update core visual states during SCRAM
                 const core = document.querySelector('.reactor-core');
-                core.style.filter = `brightness(${0.3 + (powerLevel/850) * 0.7})`;
+                core.classList.remove('critical', 'overload');
+                core.classList.add('scrammed');
+                
+                // Update fuel rod appearance during shutdown
+                const fuelRods = document.querySelectorAll('.fuel-rod');
+                fuelRods.forEach((rod, index) => {
+                    const intensity = Math.max(0.1, powerLevel / 850);
+                    rod.style.filter = `brightness(${0.2 + intensity * 0.3})`;
+                    rod.style.animationDuration = '4s'; // Slow neutron flux during shutdown
+                });
                 
                 // Update status indicators
                 document.getElementById('temp-status').textContent = tempLevel < 500 ? 'COLD' : 'COOLING';
@@ -1193,9 +1355,27 @@
                 document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
                 document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
                 
-                // Update core visual
+                // Update core visual states during startup
                 const core = document.querySelector('.reactor-core');
-                core.style.filter = `brightness(${0.3 + (powerLevel/850) * 0.7})`;
+                core.classList.remove('scrammed', 'overload');
+                
+                if (powerLevel >= 600) {
+                    core.classList.add('critical');
+                } else {
+                    core.classList.remove('critical');
+                }
+                
+                // Update fuel rod appearance during startup
+                const fuelRods = document.querySelectorAll('.fuel-rod');
+                fuelRods.forEach((rod, index) => {
+                    const intensity = Math.max(0.3, Math.min(1, fluxLevel / 3.2));
+                    rod.style.filter = `brightness(${0.4 + intensity * 0.8})`;
+                    
+                    // Animate based on neutron flux levels
+                    if (fluxLevel > 1.5) {
+                        rod.style.animationDuration = `${3 - (fluxLevel/3.2) * 1.5}s`;
+                    }
+                });
                 
                 // Update status indicators
                 document.getElementById('temp-status').textContent = tempLevel > 2500 ? 'NOMINAL' : 'HEATING';
