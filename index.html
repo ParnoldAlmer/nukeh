@@ -1374,18 +1374,125 @@
         }
 
         function emergencyShutdown() {
-            console.log('EMERGENCY SCRAM INITIATED');
+            // Show realistic reactor control room confirmation dialog
+            const scramConfirmation = document.createElement('div');
+            scramConfirmation.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 10000;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: 'Courier New', monospace;
+            `;
+            
+            scramConfirmation.innerHTML = `
+                <div style="
+                    background: linear-gradient(135deg, #330000 0%, #660000 100%);
+                    border: 3px solid #ff0000;
+                    padding: 30px;
+                    max-width: 500px;
+                    text-align: center;
+                    color: #ffffff;
+                    box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+                    animation: alert-pulse 1s ease-in-out infinite alternate;
+                ">
+                    <div style="font-size: 24px; color: #ff0000; margin-bottom: 20px;">
+                        ⚠️ EMERGENCY REACTOR SCRAM ⚠️
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; margin-bottom: 25px;">
+                        <strong>WARNING:</strong> This will immediately shut down the reactor<br><br>
+                        
+                        <div style="text-align: left; margin: 15px 0;">
+                        • All control rods will be inserted<br>
+                        • Reactor power drops to zero<br>
+                        • Core temperature will decrease<br>
+                        • Neutron flux becomes subcritical<br>
+                        • Event logged in operator record
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 25px;">
+                        <button id="confirm-scram" style="
+                            background: #ff0000;
+                            color: white;
+                            border: 2px solid #ffffff;
+                            padding: 10px 20px;
+                            margin: 0 10px;
+                            font-family: 'Courier New', monospace;
+                            font-weight: bold;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">CONFIRM SCRAM</button>
+                        
+                        <button id="cancel-scram" style="
+                            background: #006600;
+                            color: white;
+                            border: 2px solid #ffffff;
+                            padding: 10px 20px;
+                            margin: 0 10px;
+                            font-family: 'Courier New', monospace;
+                            font-weight: bold;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">CANCEL</button>
+                    </div>
+                </div>
+                
+                <style>
+                    @keyframes alert-pulse {
+                        0% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
+                        100% { box-shadow: 0 0 50px rgba(255, 0, 0, 1); }
+                    }
+                </style>
+            `;
+            
+            document.body.appendChild(scramConfirmation);
+            
+            // Handle confirmation
+            document.getElementById('confirm-scram').addEventListener('click', function() {
+                document.body.removeChild(scramConfirmation);
+                console.log('EMERGENCY SCRAM INITIATED - CONFIRMED BY OPERATOR');
+                executeEmergencyScram();
+            });
+            
+            document.getElementById('cancel-scram').addEventListener('click', function() {
+                document.body.removeChild(scramConfirmation);
+                console.log('EMERGENCY SCRAM CANCELLED by operator');
+            });
+            
+            // Allow Escape key to cancel
+            function handleEscapeKey(e) {
+                if (e.key === 'Escape') {
+                    document.body.removeChild(scramConfirmation);
+                    console.log('EMERGENCY SCRAM CANCELLED by operator');
+                    document.removeEventListener('keydown', handleEscapeKey);
+                }
+            }
+            document.addEventListener('keydown', handleEscapeKey);
+        }
+        
+        function executeEmergencyScram() {
+            console.log('EXECUTING EMERGENCY SCRAM SEQUENCE');
             
             // Record SCRAM event in memory
             reactorMemory.scramCount = (reactorMemory.scramCount || 0) + 1;
             reactorMemory.lastScramTime = Date.now();
             reactorMemory.reactorStatus = 'SCRAMMED';
             
-            // Flash button effect
-            event.target.style.background = 'linear-gradient(135deg, #440000 0%, #330000 100%)';
-            setTimeout(() => {
-                event.target.style.background = '';
-            }, 200);
+            // Flash all SCRAM buttons
+            document.querySelectorAll('button').forEach(button => {
+                if (button.textContent.includes('SCRAM') || button.textContent.includes('EMERGENCY')) {
+                    button.style.background = 'linear-gradient(135deg, #440000 0%, #330000 100%)';
+                    setTimeout(() => {
+                        button.style.background = '';
+                    }, 200);
+                }
+            });
             
             // Initiate SCRAM sequence
             initiateScramSequence();
