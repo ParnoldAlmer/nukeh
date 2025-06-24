@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NUKEH LABS | ████████</title>
+    <title>NUKEH RESEARCH STATION - UNIX SYSTEM</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&display=swap');
         
         * {
             margin: 0;
@@ -14,69 +14,98 @@
         }
 
         body {
-            font-family: 'JetBrains Mono', monospace;
-            background: #0a0a0a;
-            color: #00ff41;
-            overflow-x: hidden;
-            cursor: crosshair;
+            font-family: 'Courier Prime', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow: hidden;
+            line-height: 1.2;
+            font-size: 14px;
         }
 
-        .glitch {
-            animation: glitch 2s infinite;
-        }
-
-        @keyframes glitch {
-            0%, 90%, 100% { transform: translate(0); }
-            10% { transform: translate(-2px, 2px); }
-            20% { transform: translate(2px, -2px); }
-            30% { transform: translate(-2px, -2px); }
-            40% { transform: translate(2px, 2px); }
-            50% { transform: translate(-2px, 2px); }
-            60% { transform: translate(2px, -2px); }
-            70% { transform: translate(-2px, -2px); }
-            80% { transform: translate(2px, 2px); }
-        }
-
-        .container {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .crt {
+            background: #000;
             position: relative;
-            background: 
-                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.1) 0%, transparent 50%);
+            height: 100vh;
+            overflow: hidden;
+            animation: flicker 0.15s infinite linear;
         }
 
-        .logo {
-            font-size: 4rem;
-            font-weight: 700;
-            letter-spacing: 0.5rem;
-            margin-bottom: 2rem;
-            text-shadow: 0 0 20px #00ff41;
-            animation: pulse 3s infinite;
+        .crt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(transparent 50%, rgba(0, 255, 0, 0.03) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 1000;
         }
 
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        .crt::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(ellipse at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+            pointer-events: none;
+            z-index: 1001;
         }
 
-        .subtitle {
-            font-size: 1.2rem;
-            font-weight: 300;
-            letter-spacing: 0.2rem;
-            margin-bottom: 3rem;
-            opacity: 0.8;
+        @keyframes flicker {
+            0% { opacity: 1; }
+            97% { opacity: 1; }
+            98% { opacity: 0.98; }
+            99% { opacity: 0.99; }
+            100% { opacity: 1; }
         }
 
-        .redacted {
-            background: #00ff41;
-            color: #0a0a0a;
-            padding: 2px 8px;
-            animation: blink 1.5s infinite;
+        .terminal {
+            padding: 20px;
+            height: 100vh;
+            overflow-y: auto;
+            background: #000;
+            font-size: 14px;
+            white-space: pre-wrap;
+            position: relative;
+            z-index: 1;
+        }
+
+        .terminal::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .terminal::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        .terminal::-webkit-scrollbar-thumb {
+            background: #00ff00;
+        }
+
+        .prompt {
+            color: #00ff00;
+        }
+
+        .user-input {
+            color: #00ff00;
+        }
+
+        .error {
+            color: #ff0000;
+        }
+
+        .warning {
+            color: #ffff00;
+        }
+
+        .classified {
+            background: #00ff00;
+            color: #000;
+            animation: blink 1s infinite;
         }
 
         @keyframes blink {
@@ -84,33 +113,20 @@
             51%, 100% { opacity: 0.3; }
         }
 
-        .terminal {
-            background: rgba(0, 0, 0, 0.8);
-            border: 2px solid #00ff41;
-            border-radius: 8px;
-            padding: 2rem;
-            max-width: 600px;
-            width: 90%;
-            margin: 2rem 0;
-            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+        .cursor {
+            background: #00ff00;
+            animation: cursor-blink 1s infinite;
         }
 
-        .terminal-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            opacity: 0.7;
+        @keyframes cursor-blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
         }
 
-        .terminal-content {
-            font-size: 0.9rem;
-            line-height: 1.6;
-        }
-
-        .typing {
-            border-right: 2px solid #00ff41;
-            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+        .typing-line {
+            display: inline-block;
+            border-right: 2px solid #00ff00;
+            animation: typing 2s steps(30, end), cursor-blink 0.75s step-end infinite;
             white-space: nowrap;
             overflow: hidden;
         }
@@ -120,180 +136,266 @@
             to { width: 100%; }
         }
 
-        @keyframes blink-caret {
-            from, to { border-color: transparent; }
-            50% { border-color: #00ff41; }
+        .boot-sequence {
+            animation: boot-scroll 0.5s ease-in-out;
         }
 
-        .access-code {
-            background: rgba(255, 0, 0, 0.1);
-            border: 1px solid #ff0000;
-            color: #ff0000;
-            padding: 1rem;
-            margin: 2rem 0;
-            text-align: center;
-            font-weight: 700;
-            letter-spacing: 0.1rem;
-            animation: danger-pulse 2s infinite;
+        @keyframes boot-scroll {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes danger-pulse {
-            0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
-            50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
+        .status-line {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #00ff00;
+            color: #000;
+            padding: 5px 20px;
+            font-weight: bold;
+            z-index: 1002;
         }
 
-        .coordinates {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            font-size: 0.8rem;
-            opacity: 0.5;
-        }
-
-        .static-line {
-            position: absolute;
+        .matrix-bg {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, transparent, #00ff41, transparent);
-            animation: scan 3s linear infinite;
-        }
-
-        @keyframes scan {
-            0% { transform: translateY(0vh); }
-            100% { transform: translateY(100vh); }
-        }
-
-        .warning {
-            color: #ffaa00;
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 2rem;
-            opacity: 0.7;
-        }
-
-        .button {
-            background: transparent;
-            border: 2px solid #00ff41;
-            color: #00ff41;
-            padding: 12px 24px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1rem;
-            cursor: pointer;
-            letter-spacing: 0.1rem;
-            transition: all 0.3s ease;
-            margin: 1rem;
-        }
-
-        .button:hover {
-            background: #00ff41;
-            color: #0a0a0a;
-            box-shadow: 0 0 20px #00ff41;
-        }
-
-        .classified {
-            filter: blur(2px);
-            transition: filter 0.3s ease;
-        }
-
-        .classified:hover {
-            filter: blur(0px);
-        }
-
-        @media (max-width: 768px) {
-            .logo { font-size: 2.5rem; }
-            .terminal { padding: 1rem; }
+            height: 100%;
+            opacity: 0.1;
+            z-index: 0;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <div class="static-line"></div>
-    <div class="coordinates">
-        LAT: <span class="redacted">██.████</span> | LONG: <span class="redacted">███.████</span>
-    </div>
-    
-    <div class="container">
-        <div class="logo glitch">NUKEH LABS</div>
-        <div class="subtitle">RESEARCH • <span class="redacted">CLASSIFIED</span> • DEVELOPMENT</div>
-        
-        <div class="terminal">
-            <div class="terminal-header">
-                <span>SECURE TERMINAL v3.7.2</span>
-                <span>STATUS: <span style="color: #ffaa00;">RESTRICTED</span></span>
-            </div>
-            <div class="terminal-content">
-                <div class="typing">ACCESSING NUKEH LABORATORY MAINFRAME...</div>
-                <br>
-                <div>CONNECTION ESTABLISHED</div>
-                <div>SECURITY CLEARANCE: <span class="redacted">LEVEL 4</span></div>
-                <div>PROJECT STATUS: <span class="classified">ACTIVE - PHASE III</span></div>
-                <div>LAST INCIDENT: <span class="redacted">████ DAYS AGO</span></div>
-                <br>
-                <div style="color: #ff0000;">⚠ WARNING: UNAUTHORIZED ACCESS DETECTED</div>
-                <div style="color: #ff0000;">INITIATING COUNTERMEASURES IN 00:00:<span id="countdown">47</span></div>
-            </div>
+    <div class="crt">
+        <div class="matrix-bg" id="matrix"></div>
+        <div class="terminal" id="terminal">
+            <div id="boot-content"></div>
+            <div id="main-content" style="display: none;"></div>
         </div>
-
-        <div class="access-code">
-            ACCESS CODE REQUIRED
-            <br>
-            <small>VIOLATION OF SECURITY PROTOCOLS WILL RESULT IN IMMEDIATE TERMINATION</small>
-        </div>
-
-        <button class="button" onclick="initiateSequence()">INITIATE SEQUENCE</button>
-        <button class="button" onclick="accessArchives()">ACCESS ARCHIVES</button>
-
-        <div class="warning">
-            This facility operates under the <span class="redacted">DHARMA INITIATIVE</span> protocols.<br>
-            All activities are monitored and recorded.<br>
-            <span class="classified">THE NUMBERS: 4 8 15 16 23 42</span>
+        <div class="status-line">
+            NUKEH RESEARCH STATION | UNIX SYSTEM V.4.2 | USER: <span class="classified">████████</span> | CLEARANCE: <span class="classified">OMEGA-7</span>
         </div>
     </div>
 
     <script>
-        let countdown = 47;
-        setInterval(() => {
-            countdown = countdown > 10 ? countdown - 1 : Math.floor(Math.random() * 60) + 10;
-            document.getElementById('countdown').textContent = countdown.toString().padStart(2, '0');
-        }, 1000);
+        const bootSequence = [
+            'NUKEH RESEARCH STATION UNIX SYSTEM V4.2',
+            'Copyright (c) 1987-1993 Nukeh Laboratories Inc.',
+            '',
+            'Memory Test: 16384KB OK',
+            'Processor: Intel 80486DX-33MHz',
+            'Network Interface: Ethernet 10Base-T',
+            '',
+            'Initializing subsystems...',
+            'Loading device drivers.......... OK',
+            'Mounting file systems.......... OK',
+            'Starting network services...... OK',
+            'Initializing security protocols. OK',
+            '',
+            'WARNING: Quantum containment field at 47% efficiency',
+            'WARNING: Reactor core temperature nominal',
+            'WARNING: Unauthorized access attempts logged',
+            '',
+            'System ready.',
+            'Login: nukeh_admin',
+            'Password: ████████',
+            '',
+            'Last login: Wed Jun 24 03:47:12 1993 from research.nukeh.local',
+            '',
+            'Welcome to NUKEH RESEARCH STATION',
+            'Classification Level: TOP SECRET',
+            'Project: LOOKING GLASS',
+            '',
+            '$ ls -la /home/nukeh_admin/',
+            'total 47',
+            'drwxr-xr-x  5 root     wheel   512 Jun 24 03:47 .',
+            'drwxr-xr-x 12 root     wheel   512 Jun 15 14:23 ..',
+            '-rw-------  1 nukeh    staff    73 Jun 24 03:47 .classified_notes',
+            '-rwxr-xr-x  1 nukeh    staff  2048 Jun 23 16:42 quantum_calc',
+            'drwx------  2 nukeh    staff   512 Jun 20 09:15 experiment_logs',
+            '-rw-r--r--  1 nukeh    staff   156 Jun 24 02:33 incident_report.txt',
+            'drwx------  2 nukeh    staff   512 Jun 19 11:28 security_footage',
+            '-rw-------  1 nukeh    staff  4815 Jun 16 23:42 the_equation.dat',
+            '',
+            '$ cat incident_report.txt',
+            '',
+            'INCIDENT REPORT #2847',
+            'DATE: 24/06/1993 02:33:07',
+            'CLASSIFICATION: EYES ONLY',
+            '',
+            'Subject experienced temporal displacement during Experiment 108.',
+            'Duration: 108 minutes.',
+            'Electromagnetic anomaly detected in Sector 7.',
+            'All personnel evacuated as per Protocol 815.',
+            '',
+            'Recovery team found subject 4.8km from original position.',
+            'Subject claims to have seen "flashes of another time".',
+            'Recommend immediate psychiatric evaluation.',
+            '',
+            'The numbers... they keep appearing.',
+            '4 8 15 16 23 42',
+            '',
+            'Dr. Marvin Candle - Chief Researcher',
+            'DHARMA Initiative Authorized Personnel Only',
+            '',
+            '$ ps aux | grep quantum',
+            'nukeh     1847  0.0  2.3  4815 2342 ?  S  03:47  0:23 quantum_monitor',
+            'nukeh     2108  8.1 15.6 16234 8157 ?  R  03:52  1:08 quantum_field_gen',
+            'nukeh     2347  0.0  0.8  1623  428 ?  S  03:54  0:00 anomaly_detector',
+            '',
+            '$ tail -f /var/log/quantum.log',
+        ];
 
-        function initiateSequence() {
-            document.body.style.animation = 'glitch 0.5s infinite';
-            setTimeout(() => {
-                alert('SEQUENCE INITIATED\n\nSTANDBY FOR FURTHER INSTRUCTIONS\n\n[CONNECTION TERMINATED]');
-                document.body.style.animation = '';
-            }, 2000);
+        const logEntries = [
+            '[03:47:12] Quantum field stability: 94.7%',
+            '[03:47:23] Electromagnetic pulse detected - Sector 7',
+            '[03:47:31] WARNING: Temporal distortion field active',
+            '[03:47:45] Particle accelerator: ONLINE',
+            '[03:48:02] Containment breach in Lab C - Level 3',
+            '[03:48:15] Emergency protocols activated',
+            '[03:48:29] Unknown signal source detected - Island coordinates',
+            '[03:48:47] ALERT: Subject 108 missing from chamber',
+            '[03:49:03] Geomagnetic anomaly - 19.2 degrees deviation',
+            '[03:49:16] Recovery team dispatched to Grid 23-42',
+            '[03:49:34] The numbers... they\'re in the signal pattern',
+            '[03:49:51] Time displacement confirmed: +108 minutes',
+            '[03:50:08] Subject 108 recovered - psychological evaluation pending',
+            '[03:50:23] Dr. Candle requesting immediate consultation',
+            '[03:50:41] Quantum signature matches theoretical models',
+            '[03:50:58] WARNING: Another pulse incoming...',
+        ];
+
+        let bootIndex = 0;
+        let logIndex = 0;
+        let isBooting = true;
+
+        function typeText(element, text, callback) {
+            let i = 0;
+            const timer = setInterval(() => {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                } else {
+                    clearInterval(timer);
+                    if (callback) callback();
+                }
+            }, Math.random() * 50 + 25);
         }
 
-        function accessArchives() {
-            const responses = [
-                'ACCESS DENIED - INSUFFICIENT CLEARANCE',
-                'ARCHIVE CORRUPTED - DATA RECOVERY IN PROGRESS',
-                'SECURITY BREACH DETECTED - LOCKDOWN INITIATED',
-                'THE ISLAND REMEMBERS',
-                'NOT PENNYS BOAT'
-            ];
-            alert(responses[Math.floor(Math.random() * responses.length)]);
+        function bootSystem() {
+            const bootContent = document.getElementById('boot-content');
+            const mainContent = document.getElementById('main-content');
+            
+            if (bootIndex < bootSequence.length) {
+                const line = document.createElement('div');
+                line.className = 'boot-sequence';
+                
+                if (bootSequence[bootIndex].includes('WARNING') || bootSequence[bootIndex].includes('ALERT')) {
+                    line.className += ' warning';
+                } else if (bootSequence[bootIndex].includes('ERROR')) {
+                    line.className += ' error';
+                }
+                
+                bootContent.appendChild(line);
+                
+                setTimeout(() => {
+                    typeText(line, bootSequence[bootIndex], () => {
+                        bootIndex++;
+                        setTimeout(bootSystem, Math.random() * 500 + 200);
+                    });
+                }, 100);
+                
+                bootContent.scrollTop = bootContent.scrollHeight;
+            } else {
+                setTimeout(() => {
+                    isBooting = false;
+                    startLogStream();
+                }, 1000);
+            }
+        }
+
+        function startLogStream() {
+            const bootContent = document.getElementById('boot-content');
+            
+            setInterval(() => {
+                if (logIndex < logEntries.length) {
+                    const line = document.createElement('div');
+                    line.className = 'boot-sequence';
+                    
+                    if (logEntries[logIndex].includes('WARNING') || logEntries[logIndex].includes('ALERT')) {
+                        line.className += ' warning';
+                    } else if (logEntries[logIndex].includes('numbers')) {
+                        line.className += ' classified';
+                    }
+                    
+                    bootContent.appendChild(line);
+                    line.textContent = logEntries[logIndex];
+                    
+                    logIndex++;
+                    if (logIndex >= logEntries.length) logIndex = 0;
+                    
+                    bootContent.scrollTop = bootContent.scrollHeight;
+                }
+            }, Math.random() * 3000 + 2000);
+        }
+
+        function createMatrixEffect() {
+            const matrix = document.getElementById('matrix');
+            const characters = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+            
+            for (let i = 0; i < 50; i++) {
+                const span = document.createElement('span');
+                span.style.position = 'absolute';
+                span.style.left = Math.random() * 100 + '%';
+                span.style.top = Math.random() * 100 + '%';
+                span.style.color = '#003300';
+                span.style.fontSize = '12px';
+                span.textContent = characters[Math.floor(Math.random() * characters.length)];
+                matrix.appendChild(span);
+                
+                setInterval(() => {
+                    span.textContent = characters[Math.floor(Math.random() * characters.length)];
+                    span.style.top = Math.random() * 100 + '%';
+                }, Math.random() * 5000 + 2000);
+            }
         }
 
         document.addEventListener('keydown', (e) => {
-            if (e.code === 'Escape') {
-                document.body.style.filter = 'invert(1)';
-                setTimeout(() => {
-                    document.body.style.filter = '';
-                }, 200);
+            if (e.key === 'Enter' && !isBooting) {
+                const responses = [
+                    '$ access denied - insufficient privileges',
+                    '$ command not found: ' + Math.random().toString(36).substring(7),
+                    '$ security violation logged',
+                    '$ the island is calling',
+                    '$ 4815162342',
+                    '$ we have to go back',
+                    '$ not pennys boat'
+                ];
+                
+                const bootContent = document.getElementById('boot-content');
+                const line = document.createElement('div');
+                line.className = 'error';
+                line.textContent = responses[Math.floor(Math.random() * responses.length)];
+                bootContent.appendChild(line);
+                bootContent.scrollTop = bootContent.scrollHeight;
             }
         });
 
+        bootSystem();
+        createMatrixEffect();
+        
         setInterval(() => {
             if (Math.random() < 0.02) {
-                document.querySelector('.logo').style.color = '#ff0000';
+                document.querySelector('.crt').style.animation = 'flicker 0.1s';
                 setTimeout(() => {
-                    document.querySelector('.logo').style.color = '#00ff41';
+                    document.querySelector('.crt').style.animation = 'flicker 0.15s infinite linear';
                 }, 100);
             }
-        }, 1000);
+        }, 5000);
     </script>
 </body>
 </html>
