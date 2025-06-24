@@ -476,7 +476,7 @@
         // File path completion
         function completeFilePath(fullInput, partialPath) {
             const parts = fullInput.split(' ');
-            let targetPath, prefix, parentPath;
+            let prefix, parentPath;
             
             if (partialPath === '') {
                 // No partial path, show current directory contents
@@ -484,10 +484,17 @@
                 prefix = '';
             } else if (partialPath.startsWith('/')) {
                 // Absolute path
-                const pathParts = partialPath.split('/').filter(p => p);
-                parentPath = '/' + pathParts.slice(0, -1).join('/');
-                prefix = pathParts[pathParts.length - 1] || '';
-                if (parentPath === '/') parentPath = '/';
+                const pathParts = partialPath.split('/');
+                if (pathParts.length === 2 && pathParts[1] === '') {
+                    // Just "/"
+                    parentPath = '/';
+                    prefix = '';
+                } else {
+                    const filteredParts = pathParts.filter(p => p);
+                    parentPath = '/' + filteredParts.slice(0, -1).join('/');
+                    prefix = filteredParts[filteredParts.length - 1] || '';
+                    if (parentPath === '/') parentPath = '/';
+                }
             } else {
                 // Relative path
                 if (partialPath.includes('/')) {
@@ -507,10 +514,14 @@
                 let matches = Object.keys(parentNode.contents)
                     .filter(name => name.startsWith(prefix));
                 
-                // Add special directories if at root or they match prefix
-                if (parentPath === currentPath) {
-                    if ('.'.startsWith(prefix)) matches.unshift('.');
-                    if ('..'.startsWith(prefix)) matches.unshift('..');
+                // Add special directories if they match prefix (but not if we're already typed them completely)
+                if (parentPath === currentPath || partialPath === '') {
+                    if ('.'.startsWith(prefix) && prefix !== '.' && !matches.includes('.')) {
+                        matches.unshift('.');
+                    }
+                    if ('..'.startsWith(prefix) && prefix !== '..' && !matches.includes('..')) {
+                        matches.unshift('..');
+                    }
                 }
                 
                 matches = matches.map(name => {
@@ -565,11 +576,12 @@
                     
                     return fullInput;
                 } else if (prefix !== '' && matches.length === 0) {
-                    // No matches, try to show what's available
+                    // No matches, try to show what's available  
                     const allFiles = Object.keys(parentNode.contents);
                     if (parentPath === currentPath) {
                         allFiles.unshift('.', '..');
                     }
+                    // Show debug info to help figure out the issue
                     addOutput('', `No matches for "${prefix}". Available: ${allFiles.join('  ')}`);
                     return fullInput;
                 }
