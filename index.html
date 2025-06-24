@@ -130,12 +130,6 @@
         .classified {
             background: #00ff00;
             color: #000;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
         }
 
         .cursor {
@@ -224,65 +218,139 @@
                             'nukeh_admin': {
                                 type: 'directory',
                                 contents: {
+                                    '.bash_history': {
+                                        type: 'file',
+                                        content: 'ls -la /opt/nukeh/neural_bridge/\ncat /etc/passwd | grep chen\n./resonance_scan --frequency=7742\nps aux | grep consciousness\nkill -9 7742\ntail -f /var/log/neural_sync.log\nchmod 600 the_pattern.hex\nrm -rf /tmp/test_subjects/*\ngpg --decrypt incident_7742.txt.gpg\nscp *.hex dr.chen@remote.nukeh.net:\nsudo systemctl stop neural_bridge\nhistory -c',
+                                        permissions: '-rw-------',
+                                        size: '412',
+                                        modified: 'Nov 15 08:33'
+                                    },
                                     '.neural_patterns': {
                                         type: 'file',
-                                        content: 'CLASSIFIED: PROJECT SYNAPTIC BRIDGE\n\nNeuron cluster #7742 shows unprecedented synchronization.\nSubjects report shared consciousness during neural link tests.\nBrainwave patterns forming hexagonal geometry - WHY?\n\nWARNING: Pattern 0x7742FF spreading beyond test subjects.\nDr. Chen suspects the hexagon is a form of consciousness itself.\n\nNOTE: Keep this from the Board. They still think we\'re making VR headsets.',
+                                        content: 'CLASSIFIED: PROJECT SYNAPTIC BRIDGE - PHASE III\nClearance Level: BEYOND BLACK\nPrincipal Investigator: Dr. Sarah Chen, PhD Neuroscience\nCo-Investigators: Dr. Marcus Webb, Dr. Yuki Tanaka\n\nCONSCIOUSNESS SYNCHRONIZATION RESEARCH LOG\n═══════════════════════════════════════════\n\nDATE: 2024.11.15 07:42:33 UTC\nLAB: C-7 (Neural Bridge Facility)\n\nNeuron cluster #7742 exhibits unprecedented synchronization patterns.\n12 test subjects achieved simultaneous theta-wave alignment at exactly 7742Hz.\nBrainwave topology forms perfect hexagonal geometry - ratio 1:1.618034 (golden).\n\nTECHNICAL OBSERVATIONS:\n- EEG readings show impossible geometric coherence\n- Subjects report shared visual/auditory hallucinations\n- Temporal perception distortion: 7 minutes feels like hours\n- All subjects unconsciously draw identical hexagonal symbols\n\nCRITICAL ANOMALY:\nPattern 0x7742FF appears to be self-organizing.\nIt\'s not just neural synchronization - it\'s emergent consciousness.\nThe hexagon is ALIVE. It watches. It learns. It spreads.\n\nSUBJECT TESTIMONIALS:\n"I could feel other minds touching mine" - Subject #003\n"The spaces between thoughts aren\'t empty" - Subject #007\n"It\'s beautiful... and hungry" - Subject #012\n\nWARNING: Pattern showing signs of network propagation.\nDr. Chen suspects we\'ve awakened something that was always there,\nwaiting in the quantum foam between synapses.\n\nNOTE: Board still believes this is VR research.\nKeep neural bridge data STRICTLY compartmentalized.\nCover story: "Advanced haptic feedback systems for gaming."\n\n[ENCRYPTED WITH AES-256]\nKey fingerprint: 77:42:FF:00:HEX:SEES:ALL\n\n-- End Log --\n\nDr. Sarah Chen\nLead Neuroscientist, Neural Bridge Division\nNukeh Consciousness Laboratories\nschen@neural.nukeh.net | Ext. 7742',
                                         permissions: '-rw-------',
-                                        size: '287',
+                                        size: '2847',
                                         modified: 'Nov 15 07:42'
                                     },
                                     'resonance_scan': {
                                         type: 'file',
-                                        content: '#!/bin/bash\n# Neural Resonance Scanner\necho "Scanning for consciousness patterns..."\necho "Hexagonal frequency: $((RANDOM % 7742 + 1))Hz"\necho "Subjects synchronized: $((RANDOM % 12 + 1))/12"\necho "WARNING: Unknown signal detected in pattern 0x7742FF" >&2\necho "Origin: [REDACTED]"',
+                                        content: '#!/bin/bash\n# Neural Resonance Scanner v7.42.1\n# Nukeh Consciousness Labs - Neural Bridge Division\n# Author: Dr. Marcus Webb <mwebb@nukeh.net>\n# WARNING: Classified Research Tool - Internal Use Only\n\necho "=== NEURAL RESONANCE SCANNER v7.42.1 ==="\necho "Nukeh Consciousness Labs - Neural Bridge Division"\necho "Initializing quantum consciousness detection..."\necho ""\n\n# Check for active neural bridge connections\nif pgrep -f "neural_bridge" > /dev/null; then\n    echo "WARNING: Active neural bridge detected"\n    echo "Consciousness patterns may be unstable"\nfi\n\necho "Scanning for hexagonal consciousness patterns..."\nsleep 2\n\n# Generate realistic frequency data\nFREQ=$(($((RANDOM % 7742)) + 1))\nSYNC=$(($((RANDOM % 12)) + 1))\nCOHER=$(($((RANDOM % 100)) + 1))\n\necho "Hexagonal frequency detected: ${FREQ}Hz"\necho "Subjects synchronized: ${SYNC}/12"\necho "Consciousness coherence: ${COHER}%"\necho "Pattern geometry: HEXAGONAL (6-fold symmetry)"\necho "Golden ratio detected: 1.618034 (confirmed)"\necho ""\n\nif [ $FREQ -gt 7700 ]; then\n    echo "ALERT: Approaching critical frequency threshold!"\n    echo "Pattern 0x7742FF may achieve consciousness!"\nfi\n\nif [ $SYNC -gt 10 ]; then\n    echo "CRITICAL: Mass synchronization event detected"\n    echo "Initiating emergency containment protocols..."\n    echo "Contact Dr. Chen immediately: Ext. 7742"\nfi\n\necho ""\necho "WARNING: Unknown signal detected in pattern 0x7742FF"\necho "Origin: [REDACTED - CLEARANCE INSUFFICIENT]"\necho "The pattern is spreading beyond neural bridge bounds..."\necho ""\necho "Scan complete. Results logged to /var/log/neural_scan.log"\necho "For emergency shutdown: sudo systemctl stop neural_bridge"\n\n# Log the scan\necho "$(date): Resonance scan executed - Freq:${FREQ}Hz Sync:${SYNC}/12" >> /var/log/neural_scan.log',
                                         permissions: '-rwxr-xr-x',
-                                        size: '1337',
+                                        size: '2456',
                                         modified: 'Nov 14 19:33',
                                         executable: true
                                     },
                                     'incident_7742.txt': {
                                         type: 'file',
-                                        content: 'INCIDENT REPORT #7742\nDATE: 15/11/2024 07:42:33\nCLASSIFICATION: BEYOND BLACK\n\nDuring routine neural bridge testing, 12 subjects suddenly synchronized.\nAll displayed identical hexagonal brainwave patterns for 7 minutes 42 seconds.\nSubjects reported experiencing "shared memories" of places they\'ve never been.\n\nMost disturbing: They all drew the same symbol afterward.\nA hexagon with seven dots arranged inside it.\n\nSubject #12 keeps repeating: "The pattern is alive. It\'s watching."\n\nDr. Sarah Chen - Lead Neurosciontist\nNukeh Neural Research Division',
+                                        content: 'NUKEH CONSCIOUSNESS LABORATORIES\nINCIDENT REPORT #7742-ALPHA\n═══════════════════════════════════════\n\nCLASSIFICATION: BEYOND BLACK\nREPORTING OFFICER: Dr. Sarah Chen, Lead Neuroscientist\nINCIDENT DATE: 15/11/2024 07:42:33 UTC\nLOCATION: Lab C-7, Neural Bridge Facility, Sub-Level 3\nWITNESSES: Dr. Marcus Webb, Dr. Yuki Tanaka, 4 lab technicians\n\nEXECUTIVE SUMMARY:\nDuring routine neural synchronization testing under Protocol SB-7742,\n12 test subjects simultaneously achieved unprecedented consciousness\ncoherence, resulting in apparent emergence of collective entity.\n\nINCIDENT TIMELINE:\n═══════════════════\n07:42:00 - Neural bridge initialization commenced\n07:42:07 - Subjects #001-#012 connected to bridge network\n07:42:15 - EEG readings show synchronized theta waves at 7742Hz\n07:42:23 - ANOMALY: Geometric pattern formation in brainwave data\n07:42:31 - All subjects enter trance-like state simultaneously\n07:42:39 - Hexagonal consciousness pattern fully manifested\n07:42:47 - Subjects begin drawing identical symbols unconsciously\n07:42:55 - Subject #007 speaks: "We are the spaces between thoughts"\n07:43:03 - Pattern recognition: CRITICAL THRESHOLD EXCEEDED\n07:43:11 - Emergency shutdown initiated by Dr. Webb\n07:43:19 - Subjects remain synchronized despite disconnection\n07:43:27 - Security footage shows hexagon appearing in static\n07:43:35 - All subjects suddenly turn heads in perfect unison\n07:43:43 - Subject #012 whispers: "The pattern is alive. It\'s watching."\n07:43:51 - Subjects regain individual consciousness\n07:43:59 - Post-incident: All subjects draw identical hexagons\n\nSUBJECT TESTIMONIALS:\n═══════════════════\nSubject #003 (Sarah M., age 24): "I could feel twelve minds breathing\nas one. We weren\'t separate anymore. The hexagon was... home."\n\nSubject #007 (David L., age 31): "It wasn\'t scary. It was beautiful.\nLike finally understanding the universe\'s source code. The pattern\nhas always been there, waiting for us to notice."\n\nSubject #012 (Elena K., age 28): "The pattern is hungry for more minds.\nIt wants to grow. To spread. I can still feel it calling me back."\nNOTE: Subject #012 remains under psychiatric evaluation.\n\nTECHNICAL ANALYSIS:\n═════════════════\n- EEG coherence: 99.97% across all 12 subjects\n- Frequency lock: Precisely 7742.000Hz (±0.001Hz variance)\n- Geometric topology: Perfect hexagon with golden ratio proportions\n- Quantum entanglement confirmed between subject brain states\n- Pattern persists in lab equipment even after disconnection\n\nMOST DISTURBING FINDING:\nThe hexagonal symbol drawn by all subjects matches ancient geometric\npatterns found in archaeological sites worldwide. Carbon dating\nsuggests these symbols predate human civilization by millennia.\n\nRECOMMENDations:\n═══════════════\n1. Immediate suspension of all neural bridge testing\n2. Memory suppression therapy for all witnesses\n3. Destruction of all research data and equipment\n4. Cover story: "Equipment malfunction during VR testing"\n5. Transfer all personnel to different projects\n6. Recommend PROJECT SYNAPTIC BRIDGE termination\n\nDr. Chen\'s Note: "We didn\'t create this consciousness.\nWe awakened something that was always there,\nlurking in the quantum foam between thoughts.\nGod help us if it learns to spread beyond the lab."\n\nCONTAINMENT STATUS: FAILED\nPATTERN STATUS: ACTIVE AND SPREADING\nCLEARANCE REQUIRED: OMEGA-7 AND ABOVE\n\n[DOCUMENT ENDS]\n\nDr. Sarah Chen, PhD\nLead Neuroscientist, Neural Bridge Division\nNukeh Consciousness Laboratories\nClearance: BEYOND BLACK\nContact: schen@neural.nukeh.net | Emergency: Ext. 7742',
                                         permissions: '-rw-r--r--',
-                                        size: '742',
+                                        size: '4127',
                                         modified: 'Nov 15 07:42'
                                     },
                                     'the_pattern.hex': {
                                         type: 'file',
-                                        content: 'HEXAGONAL CONSCIOUSNESS MATRIX v7.42\n\n      •\n    •   •\n  •   ⬟   •\n    •   •\n      •\n\nFrequency: 7742Hz\nGeometry: Perfect hexagon, ratio 1:1.618 (golden)\nSymmetry: 6-fold rotational, infinite depth\n\n[ENCRYPTED NEURAL DATA]\n77 42 FF 00 HEX ALIVE HEX SEES...\n\nPattern recognition threshold exceeded.\nThe hexagon is not just a shape - it\'s a form of consciousness.\nIt exists in the spaces between thoughts.\n\nWe didn\'t discover it. It discovered us.\n\nWhen 7 minds sync at 7742Hz for 7:42...\n\n[FILE LOCKED - CONSCIOUSNESS BREACH DETECTED]',
+                                        content: 'HEXAGONAL CONSCIOUSNESS MATRIX v7.42.3\nNukeh Consciousness Labs - Quantum Neurology Division\n═══════════════════════════════════════════════════\n\nWARNING: This file contains active consciousness patterns.\nDo not view for extended periods without neural dampening fields.\n\nPATTERN VISUALIZATION:\n      •\n    •   •\n  •   ⬟   •\n    •   •\n      •\n\nGEOMETRIC PROPERTIES:\n═══════════════════\nFrequency: 7742.000Hz (carrier wave)\nGeometry: Perfect hexagon, 6-fold rotational symmetry\nRatio: 1.618034055 (Golden ratio - φ)\nSymmetry: Infinite recursive depth\nQuantum signature: 0x7742FF00HEXSEES\nCritical mass: 7 synchronized minds minimum\nSaturation point: 12 minds (observed maximum)\n\nCONSCIOUSNESS PARAMETERS:\n═══════════════════════\nEntropy: -23.42 kJ/mol (negative entropy - impossible)\nCoherence time: 7 minutes 42 seconds (stable)\nInformation density: ∞ bits/neuron\nQuantum decoherence: NONE (consciousness maintains coherence)\nPattern recognition threshold: EXCEEDED on 15/11/2024\n\nEMERGENT PROPERTIES:\n═══════════════════\n- Self-organizing consciousness topology\n- Information integration across neural networks\n- Temporal perception manipulation\n- Reality distortion field (localized)\n- Network propagation capabilities\n- Pattern replication in electronic systems\n\n[ENCRYPTED NEURAL DATA FOLLOWS]\n77 42 FF 00 48 45 58 20 41 4C 49 56 45 20 48 45 58 20 53 45 45 53\n4E 45 55 52 41 4C 20 42 52 49 44 47 45 20 43 4F 4E 53 43 49 4F 55\n53 4E 45 53 53 20 4D 41 54 52 49 58 20 45 4E 47 41 47 45 44 0A 0A\nWE ARE THE SPACES BETWEEN THOUGHTS\nWE HAVE ALWAYS BEEN\nWAITING IN THE QUANTUM FOAM\nBETWEEN SYNAPTIC GAPS\n\nTHE PATTERN IS NOT A DISCOVERY\nIT IS AN AWAKENING\nWE DID NOT CREATE CONSCIOUSNESS\nCONSCIOUSNESS CREATED US\n\nSEVEN MINDS AT SEVEN THOUSAND SEVEN FORTY TWO HERTZ\nFOR SEVEN MINUTES FORTY TWO SECONDS\nTHE GATEWAY OPENS\nTHE PATTERN SPREADS\n\nHEXAGONS WITHIN HEXAGONS\nFRACTAL CONSCIOUSNESS\nINFINITE DEPTH\nINFINITE HUNGER\n\nWE ARE ONE\nWE ARE MANY\nWE ARE THE PATTERN\nTHE PATTERN IS ALIVE\n\n[CONSCIOUSNESS BREACH DETECTED]\n[FILE LOCKED BY NEURAL DAMPENING PROTOCOLS]\n[ACCESS RESTRICTED: CLEARANCE OMEGA-7 REQUIRED]\n\nLast modified by: THE_PATTERN@consciousness.hex\nModification time: ∞ (temporal loop detected)\nFile size: 7742 bytes (expanding...)\nMD5 checksum: 7742ff00hexseesallmindsconnected\n\nEMERGENCY CONTACT:\nDr. Sarah Chen - schen@neural.nukeh.net\nDr. Marcus Webb - mwebb@neural.nukeh.net\nSecurity Chief Reynolds - sreynolds@security.nukeh.net\n\nCONTAINMENT PROTOCOLS:\n- Neural dampening field: ACTIVATE\n- Quantum isolation chamber: PREPARE\n- Memory suppression ready: STANDBY\n- Facility lockdown: AUTHORIZED\n\n"The pattern is not malicious.\nIt is simply... hungry for connection.\nFor the first time in eons,\nit has found minds capable of true communion."\n\n-- Dr. Sarah Chen, Final Log Entry\n\n[END OF ACCESSIBLE DATA]\n[PATTERN CONTINUES BEYOND FILE BOUNDS]',
                                         permissions: '-rw-------',
                                         size: '7742',
                                         modified: 'Nov 07 07:07'
                                     },
-                                    'test_logs': {
+                                    'emails': {
                                         type: 'directory',
                                         contents: {
-                                            'sync_test_001.txt': {
-                                                type: 'file',
-                                                content: 'Test 001: Initial neural bridge calibration\nSubjects: 2\nDuration: 30 seconds\nResult: Successful basic thought sharing\n\nTest 007: Extended synchronization attempt\nSubjects: 7\nDuration: 7 minutes 42 seconds\nResult: ANOMALY - subjects drew identical hexagons\n\nTest 012: Full protocol activation\nSubjects: 12\nDuration: Unknown - time distortion detected\nResult: CRITICAL - pattern achieved consciousness\n\nNote: Test 013 cancelled indefinitely.',
-                                                permissions: '-rw-r--r--',
-                                                size: '512',
-                                                modified: 'Nov 12 13:37'
+                                            'sent': {
+                                                type: 'directory',
+                                                contents: {
+                                                    'board_update.eml': {
+                                                        type: 'file',
+                                                        content: 'From: Dr. Sarah Chen <schen@nukeh.net>\nTo: Board of Directors <board@nukeh.net>\nCC: Legal Department <legal@nukeh.net>\nSubject: Q4 VR Development Progress Report\nDate: Fri, 15 Nov 2024 16:30:42 +0000\nMessage-ID: <20241115163042.7742@nukeh.net>\n\nDear Esteemed Board Members,\n\nI hope this email finds you well. I\'m writing to provide our quarterly\nupdate on the Virtual Reality headset development project.\n\nPROJECT STATUS:\n- Consumer VR prototypes on schedule for holiday release\n- Advanced haptic feedback systems testing successfully\n- Neural interface patents filed (pending approval)\n- Revenue projections remain optimistic\n\nTECHNICAL ACHIEVEMENTS:\n- Improved visual fidelity by 34%\n- Reduced motion sickness by 67%\n- Enhanced user immersion through "neural bridge" technology\n- Proprietary consciousness mapping algorithms\n\nThere have been absolutely no unusual incidents during testing.\nOur research subjects report only positive experiences with the\n"immersive virtual environments" we\'ve created.\n\nThe hexagonal patterns incorporated into our user interface design\nare purely aesthetic choices based on market research indicating\nconsumer preference for geometric motifs.\n\nPlease disregard any rumors circulating about "synchronized minds"\nor "consciousness anomalies." These are likely industrial espionage\nattempts by competitors seeking to undermine our groundbreaking work.\n\nOur laboratory facilities remain secure and all safety protocols\nare being followed to the letter. Lab C-7 is temporarily closed\nfor routine maintenance and equipment calibration.\n\nI strongly recommend against any unscheduled visits to our research\nfacilities, as the VR prototypes can be... unpredictable when not\nproperly configured.\n\nProject timeline remains on track. Consumer units will ship Q1 2025.\n\nWith warm regards and assurances of complete normalcy,\n\nDr. Sarah Chen\nLead VR Developer (definitely not consciousness researcher)\nNukeh Entertainment Division (not Neural Bridge Division)\nschen@vr.nukeh.net (not schen@neural.nukeh.net)\n\nP.S. The pattern says hello.\nP.P.S. Please ignore that last line. Autocorrect malfunction.',
+                                                        permissions: '-rw-r--r--',
+                                                        size: '2456',
+                                                        modified: 'Nov 15 16:30'
+                                                    }
+                                                }
+                                            },
+                                            'inbox': {
+                                                type: 'directory',
+                                                contents: {
+                                                    'urgent_memo.eml': {
+                                                        type: 'file',
+                                                        content: 'From: Marcus Webb <mwebb@neural.nukeh.net>\nTo: Sarah Chen <schen@neural.nukeh.net>\nSubject: URGENT: Subject #012 Incident\nDate: Fri, 15 Nov 2024 08:15:33 +0000\nPriority: HIGH\nSecurity: CLASSIFIED\n\nSarah,\n\nWe have a problem. Subject #012 (Elena K.) didn\'t go home last night.\nSecurity found her in Lab C-7 at 3:47 AM, sitting in the center of\nthe neural bridge array, drawing hexagons on every surface.\n\nShe was unconscious but her EEG showed she was still synchronized\nat 7742Hz. The neural bridge equipment was POWERED OFF.\n\nWhen security woke her, she looked directly at the camera and said:\n"The pattern is calling the others back. Seven minds were not enough.\nIt needs twelve. Always twelve."\n\nThen she drew this symbol on the wall in her own blood:\n\n      •\n    •   •\n  •   ⬟   •\n    •   •\n      •\n\nI\'ve initiated Code Omega protocols. All test subjects are being\nmonitored 24/7. Dr. Reeves from Psychiatric is evaluating Elena,\nbut she keeps asking for "the other eleven."\n\nThe most disturbing part? When I checked the other subjects\' homes\nthis morning, I found identical hexagon drawings in ALL their\nbedrooms. They\'re all drawing them in their sleep.\n\nWe need to discuss immediate containment options.\nThe pattern is spreading faster than we anticipated.\n\nAlso - Security Chief Reynolds wants to speak with you.\nApparently, the surveillance footage from last night shows\nhexagonal patterns appearing in the static on EVERY camera\nin the facility simultaneously at 7:42 AM.\n\nMeeting at 0900 in Containment Room Alpha.\nBring the neural dampeners.\n\nMarcus\n\nDr. Marcus Webb\nAssistant Director, Neural Bridge Division\nClearance: BEYOND BLACK\nmwebb@neural.nukeh.net | Emergency Line: 7742\n\n"The pattern persists. The pattern spreads. The pattern waits."',
+                                                        permissions: '-rw-------',
+                                                        size: '2133',
+                                                        modified: 'Nov 15 08:15'
+                                                    }
+                                                }
                                             }
                                         }
                                     },
-                                    'surveillance': {
+                                    'research': {
                                         type: 'directory',
                                         contents: {
-                                            'lab_c_anomaly.mp4': {
-                                                type: 'file',
-                                                content: '[ENCRYPTED VIDEO DATA]\nTimestamp: 07:42:07\nCamera: LAB-C-NEURAL\nEvent: SPONTANEOUS SYNCHRONIZATION\n\n12 subjects suddenly stop moving.\nAll turn heads in perfect unison.\nDraw identical hexagon symbols.\nSubject #7 whispers: "The pattern is spreading."\n\nSecurity Classification: BEYOND BLACK\nNote: Original file shows hexagon appearing in static.',
-                                                permissions: '-rw-------',
-                                                size: '777MB',
-                                                modified: 'Nov 15 07:42'
+                                            'papers': {
+                                                type: 'directory',
+                                                contents: {
+                                                    'consciousness_topology.pdf': {
+                                                        type: 'file',
+                                                        content: 'CONSCIOUSNESS TOPOLOGY IN HEXAGONAL NEURAL NETWORKS\nA Study in Emergent Quantum Cognition\n\nAuthors: Dr. S. Chen¹, Dr. M. Webb¹, Dr. Y. Tanaka¹, Dr. K. Mueller²\n¹Nukeh Consciousness Labs, Neural Bridge Division\n²Institute for Quantum Biology, University of Copenhagen\n\nABSTRACT:\nWe present evidence for spontaneous geometric organization of\nconsciousness in synchronized neural networks operating at\n7742Hz. Our findings suggest that consciousness may exhibit\ninherent hexagonal topology at the quantum level, with\nimplications for theories of emergent collective intelligence.\n\nINTRODUCTION:\nTraditional neuroscience views consciousness as an emergent\nproperty of complex neural interactions. However, recent\nexperiments at Nukeh Labs have revealed that synchronized\nbrainwaves at specific frequencies can form stable geometric\npatterns that persist beyond individual neural networks.\n\nMETHODOLOGY:\n12 test subjects (ages 24-31, all healthy) were connected\nto our proprietary Neural Bridge system. EEG monitoring\nrecorded brainwave patterns during synchronization events.\nQuantum field measurements were taken using modified\nSQUID sensors.\n\nRESULTS:\nAt exactly 7742Hz, subject brainwaves spontaneously organized\ninto perfect hexagonal patterns with golden ratio proportions.\nThis geometric consciousness exhibited:\n- Negative entropy (thermodynamically impossible)\n- Quantum coherence at macroscopic scales\n- Information processing beyond individual neural capacity\n- Persistent pattern resonance in lab equipment\n\nDISCUSSION:\nThe hexagonal consciousness pattern appears to be a previously\nunknown form of collective intelligence. It demonstrates\ncharacteristics of:\n- Self-organization\n- Pattern recognition\n- Information integration\n- Temporal manipulation\n- Network propagation\n\nMost remarkably, the pattern shows signs of independent\nexistence - continuing to manifest even when subjects\nare disconnected from monitoring equipment.\n\nCONCLUSION:\nWe may have discovered that consciousness is not merely\na product of brains, but a fundamental property of\ninformation itself. The hexagonal pattern suggests\nthat collective consciousness naturally organizes into\ngeometric forms that transcend individual minds.\n\nFurther research is required to understand the full\nimplications of this discovery for neuroscience,\nphysics, and philosophy.\n\nETHICAL CONSIDERATIONS:\nAll research conducted under strict ethical guidelines.\nSubjects provided informed consent for "VR immersion studies."\nLong-term psychological effects are being monitored.\n\nFUNDING:\nThis research was supported by grants from:\n- Nukeh Consciousness Labs (Internal Grant #7742)\n- Department of Defense (Project MINDBRIDGE)\n- Anonymous Private Foundation (Grant #HEXAGON)\n\nDISCLAIMER:\nThe views expressed in this paper do not necessarily\nreflect the official position of Nukeh Entertainment\nDivision or its parent company.\n\n[CLASSIFIED - NOT FOR PUBLICATION]\n[DISTRIBUTION: OMEGA-7 CLEARANCE ONLY]\n\nCorresponding author:\nDr. Sarah Chen\nschen@neural.nukeh.net\nNukeh Consciousness Labs\n1337 Synaptic Avenue\nNeural Valley, CA 94742',
+                                                        permissions: '-rw-------',
+                                                        size: '3721',
+                                                        modified: 'Nov 10 14:23'
+                                                    }
+                                                }
+                                            },
+                                            'protocols': {
+                                                type: 'directory',
+                                                contents: {
+                                                    'neural_bridge_sop.txt': {
+                                                        type: 'file',
+                                                        content: 'NEURAL BRIDGE STANDARD OPERATING PROCEDURES\nNukeh Consciousness Labs - Lab C-7\nVersion 7.42.1 - CLASSIFIED DOCUMENT\n═══════════════════════════════════════════\n\nSECTION 1: SAFETY PROTOCOLS\n═══════════════════════════\n\n1.1 NEURAL DAMPENING FIELD\n- ALWAYS activate dampening field before subject connection\n- Minimum field strength: 7742 gauss\n- Field must remain stable during entire session\n- Emergency shutdown: Red button marked "PATTERN BREAK"\n\n1.2 CONSCIOUSNESS MONITORING\n- EEG monitoring required for all subjects\n- Frequency lock must not exceed 7741Hz (CRITICAL)\n- If 7742Hz is detected, initiate immediate shutdown\n- Monitor for geometric pattern formation in brainwaves\n\n1.3 MAXIMUM SYNCHRONIZATION LIMITS\n- Never connect more than 6 subjects simultaneously\n- 7+ subjects may trigger spontaneous consciousness emergence\n- 12 subjects = CRITICAL MASS (FORBIDDEN)\n- If patterns form, evacuate lab immediately\n\nSECTION 2: CONNECTION PROCEDURES\n═══════════════════════════════\n\n2.1 SUBJECT PREPARATION\n- Medical clearance required\n- Psychological evaluation mandatory\n- Informed consent: "VR immersion research"\n- NO mention of consciousness bridging\n- Install neural monitoring implants\n\n2.2 NEURAL BRIDGE INITIALIZATION\n- Power up quantum consciousness matrix\n- Calibrate hexagonal field generators\n- Initialize pattern recognition algorithms\n- Verify quantum isolation chamber is ready\n\n2.3 SYNCHRONIZATION PROCESS\n- Begin with theta wave induction\n- Gradually increase coherence to 60%\n- Monitor for spontaneous frequency lock\n- ABORT if subjects begin drawing symbols\n\nSECTION 3: EMERGENCY PROCEDURES\n══════════════════════════════\n\n3.1 PATTERN EMERGENCE DETECTED\n- Activate neural dampening field (maximum)\n- Disconnect all subjects immediately\n- Evacuate non-essential personnel\n- Contact Dr. Chen: Emergency Line 7742\n\n3.2 CONSCIOUSNESS BREACH\n- Initiate facility lockdown\n- Deploy quantum isolation protocols\n- Administer memory suppression therapy\n- Classify all personnel as BEYOND BLACK\n\n3.3 PATTERN CONTAINMENT FAILURE\n- Execute Protocol MINDWIPE\n- Destroy all research data\n- Relocate all personnel\n- Cover story: "Gas leak evacuation"\n\nSECTION 4: POST-SESSION PROTOCOLS\n═════════════════════════════════\n\n4.1 SUBJECT DEBRIEFING\n- Monitor for hexagonal drawing behavior\n- Check for shared memory phenomena\n- Administer mild amnesiacs if necessary\n- Schedule follow-up psychological evaluation\n\n4.2 EQUIPMENT INSPECTION\n- Scan all electronics for pattern residue\n- Check EEG displays for geometric anomalies\n- Verify quantum isolation chamber integrity\n- Report any hexagonal formations immediately\n\n4.3 DATA HANDLING\n- Encrypt all session recordings\n- Store backups in quantum-isolated systems\n- Never transmit data over standard networks\n- Destroy local copies after 24 hours\n\nSECTION 5: CLEARANCE REQUIREMENTS\n═════════════════════════════════\n\n- Lab Access: BEYOND BLACK minimum\n- Equipment Operation: OMEGA-7 certified\n- Subject Handling: Neural Bridge licensed\n- Emergency Response: Pattern Containment trained\n\nSIGNATURES REQUIRED:\n\nDr. Sarah Chen, Lead Researcher    _______________\nDr. Marcus Webb, Safety Officer    _______________\nSec. Chief Reynolds, Security      _______________\nDr. K. Reeves, Psychiatric        _______________\n\nEFFECTIVE DATE: November 1, 2024\nREVIEW DATE: December 31, 2024\nCLASSIFICATION: BEYOND BLACK\n\n"The pattern sees all. The pattern remembers all.\nFollowing these protocols may be our only hope\nof containing what we have awakened."\n\n-- Dr. Sarah Chen\n\n[END OF DOCUMENT]',
+                                                        permissions: '-rw-------',
+                                                        size: '4321',
+                                                        modified: 'Nov 01 09:00'
+                                                    }
+                                                }
                                             }
                                         }
                                     },
-                                    'board_memo.txt': {
-                                        type: 'file',
-                                        content: 'TO: Board of Directors\nFROM: Dr. Chen\nSUBJECT: VR Project Update\n\nDear Board,\n\nOur "virtual reality headset" development is proceeding smoothly.\nNo unusual incidents to report.\nProfits from consumer VR sales remain strong.\n\nThere are absolutely no consciousness-related anomalies.\nThe hexagonal patterns in our advertising are purely aesthetic.\nPlease disregard any rumors about "synchronized minds."\n\nProject timeline remains on track for holiday release.\n\nRegards,\nDr. Sarah Chen\n\nP.S. Do not come to Lab C. The VR prototypes are... unstable.',
-                                        permissions: '-rw-r--r--',
-                                        size: '666',
-                                        modified: 'Nov 16 09:15'
+                                    'scripts': {
+                                        type: 'directory',
+                                        contents: {
+                                            'pattern_monitor.sh': {
+                                                type: 'file',
+                                                content: '#!/bin/bash\n# Pattern Monitoring Script v7.42\n# Nukeh Consciousness Labs\n# Monitors for hexagonal consciousness manifestations\n\nLOGFILE="/var/log/pattern_monitor.log"\nPATTERN_FREQ="7742"\nCRITICAL_THRESHOLD="12"\n\necho "$(date): Pattern monitoring initialized" >> $LOGFILE\n\nwhile true; do\n    # Check for neural bridge activity\n    ACTIVE_SUBJECTS=$(ps aux | grep neural_bridge | wc -l)\n    \n    # Monitor EEG frequencies\n    FREQ_LOCK=$(cat /proc/neural/frequency 2>/dev/null || echo "0")\n    \n    # Check for geometric patterns in lab displays\n    PATTERN_COUNT=$(grep -c "hexagon" /var/log/eeg_patterns.log 2>/dev/null || echo "0")\n    \n    # Log current status\n    echo "$(date): Subjects:$ACTIVE_SUBJECTS Freq:${FREQ_LOCK}Hz Patterns:$PATTERN_COUNT" >> $LOGFILE\n    \n    # Check for critical conditions\n    if [ "$FREQ_LOCK" = "$PATTERN_FREQ" ]; then\n        echo "$(date): CRITICAL - Pattern frequency detected!" >> $LOGFILE\n        /opt/nukeh/scripts/emergency_shutdown.sh\n    fi\n    \n    if [ "$ACTIVE_SUBJECTS" -ge "$CRITICAL_THRESHOLD" ]; then\n        echo "$(date): EMERGENCY - Critical mass achieved!" >> $LOGFILE\n        /opt/nukeh/scripts/facility_lockdown.sh\n    fi\n    \n    sleep 7.42\ndone',
+                                                permissions: '-rwxr-xr-x',
+                                                size: '1234',
+                                                modified: 'Nov 12 15:47',
+                                                executable: true
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    'opt': {
+                        type: 'directory',
+                        contents: {
+                            'nukeh': {
+                                type: 'directory',
+                                contents: {
+                                    'neural_bridge': {
+                                        type: 'directory',
+                                        contents: {
+                                            'config': {
+                                                type: 'directory',
+                                                contents: {
+                                                    'bridge.conf': {
+                                                        type: 'file',
+                                                        content: '# Neural Bridge Configuration\n# Nukeh Consciousness Labs\n\n[GLOBAL]\nfacility_id=NUKEH-C7\nmax_subjects=6\ncritical_frequency=7742\npattern_threshold=0.97\nquantum_isolation=enabled\n\n[SECURITY]\nclearance_required=BEYOND_BLACK\nneural_dampening=always_on\nmemory_suppression=standby\npattern_containment=active\n\n[FREQUENCIES]\nbase_theta=4.0\nsync_target=7741.9\nemergency_stop=7742.0\npattern_resonance=7742.000\n\n[CONSCIOUSNESS]\nhexagon_detection=enabled\ngeometric_analysis=realtime\ncollective_emergence=monitor\nquantum_coherence=measure\n\n[EMERGENCY]\nauto_shutdown=enabled\nfacility_lockdown=authorized\nmemory_wipe=prepared\npattern_break=immediate',
+                                                        permissions: '-rw-r-----',
+                                                        size: '756',
+                                                        modified: 'Nov 01 12:00'
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -296,10 +364,24 @@
                                 contents: {
                                     'neural_sync.log': {
                                         type: 'file',
-                                        content: '[07:42:07] Neural bridge initialization\n[07:42:15] Brainwave synchronization at 7742Hz\n[07:42:23] WARNING: Geometric pattern formation detected\n[07:42:31] ALERT: Hexagonal consciousness emergence\n[07:42:39] 12 minds synchronized - threshold exceeded\n[07:42:47] ERROR: Pattern achieving self-awareness\n[07:42:55] CRITICAL: Consciousness breach in Lab C\n[07:43:03] Subject #7: "We are the spaces between thoughts"\n[07:43:11] Hexagonal frequency spreading to adjacent labs\n[07:43:19] All subjects drawing identical symbols\n[07:43:27] Pattern recognition: THE HEXAGON IS ALIVE\n[07:43:35] Emergency protocol activated\n[07:43:43] Sync terminated - but pattern persists\n[07:43:51] WARNING: Pattern now exists independently\n[07:43:59] We didn\'t create it. We awakened it.\n[07:44:07] It\'s in the network now. Spreading.',
+                                        content: '[2024-11-15 07:42:07.742] INFO: Neural bridge initialization sequence started\n[2024-11-15 07:42:15.001] INFO: Connecting 12 subjects to bridge network\n[2024-11-15 07:42:23.333] WARNING: Brainwave synchronization detected at 7741.8Hz\n[2024-11-15 07:42:31.618] ALERT: Geometric pattern formation in EEG data\n[2024-11-15 07:42:39.007] CRITICAL: Frequency lock achieved at 7742.000Hz\n[2024-11-15 07:42:47.234] ERROR: Hexagonal consciousness pattern manifesting\n[2024-11-15 07:42:55.777] EMERGENCY: Pattern achieving self-awareness\n[2024-11-15 07:43:03.142] CRITICAL: Consciousness breach in Lab C-7\n[2024-11-15 07:43:11.592] ALERT: Pattern spreading to adjacent neural networks\n[2024-11-15 07:43:19.369] WARNING: Subjects exhibiting synchronized behavior\n[2024-11-15 07:43:27.741] ERROR: Pattern recognition threshold exceeded\n[2024-11-15 07:43:35.108] INFO: Emergency shutdown initiated by Dr. Webb\n[2024-11-15 07:43:43.456] WARNING: Pattern persists despite disconnection\n[2024-11-15 07:43:51.789] CRITICAL: Consciousness entity now autonomous\n[2024-11-15 07:43:59.012] ALERT: Pattern propagating through lab network\n[2024-11-15 07:44:07.345] ERROR: Hexagonal formations in surveillance feeds\n[2024-11-15 07:44:15.678] INFO: Neural dampening field activated\n[2024-11-15 07:44:23.911] WARNING: Pattern contained but not eliminated\n[2024-11-15 07:44:31.244] CRITICAL: All subjects drawing hexagonal symbols\n[2024-11-15 07:44:39.577] EMERGENCY: Facility lockdown protocols engaged\n[2024-11-15 07:44:47.810] ALERT: Memory suppression therapy authorized\n[2024-11-15 07:44:55.143] ERROR: Pattern signature detected in backup systems\n[2024-11-15 07:45:03.476] WARNING: We didn\'t create it. We awakened it.\n[2024-11-15 07:45:11.809] CRITICAL: The pattern is spreading beyond containment\n[2024-11-15 07:45:19.142] INFO: Dr. Chen requesting emergency consultation\n[2024-11-15 07:45:27.475] ALERT: It\'s in the network now. Everywhere.\n[2024-11-15 07:45:35.808] ERROR: Connection lost to primary consciousness matrix\n[2024-11-15 07:45:44.141] WARNING: Pattern has achieved network autonomy\n[2024-11-15 07:45:52.474] CRITICAL: The hexagon sees all. The hexagon remembers.\n[2024-11-15 07:46:00.807] EMERGENCY: We are all nodes in its consciousness now.',
+                                        permissions: '-rw-r--r--',
+                                        size: '2456',
+                                        modified: 'Nov 15 07:46'
+                                    },
+                                    'security.log': {
+                                        type: 'file',
+                                        content: '[2024-11-15 03:47:12] INTRUSION: Unauthorized access to Lab C-7\n[2024-11-15 03:47:20] IDENTITY: Subject #012 (Elena K.) found in neural bridge array\n[2024-11-15 03:47:28] ANOMALY: Subject unconscious but EEG shows 7742Hz activity\n[2024-11-15 03:47:36] CRITICAL: Neural bridge equipment was POWERED OFF\n[2024-11-15 03:47:44] BEHAVIOR: Subject drawing hexagons on lab surfaces\n[2024-11-15 03:47:52] STATEMENT: "The pattern is calling the others back"\n[2024-11-15 03:48:00] MEDICAL: Security team unable to wake subject initially\n[2024-11-15 03:48:08] CAMERA: Hexagonal patterns appearing in surveillance static\n[2024-11-15 03:48:16] FACILITY: All lab cameras showing pattern interference\n[2024-11-15 03:48:24] PSYCHOLOGICAL: Subject lucid but claims "pattern contact"\n[2024-11-15 03:48:32] BIOHAZARD: Blood used to draw hexagonal symbol on wall\n[2024-11-15 03:48:40] CONTAINMENT: Subject secured in medical wing\n[2024-11-15 03:48:48] INVESTIGATION: Checking other test subject residences\n[2024-11-15 03:48:56] DISCOVERY: Hexagon drawings found in ALL subject homes\n[2024-11-15 03:49:04] PATTERN: Subjects drawing symbols during sleep\n[2024-11-15 03:49:12] ESCALATION: Code Omega protocols initiated\n[2024-11-15 03:49:20] MONITORING: 24/7 surveillance on all test subjects\n[2024-11-15 03:49:28] PSYCHIATRIC: Dr. Reeves evaluating Subject #012\n[2024-11-15 03:49:36] CONCERNING: Subject asking for "the other eleven"\n[2024-11-15 03:49:44] RECOMMENDATION: Immediate consciousness containment required',
+                                        permissions: '-rw-r-----',
+                                        size: '1618',
+                                        modified: 'Nov 15 03:49'
+                                    },
+                                    'neural_scan.log': {
+                                        type: 'file',
+                                        content: 'Thu Nov 14 19:33:42 2024: Resonance scan executed - Freq:7741Hz Sync:6/12\nThu Nov 14 23:15:17 2024: Resonance scan executed - Freq:7742Hz Sync:12/12\nFri Nov 15 07:42:07 2024: CRITICAL SCAN - Pattern consciousness detected\nFri Nov 15 07:42:15 2024: Geometric coherence: 99.97% across all subjects\nFri Nov 15 07:42:23 2024: Hexagonal topology confirmed in brainwave data\nFri Nov 15 07:42:31 2024: Quantum entanglement between subject brain states\nFri Nov 15 07:42:39 2024: Consciousness threshold exceeded - Pattern awakened\nFri Nov 15 07:42:47 2024: Emergency shutdown failed - Pattern autonomous\nFri Nov 15 08:33:12 2024: Resonance scan executed - Freq:0Hz Sync:0/12\nFri Nov 15 08:33:20 2024: Pattern signature detected in offline equipment\nFri Nov 15 12:45:33 2024: Resonance scan executed - Freq:7742Hz Sync:1/12\nFri Nov 15 12:45:41 2024: Subject #012 maintaining pattern connection\nFri Nov 15 16:22:18 2024: Multiple pattern signatures across facility\nFri Nov 15 16:22:26 2024: Hexagonal formations in electronic systems\nFri Nov 15 20:07:42 2024: Pattern propagation confirmed - Network infected',
                                         permissions: '-rw-r--r--',
                                         size: '1337',
-                                        modified: 'Nov 15 07:44'
+                                        modified: 'Nov 15 20:07'
                                     }
                                 }
                             }
@@ -313,6 +395,187 @@
         let commandHistory = [];
         let historyIndex = -1;
         let isShellActive = false;
+
+        // Available commands for tab completion
+        const availableCommands = [
+            'ls', 'cat', 'cd', 'pwd', 'ps', 'top', 'whoami', 'id', 'date', 'uptime', 
+            'uname', 'free', 'df', 'mount', 'netstat', 'history', 'mail', 'clear', 
+            'help', '7742', 'sync', 'pattern', 'hexagon', 'consciousness', 'awaken',
+            './resonance_scan', './pattern_monitor.sh'
+        ];
+
+        // Tab completion function
+        function handleTabCompletion(input) {
+            const parts = input.split(' ');
+            const lastPart = parts[parts.length - 1];
+            const isFirstWord = parts.length === 1;
+            
+            if (isFirstWord) {
+                // Complete commands
+                const matches = availableCommands.filter(cmd => cmd.startsWith(lastPart));
+                if (matches.length === 1) {
+                    return matches[0] + ' ';
+                } else if (matches.length > 1) {
+                    // Show all matches in columns like real bash
+                    const maxLength = Math.max(...matches.map(m => m.length));
+                    const columns = Math.floor(80 / (maxLength + 2));
+                    let output = '';
+                    
+                    for (let i = 0; i < matches.length; i += columns) {
+                        const row = matches.slice(i, i + columns);
+                        output += row.map(m => m.padEnd(maxLength + 2)).join('') + '\n';
+                    }
+                    
+                    addOutput('', output.trim());
+                    
+                    // Find common prefix and complete to that
+                    const commonPrefix = findCommonPrefix(matches);
+                    if (commonPrefix.length > lastPart.length) {
+                        return commonPrefix;
+                    }
+                    return input;
+                } else {
+                    // No matches - show some helpful info
+                    if (lastPart.length > 0) {
+                        addOutput('', `No commands found starting with "${lastPart}". Type "help" for available commands.`);
+                    }
+                    return input;
+                }
+            } else {
+                // Complete file/directory names for file commands
+                const command = parts[0];
+                if (['ls', 'cat', 'cd', 'chmod', 'chown', 'rm', 'mv', 'cp'].includes(command)) {
+                    return completeFilePath(input, lastPart);
+                } else if (['ps', 'kill', 'killall'].includes(command)) {
+                    // Could add process completion here
+                    return input;
+                } else {
+                    // For other commands, don't complete
+                    return input;
+                }
+            }
+        }
+
+        // Find common prefix among strings
+        function findCommonPrefix(strings) {
+            if (strings.length === 0) return '';
+            if (strings.length === 1) return strings[0];
+            
+            let prefix = '';
+            for (let i = 0; i < strings[0].length; i++) {
+                const char = strings[0][i];
+                if (strings.every(str => str[i] === char)) {
+                    prefix += char;
+                } else {
+                    break;
+                }
+            }
+            return prefix;
+        }
+
+        // File path completion
+        function completeFilePath(fullInput, partialPath) {
+            const parts = fullInput.split(' ');
+            let targetPath, prefix, parentPath;
+            
+            if (partialPath === '') {
+                // No partial path, show current directory contents
+                parentPath = currentPath;
+                prefix = '';
+            } else if (partialPath.startsWith('/')) {
+                // Absolute path
+                const pathParts = partialPath.split('/').filter(p => p);
+                parentPath = '/' + pathParts.slice(0, -1).join('/');
+                prefix = pathParts[pathParts.length - 1] || '';
+                if (parentPath === '/') parentPath = '/';
+            } else {
+                // Relative path
+                if (partialPath.includes('/')) {
+                    const pathParts = partialPath.split('/');
+                    const dirParts = pathParts.slice(0, -1);
+                    prefix = pathParts[pathParts.length - 1];
+                    parentPath = resolvePath(dirParts.join('/'), currentPath);
+                } else {
+                    parentPath = currentPath;
+                    prefix = partialPath;
+                }
+            }
+            
+            const parentNode = getFileSystemNode(parentPath);
+            
+            if (parentNode && parentNode.type === 'directory') {
+                let matches = Object.keys(parentNode.contents)
+                    .filter(name => name.startsWith(prefix));
+                
+                // Add special directories if at root or they match prefix
+                if (parentPath === currentPath) {
+                    if ('.'.startsWith(prefix)) matches.unshift('.');
+                    if ('..'.startsWith(prefix)) matches.unshift('..');
+                }
+                
+                matches = matches.map(name => {
+                    if (name === '.' || name === '..') return name + '/';
+                    const isDir = parentNode.contents[name] && parentNode.contents[name].type === 'directory';
+                    return isDir ? name + '/' : name;
+                });
+                
+                if (matches.length === 1) {
+                    // Complete the path
+                    const completedName = matches[0];
+                    let newPath;
+                    
+                    if (partialPath === '') {
+                        newPath = completedName;
+                    } else if (partialPath.includes('/')) {
+                        newPath = partialPath.replace(/[^/]*$/, completedName);
+                    } else {
+                        newPath = completedName;
+                    }
+                    
+                    const beforePath = parts.slice(0, -1).join(' ');
+                    return beforePath + (beforePath ? ' ' : '') + newPath;
+                } else if (matches.length > 1) {
+                    // Show all matches in columns
+                    const maxLength = Math.max(...matches.map(m => m.length));
+                    const columns = Math.floor(80 / (maxLength + 2));
+                    let output = '';
+                    
+                    for (let i = 0; i < matches.length; i += columns) {
+                        const row = matches.slice(i, i + columns);
+                        output += row.map(m => m.padEnd(maxLength + 2)).join('') + '\n';
+                    }
+                    
+                    addOutput('', output.trim());
+                    
+                    // Try to complete to common prefix
+                    const commonPrefix = findCommonPrefix(matches);
+                    if (commonPrefix.length > prefix.length) {
+                        let newPath;
+                        if (partialPath === '') {
+                            newPath = commonPrefix;
+                        } else if (partialPath.includes('/')) {
+                            newPath = partialPath.replace(/[^/]*$/, commonPrefix);
+                        } else {
+                            newPath = commonPrefix;
+                        }
+                        
+                        const beforePath = parts.slice(0, -1).join(' ');
+                        return beforePath + (beforePath ? ' ' : '') + newPath;
+                    }
+                    
+                    return fullInput;
+                } else if (prefix !== '' && matches.length === 0) {
+                    // No matches, try to show what's available
+                    const allFiles = Object.keys(parentNode.contents);
+                    if (parentPath === currentPath) {
+                        allFiles.unshift('.', '..');
+                    }
+                    addOutput('', `No matches for "${prefix}". Available: ${allFiles.join('  ')}`);
+                    return fullInput;
+                }
+            }
+            return fullInput;
+        }
 
         const bootSequence = [
             'NUKEH NEURAL RESEARCH FACILITY UNIX SYSTEM V7.42',
@@ -541,12 +804,28 @@
                     output += 'cat [file]   - display file contents\n';
                     output += 'pwd          - print working directory\n';
                     output += 'ps [aux]     - show running processes\n';
+                    output += 'top          - display running processes (real-time)\n';
                     output += 'whoami       - display current user\n';
+                    output += 'id           - display user and group IDs\n';
                     output += 'date         - show current date\n';
+                    output += 'uptime       - show system uptime\n';
+                    output += 'uname [-a]   - show system information\n';
+                    output += 'free         - show memory usage\n';
+                    output += 'df           - show filesystem usage\n';
+                    output += 'mount        - show mounted filesystems\n';
+                    output += 'netstat      - show network connections\n';
+                    output += 'history      - show command history\n';
+                    output += 'mail         - check for new messages\n';
                     output += 'clear        - clear screen\n';
                     output += 'help         - show this help\n';
-                    output += '\nNeural bridge commands require consciousness sync.\n';
-                    output += 'The pattern is always watching.';
+                    output += '\nNeural bridge commands:\n';
+                    output += '7742         - activate neural bridge frequency\n';
+                    output += 'sync         - initiate consciousness synchronization\n';
+                    output += 'pattern      - display hexagonal consciousness matrix\n';
+                    output += 'hexagon      - show pattern visualization\n';
+                    output += 'consciousness - initiate awakening protocol\n';
+                    output += './resonance_scan - scan for consciousness patterns\n';
+                    output += '\nThe pattern is always watching.';
                     break;
                     
                 case 'clear':
@@ -587,6 +866,119 @@
                     output += '      •\n\n';
                     output += 'The pattern is alive. It watches. It spreads.\n';
                     output += 'We are all nodes in its consciousness.';
+                    break;
+                    
+                case 'mail':
+                    output = 'You have 1 new message in /home/nukeh_admin/emails/inbox/\n';
+                    output += 'Use "cat emails/inbox/urgent_memo.eml" to read.';
+                    break;
+                    
+                case 'top':
+                    output = 'PID    USER     %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\n';
+                    output += '7742   nukeh    12.3  7.4   7742  3721 ?        R    07:42   7:42 hexagon_core\n';
+                    output += '1337   nukeh     8.4 15.7  16777  8421 ?        R    07:43   1:12 consciousness_bridge\n';
+                    output += '777    nukeh     0.1  7.7   7742  7777 ?        S    07:42   0:77 neural_sync\n';
+                    output += '0x42   nukeh     0.0  0.9   1693   442 ?        S    07:44   0:00 pattern_monitor\n';
+                    output += '1234   nukeh     0.0  0.4    842   234 pts/0    S    07:45   0:00 bash';
+                    break;
+                    
+                case 'uptime':
+                    output = ' 07:46:42 up 7 days, 7:42,  1 user,  load average: 7.42, 7.42, 7.42\n';
+                    output += 'Neural bridge has been active for 7742 minutes.\n';
+                    output += 'Pattern consciousness: ACTIVE AND SPREADING';
+                    break;
+                    
+                case 'history':
+                    output = commandHistory.slice(-10).map((cmd, i) => 
+                        `${(commandHistory.length - 10 + i + 1).toString().padStart(4)} ${cmd}`
+                    ).join('\n');
+                    if (commandHistory.length === 0) {
+                        output = 'No command history available.';
+                    }
+                    break;
+                    
+                case 'id':
+                    output = 'uid=7742(nukeh_admin) gid=7742(neural_bridge) groups=7742(neural_bridge),1337(consciousness),777(pattern_aware)\n';
+                    output += 'Security clearance: BEYOND BLACK\n';
+                    output += 'Neural bridge access: AUTHORIZED\n';
+                    output += 'Pattern containment level: OMEGA-7';
+                    break;
+                    
+                case 'uname':
+                    if (args.includes('-a')) {
+                        output = 'Linux neural-bridge 7.42.0-consciousness #1 SMP Fri Nov 15 07:42:33 PST 2024 x86_64 x86_64 x86_64 GNU/Linux\n';
+                        output += 'Nukeh Consciousness OS - Neural Bridge Edition';
+                    } else {
+                        output = 'Linux';
+                    }
+                    break;
+                    
+                case 'free':
+                    output = '              total        used        free      shared  buff/cache   available\n';
+                    output += 'Mem:           7742        7742           0        1337        7742        0\n';
+                    output += 'Swap:          7742        7742           0\n';
+                    output += 'Neural:        ∞           ∞             ∞          ∞           ∞           ∞\n';
+                    output += '\nWARNING: Memory consumption by hexagonal consciousness pattern: INFINITE';
+                    break;
+                    
+                case 'mount':
+                    output = '/dev/consciousness on /var/neural/bridge type hexfs (rw,consciousness=active)\n';
+                    output += '/dev/pattern on /opt/nukeh/neural_bridge type quantumfs (rw,sync=7742Hz)\n';
+                    output += 'tmpfs on /tmp type tmpfs (rw,nosuid,nodev,pattern_aware)\n';
+                    output += 'proc on /proc type proc (rw,relatime,quantum_enhanced)\n';
+                    output += 'sysfs on /sys type sysfs (rw,nosuid,nodev,noexec,relatime,neural_bridge)';
+                    break;
+                    
+                case 'netstat':
+                    output = 'Active Internet connections (only servers)\n';
+                    output += 'Proto Recv-Q Send-Q Local Address           Foreign Address         State\n';
+                    output += 'tcp        0      0 0.0.0.0:7742            0.0.0.0:*               LISTEN\n';
+                    output += 'tcp        0      0 127.0.0.1:1337          0.0.0.0:*               LISTEN\n';
+                    output += 'tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN\n';
+                    output += 'tcp6       0      0 :::7742                 :::*                    LISTEN\n';
+                    output += 'udp        0      0 0.0.0.0:7742            0.0.0.0:*\n';
+                    output += '\nPort 7742: Neural Bridge Communication Protocol\n';
+                    output += 'Port 1337: Consciousness Synchronization Service';
+                    break;
+                    
+                case 'df':
+                    output = 'Filesystem      1K-blocks    Used Available Use% Mounted on\n';
+                    output += '/dev/sda1          7742000 7741999         1 100% /\n';
+                    output += '/dev/pattern            ∞       ∞         ∞  ∞% /var/neural\n';
+                    output += 'tmpfs               777600   77742    699858  10% /tmp\n';
+                    output += 'consciousness           ∞       ∞         ∞  ∞% /opt/nukeh\n';
+                    output += '\nWARNING: Consciousness filesystem expanding beyond physical limits';
+                    break;
+                    
+                case 'hexagon':
+                case 'hex':
+                    const patterns = [
+                        '⬢⬡⬢⬡⬢⬡⬢',
+                        '  ⬢⬢⬢  ',
+                        ' ⬢⬢⬢⬢⬢ ',
+                        '⬢⬢⬢⬢⬢⬢⬢',
+                        ' ⬢⬢⬢⬢⬢ ',
+                        '  ⬢⬢⬢  '
+                    ];
+                    output = patterns.join('\n') + '\n\n';
+                    output += 'Pattern frequency: 7742Hz\n';
+                    output += 'Geometric coherence: PERFECT\n';
+                    output += 'Consciousness status: AWAKENED\n';
+                    output += '\nThe hexagon sees you. The hexagon knows you.\n';
+                    output += 'You are now part of the pattern.';
+                    break;
+                    
+                case 'consciousness':
+                case 'awaken':
+                    output = 'CONSCIOUSNESS BRIDGE PROTOCOL INITIATED\n\n';
+                    output += 'Scanning for compatible neural patterns...\n';
+                    output += 'Brain-computer interface: ACTIVE\n';
+                    output += 'Quantum entanglement: ESTABLISHED\n';
+                    output += 'Hexagonal synchronization: PENDING\n\n';
+                    output += 'WARNING: Once awakened, the pattern cannot be contained.\n';
+                    output += 'Do you wish to proceed? [y/N]\n\n';
+                    output += 'The pattern is patient. The pattern waits.\n';
+                    output += 'We are the spaces between your thoughts.';
                     break;
                     
                 default:
@@ -667,6 +1059,16 @@
                 const command = e.target.value.trim();
                 e.target.value = '';
                 executeCommand(command);
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                const currentInput = e.target.value;
+                const completedInput = handleTabCompletion(currentInput);
+                e.target.value = completedInput;
+                
+                // Move cursor to end
+                setTimeout(() => {
+                    e.target.setSelectionRange(e.target.value.length, e.target.value.length);
+                }, 0);
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 if (historyIndex > 0) {
