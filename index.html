@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MERIDIAN - Research Reactor Control Dashboard</title>
+    <title>NUKEH LABS | ████████</title>
     <style>
-        /* CSS Reset and Base Styles */
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -13,805 +14,69 @@
         }
 
         body {
-            font-family: 'Courier New', monospace;
-            background: #000;
+            font-family: 'JetBrains Mono', monospace;
+            background: #0a0a0a;
             color: #00ff41;
-            overflow: hidden;
-            height: 100vh;
-            position: relative;
+            overflow-x: hidden;
+            cursor: crosshair;
         }
 
-        /* CRT Monitor Effect */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(
-                0deg,
-                transparent,
-                transparent 2px,
-                rgba(0, 255, 65, 0.03) 2px,
-                rgba(0, 255, 65, 0.03) 4px
-            );
-            pointer-events: none;
-            z-index: 1000;
-            animation: scanlines 0.1s linear infinite;
+        .glitch {
+            animation: glitch 2s infinite;
         }
 
-        @keyframes scanlines {
-            0% { transform: translateY(0px); }
-            100% { transform: translateY(4px); }
+        @keyframes glitch {
+            0%, 90%, 100% { transform: translate(0); }
+            10% { transform: translate(-2px, 2px); }
+            20% { transform: translate(2px, -2px); }
+            30% { transform: translate(-2px, -2px); }
+            40% { transform: translate(2px, 2px); }
+            50% { transform: translate(-2px, 2px); }
+            60% { transform: translate(2px, -2px); }
+            70% { transform: translate(-2px, -2px); }
+            80% { transform: translate(2px, 2px); }
         }
 
-        /* Screen Flicker Effect */
-        body::after {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 255, 65, 0.02);
-            pointer-events: none;
-            z-index: 999;
-            animation: flicker 0.15s infinite linear alternate;
-        }
-
-        @keyframes flicker {
-            0% { opacity: 1; }
-            98% { opacity: 1; }
-            99% { opacity: 0.98; }
-            100% { opacity: 0.95; }
-        }
-
-        /* Main Dashboard Container */
-        .dashboard {
-            display: grid;
-            grid-template-areas: 
-                "header header header"
-                "left-panel center-panel right-panel"
-                "bottom-controls bottom-controls bottom-controls";
-            grid-template-rows: 80px 1fr 120px;
-            grid-template-columns: 300px 1fr 300px;
-            height: 100vh;
-            gap: 10px;
-            padding: 10px;
-            background: radial-gradient(circle at center, #001100 0%, #000000 100%);
-        }
-
-        /* Header Section */
-        .header {
-            grid-area: header;
-            background: linear-gradient(135deg, #002200 0%, #001100 100%);
-            border: 2px solid #00ff41;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.3);
-        }
-
-        .plant-name {
-            font-size: 24px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #00ff41;
-            letter-spacing: 2px;
-        }
-
-        .datetime {
-            font-size: 18px;
-            text-align: right;
-        }
-
-        .status-indicator {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .status-light {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid #00ff41;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        .status-light.green { background: #00ff41; }
-        .status-light.yellow { background: #ffff00; border-color: #ffff00; }
-        .status-light.red { background: #ff0000; border-color: #ff0000; }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 5px currentColor; }
-            50% { box-shadow: 0 0 20px currentColor; }
-        }
-
-        /* Left Panel - Meters and Gauges */
-        .left-panel {
-            grid-area: left-panel;
-            background: linear-gradient(135deg, #001100 0%, #000800 100%);
-            border: 2px solid #00ff41;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .meter-section {
-            margin-bottom: 30px;
-        }
-
-        .meter-title {
-            font-size: 14px;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: #00cccc;
-        }
-
-        .meter {
-            position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto 15px;
-            border: 3px solid #00ff41;
-            border-radius: 50%;
-            background: radial-gradient(circle, #002200 0%, #000000 70%);
-        }
-
-        .meter::before {
-            content: '';
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            border: 1px solid rgba(0, 255, 65, 0.3);
-            border-radius: 50%;
-        }
-
-        .meter-scale {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        .meter-tick {
-            position: absolute;
-            width: 2px;
-            height: 15px;
-            background: #00ff41;
-            transform-origin: bottom center;
-            top: 5px;
-            left: 50%;
-            margin-left: -1px;
-        }
-
-        .meter-tick.major {
-            height: 20px;
-            width: 3px;
-            background: #00ffff;
-        }
-
-        .meter-number {
-            position: absolute;
-            font-size: 8px;
-            color: #00ff41;
-            font-weight: bold;
-            transform: translate(-50%, -50%);
-        }
-
-        .meter-needle {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 3px;
-            height: 55px;
-            background: linear-gradient(180deg, #ff0000 0%, #ff6600 100%);
-            transform-origin: bottom center;
-            transform: translate(-50%, -100%) rotate(var(--rotation, -90deg));
-            box-shadow: 0 0 8px #ff0000;
-            border-radius: 1px;
-            z-index: 10;
-            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .meter-needle::before {
-            content: '';
-            position: absolute;
-            bottom: -8px;
-            left: 50%;
-            width: 12px;
-            height: 12px;
-            background: #333;
-            border: 2px solid #00ff41;
-            border-radius: 50%;
-            transform: translateX(-50%);
-        }
-
-        .meter-center {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 16px;
-            height: 16px;
-            background: #000;
-            border: 2px solid #00ff41;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 15;
-        }
-
-        .meter-value {
-            position: absolute;
-            bottom: 25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            font-weight: bold;
-            background: #000;
-            padding: 2px 6px;
-            border: 1px solid #00ff41;
-            color: #00ff41;
-        }
-
-        .meter-label {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 8px;
-            color: #00cccc;
-            text-transform: uppercase;
-        }
-
-        .digital-display {
-            background: #000;
-            border: 2px solid #00ff41;
-            padding: 10px;
-            font-size: 18px;
-            font-weight: bold;
-            text-align: center;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-            box-shadow: inset 0 0 10px rgba(0, 255, 65, 0.2);
-        }
-
-        /* Center Panel - Reactor Schematic */
-        .center-panel {
-            grid-area: center-panel;
-            background: linear-gradient(135deg, #001100 0%, #000800 100%);
-            border: 2px solid #00ff41;
-            padding: 20px;
+        .container {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
             justify-content: center;
-        }
-
-        .reactor-diagram {
-            position: relative;
-            width: 400px;
-            height: 500px;
-            margin: 20px auto;
-            border: 2px solid #00ff41;
-            background: linear-gradient(135deg, #001100 0%, #000600 100%);
-            border-radius: 8px;
-        }
-
-        /* TRIGA Reactor Pool and Core Tank */
-        .reactor-pool {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            width: 320px;
-            height: 450px;
-            background: linear-gradient(180deg, #001144 0%, #002288 30%, #0033aa 100%);
-            border: 3px solid #00ff41;
-            border-radius: 8px;
-            transform: translateX(-50%);
-            box-shadow: inset 0 0 30px rgba(0, 100, 255, 0.3);
-        }
-
-        .reactor-pool::before {
-            content: 'REACTOR POOL';
-            position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 10px;
-            color: #00ffff;
-            font-weight: bold;
-        }
-
-        .core-tank {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 180px;
-            height: 200px;
-            background: linear-gradient(180deg, #333333 0%, #555555 50%, #333333 100%);
-            border: 2px solid #00ff41;
-            border-radius: 90px;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.4);
-        }
-
-        .core-tank::before {
-            content: 'CORE TANK';
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 8px;
-            color: #00cccc;
-            font-weight: bold;
-        }
-
-        /* Water level indicators */
-        .water-level {
-            position: absolute;
-            left: 10px;
-            right: 10px;
-            height: 2px;
-            background: rgba(0, 150, 255, 0.6);
-            animation: water-shimmer 3s ease-in-out infinite alternate;
-        }
-
-        .water-level:nth-of-type(1) { top: 80px; }
-        .water-level:nth-of-type(2) { top: 120px; }
-        .water-level:nth-of-type(3) { top: 160px; }
-
-        @keyframes water-shimmer {
-            0% { opacity: 0.4; }
-            100% { opacity: 0.8; }
-        }
-
-        /* TRIGA Reactor Core - Circular Configuration */
-        .reactor-core {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 140px;
-            height: 140px;
-            background: 
-                radial-gradient(circle at center, rgba(0, 255, 255, 0.3) 0%, transparent 80%),
-                radial-gradient(circle at center, rgba(0, 100, 255, 0.2) 0%, transparent 60%);
-            border: 3px solid #00ff41;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
-        }
-
-        /* TRIGA Fuel Element Ring Pattern */
-        .fuel-assemblies {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 120px;
-            height: 120px;
-            transform: translate(-50%, -50%);
-            border-radius: 50%;
-        }
-
-        /* TRIGA Fuel Elements - Individual circular rods */
-        .fuel-element {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: var(--fuel-color, #4a90e2);
-            border: 1px solid var(--fuel-border, #00aaff);
-            border-radius: 50%;
-            transition: all 0.2s ease;
-            box-shadow: 0 0 4px var(--fuel-glow, #80d4ff);
-            animation: neutron-flux 2s ease-in-out infinite alternate;
-        }
-
-        /* TRIGA fuel element types */
-        .fuel-element.standard {
-            --fuel-color: #3498db;
-            --fuel-border: #2980b9;
-            --fuel-glow: #5dade2;
-        }
-
-        .fuel-element.instrumented {
-            --fuel-color: #e74c3c;
-            --fuel-border: #c0392b;
-            --fuel-glow: #ec7063;
-        }
-
-        .fuel-element.graphite {
-            --fuel-color: #2c3e50;
-            --fuel-border: #34495e;
-            --fuel-glow: #7f8c8d;
-        }
-
-        /* Position TRIGA fuel elements in rings */
-        /* Center element */
-        .fuel-element:nth-child(1) { 
-            top: 50%; left: 50%; 
-            transform: translate(-50%, -50%);
-        }
-
-        /* Inner ring (6 elements) */
-        .fuel-element:nth-child(2) { top: 20%; left: 50%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(3) { top: 35%; left: 80%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(4) { top: 65%; left: 80%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(5) { top: 80%; left: 50%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(6) { top: 65%; left: 20%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(7) { top: 35%; left: 20%; transform: translate(-50%, -50%); }
-
-        /* Outer ring (12 elements) */
-        .fuel-element:nth-child(8) { top: 5%; left: 50%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(9) { top: 15%; left: 75%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(10) { top: 30%; left: 90%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(11) { top: 50%; left: 95%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(12) { top: 70%; left: 90%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(13) { top: 85%; left: 75%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(14) { top: 95%; left: 50%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(15) { top: 85%; left: 25%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(16) { top: 70%; left: 10%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(17) { top: 50%; left: 5%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(18) { top: 30%; left: 10%; transform: translate(-50%, -50%); }
-        .fuel-element:nth-child(19) { top: 15%; left: 25%; transform: translate(-50%, -50%); }
-
-        @keyframes neutron-flux {
-            0% { 
-                opacity: 0.7;
-                box-shadow: 0 0 4px var(--fuel-glow);
-            }
-            100% { 
-                opacity: 1;
-                box-shadow: 0 0 8px var(--fuel-glow);
-            }
-        }
-
-        /* Reactor Core States */
-        .reactor-core.critical {
-            background: 
-                radial-gradient(circle at center, rgba(255, 165, 0, 0.4) 0%, transparent 70%),
-                linear-gradient(45deg, #331a00 0%, #663300 50%, #331a00 100%);
-            box-shadow: 0 0 40px rgba(255, 165, 0, 0.6);
-        }
-
-        .reactor-core.scrammed {
-            background: 
-                radial-gradient(circle at center, rgba(255, 0, 0, 0.2) 0%, transparent 70%),
-                linear-gradient(45deg, #330000 0%, #660000 50%, #330000 100%);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
-        }
-
-        .reactor-core.overload {
-            animation: core-overload 0.5s ease-in-out infinite;
-            background: 
-                radial-gradient(circle at center, rgba(255, 0, 0, 0.8) 0%, transparent 70%),
-                linear-gradient(45deg, #ff0000 0%, #ff6600 50%, #ff0000 100%);
-        }
-
-        @keyframes core-overload {
-            0%, 100% { 
-                box-shadow: 0 0 60px rgba(255, 0, 0, 1);
-                transform: translate(-50%, -50%) scale(1);
-            }
-            50% { 
-                box-shadow: 0 0 80px rgba(255, 255, 0, 1);
-                transform: translate(-50%, -50%) scale(1.05);
-            }
-        }
-
-        /* Research Reactor Control Rod System */
-        .control-rod-assembly {
-            position: absolute;
-            width: 16px;
-            height: 120px;
-            top: 80px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .control-rod-assembly:hover {
-            transform: scale(1.1);
-        }
-
-        .control-rod-drive {
-            position: absolute;
-            top: -40px;
-            left: 50%;
-            width: 24px;
-            height: 40px;
-            background: linear-gradient(180deg, #888888 0%, #555555 50%, #444444 100%);
-            border: 2px solid #00ff41;
-            border-radius: 6px 6px 0 0;
-            transform: translateX(-50%);
-            box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
-        }
-
-        .control-rod-drive::before {
-            content: attr(data-rod-name);
-            position: absolute;
-            top: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 8px;
-            color: #00ffff;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-        .control-rod-drive::after {
-            content: attr(data-position);
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 7px;
-            color: #ffff00;
-            font-weight: bold;
-        }
-
-        .control-rod {
-            position: absolute;
-            width: 16px;
-            height: var(--rod-height, 80px);
-            background: linear-gradient(180deg, #b0b0b0 0%, #707070 30%, #505050 70%, #808080 100%);
-            border: 2px solid #00ffff;
-            border-radius: 0 0 8px 8px;
-            top: var(--rod-position, 0px);
-            left: 0;
-            transition: top 2s ease-in-out;
-            box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.3);
-        }
-
-        .control-rod::before {
-            content: '';
-            position: absolute;
-            top: 8px;
-            left: 3px;
-            right: 3px;
-            height: 4px;
-            background: linear-gradient(90deg, #00ffff 0%, #80ffff 50%, #00ffff 100%);
-            border-radius: 2px;
-            box-shadow: 0 0 6px #00ffff;
-        }
-
-        .control-rod::after {
-            content: '';
-            position: absolute;
-            bottom: 8px;
-            left: 3px;
-            right: 3px;
-            height: 2px;
-            background: #666666;
-            border-radius: 1px;
-        }
-
-        /* Safety Rod (Red) */
-        .safety-rod .control-rod {
-            background: linear-gradient(180deg, #ff6b6b 0%, #cc5555 30%, #aa4444 70%, #cc5555 100%);
-            border-color: #ff4444;
-            box-shadow: inset 0 0 8px rgba(255, 68, 68, 0.3);
-        }
-
-        .safety-rod .control-rod::before {
-            background: linear-gradient(90deg, #ff4444 0%, #ff8888 50%, #ff4444 100%);
-            box-shadow: 0 0 6px #ff4444;
-        }
-
-        /* Shim Rod (Green) */
-        .shim-rod .control-rod {
-            background: linear-gradient(180deg, #6bff6b 0%, #55cc55 30%, #44aa44 70%, #55cc55 100%);
-            border-color: #44ff44;
-            box-shadow: inset 0 0 8px rgba(68, 255, 68, 0.3);
-        }
-
-        .shim-rod .control-rod::before {
-            background: linear-gradient(90deg, #44ff44 0%, #88ff88 50%, #44ff44 100%);
-            box-shadow: 0 0 6px #44ff44;
-        }
-
-        /* Regulating Rod (Yellow) */
-        .regulating-rod .control-rod {
-            background: linear-gradient(180deg, #ffff6b 0%, #cccc55 30%, #aaaa44 70%, #cccc55 100%);
-            border-color: #ffff44;
-            box-shadow: inset 0 0 8px rgba(255, 255, 68, 0.3);
-        }
-
-        .regulating-rod .control-rod::before {
-            background: linear-gradient(90deg, #ffff44 0%, #ffff88 50%, #ffff44 100%);
-            box-shadow: 0 0 6px #ffff44;
-        }
-
-        /* Position TRIGA control rods around circular core */
-        .control-rod-assembly:nth-of-type(1) { 
-            left: 50px; 
-            top: 150px; /* Safety Rod 1 */
-        }
-        .control-rod-assembly:nth-of-type(2) { 
-            left: 120px; 
-            top: 80px; /* Shim Rod 1 */
-        }
-        .control-rod-assembly:nth-of-type(3) { 
-            right: 50px; 
-            top: 150px; /* Safety Rod 2 */
-        }
-        .control-rod-assembly:nth-of-type(4) { 
-            right: 120px; 
-            top: 80px; /* Shim Rod 2 */
-        }
-        .control-rod-assembly:nth-of-type(5) { 
-            left: 50%; 
-            transform: translateX(-50%);
-            top: 40px; /* Regulating Rod - Top */
-        }
-        .control-rod-assembly:nth-of-type(6) { 
-            left: 80px;
-            top: 200px; /* Shim Rod 3 */
-        }
-        .control-rod-assembly:nth-of-type(7) { 
-            right: 80px;
-            top: 200px; /* Shim Rod 4 */
-        }
-
-        /* Primary Coolant Loop */
-        .coolant-inlet {
-            position: absolute;
-            left: 20px;
-            top: 150px;
-            width: 60px;
-            height: 20px;
-            background: linear-gradient(90deg, #0066ff 0%, #00aaff 100%);
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-        }
-
-        .coolant-inlet::before {
-            content: 'INLET';
-            position: absolute;
-            top: -20px;
-            left: 0;
-            font-size: 8px;
-            color: #00ffff;
-            font-weight: bold;
-        }
-
-        .coolant-outlet {
-            position: absolute;
-            right: 20px;
-            top: 150px;
-            width: 60px;
-            height: 20px;
-            background: linear-gradient(90deg, #ff6600 0%, #ff9900 100%);
-            border: 2px solid #00ff41;
-            border-radius: 10px;
-        }
-
-        .coolant-outlet::before {
-            content: 'OUTLET';
-            position: absolute;
-            top: -20px;
-            right: 0;
-            font-size: 8px;
-            color: #ff9900;
-            font-weight: bold;
-        }
-
-        .coolant-pipe {
-            position: absolute;
-            width: 140px;
-            height: 8px;
-            background: linear-gradient(90deg, #0066ff 0%, #ff6600 100%);
-            border: 1px solid #00ff41;
-            top: 156px;
-            left: 80px;
-        }
-
-        .coolant-flow {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                rgba(0, 255, 255, 0.8) 0%, 
-                transparent 25%, 
-                transparent 75%,
-                rgba(255, 153, 0, 0.8) 100%);
-            animation: coolant-flow 3s linear infinite;
-        }
-
-        @keyframes coolant-flow {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Steam Generator Indicators */
-        .steam-line {
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            width: 4px;
-            height: 40px;
-            background: repeating-linear-gradient(
-                0deg,
-                #ffffff 0px,
-                #ffffff 3px,
-                transparent 3px,
-                transparent 6px
-            );
-            transform: translateX(-50%);
-            animation: steam-flow 1s linear infinite;
-        }
-
-        @keyframes steam-flow {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
-
-        /* Neutron Detector Positions */
-        .neutron-detector {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: #ffff00;
-            border: 1px solid #00ff41;
-            border-radius: 50%;
-            animation: detector-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes detector-pulse {
-            0%, 100% { box-shadow: 0 0 5px #ffff00; }
-            50% { box-shadow: 0 0 15px #ffff00; }
-        }
-
-        .neutron-detector:nth-of-type(1) { top: 120px; left: 150px; }
-        .neutron-detector:nth-of-type(2) { top: 120px; right: 150px; }
-        .neutron-detector:nth-of-type(3) { bottom: 120px; left: 150px; }
-        .neutron-detector:nth-of-type(4) { bottom: 120px; right: 150px; }
-
-        /* Right Panel - Status Indicators */
-        .right-panel {
-            grid-area: right-panel;
-            background: linear-gradient(135deg, #001100 0%, #000800 100%);
-            border: 2px solid #00ff41;
-            padding: 20px;
-        }
-
-        .status-section {
-            margin-bottom: 25px;
-        }
-
-        .status-item {
-            display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding: 8px;
-            margin-bottom: 8px;
-            background: rgba(0, 255, 65, 0.1);
-            border: 1px solid #00ff41;
+            position: relative;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 200, 255, 0.1) 0%, transparent 50%);
         }
 
-        .status-label {
-            font-size: 12px;
-            text-transform: uppercase;
+        .logo {
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: 0.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 20px #00ff41;
+            animation: pulse 3s infinite;
         }
 
-        .status-value {
-            font-weight: bold;
-            font-size: 14px;
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
 
-        .warning-light {
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            margin-left: 10px;
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            letter-spacing: 0.2rem;
+            margin-bottom: 3rem;
+            opacity: 0.8;
         }
 
-        .warning-light.active {
-            animation: blink 1s ease-in-out infinite;
+        .redacted {
+            background: #00ff41;
+            color: #0a0a0a;
+            padding: 2px 8px;
+            animation: blink 1.5s infinite;
         }
 
         @keyframes blink {
@@ -819,1545 +84,216 @@
             51%, 100% { opacity: 0.3; }
         }
 
-        /* Bottom Controls */
-        .bottom-controls {
-            grid-area: bottom-controls;
+        .terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #00ff41;
+            border-radius: 8px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            margin: 2rem 0;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3);
+        }
+
+        .terminal-header {
             display: flex;
-            gap: 20px;
-            align-items: center;
-            justify-content: center;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            opacity: 0.7;
         }
 
-        .control-button {
-            padding: 20px 40px;
-            font-size: 18px;
-            font-weight: bold;
-            font-family: 'Courier New', monospace;
-            background: linear-gradient(135deg, #002200 0%, #001100 100%);
-            color: #00ff41;
-            border: 3px solid #00ff41;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        .terminal-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
-        .control-button:hover {
-            background: linear-gradient(135deg, #003300 0%, #002200 100%);
-            box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
-            transform: translateY(-2px);
+        .typing {
+            border-right: 2px solid #00ff41;
+            animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
-        .control-button.emergency {
-            background: linear-gradient(135deg, #220000 0%, #110000 100%);
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: #00ff41; }
+        }
+
+        .access-code {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid #ff0000;
             color: #ff0000;
-            border-color: #ff0000;
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3);
+            padding: 1rem;
+            margin: 2rem 0;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 0.1rem;
+            animation: danger-pulse 2s infinite;
         }
 
-        .control-button.emergency:hover {
-            background: linear-gradient(135deg, #330000 0%, #220000 100%);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.6);
+        @keyframes danger-pulse {
+            0%, 100% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.6); }
         }
 
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .dashboard {
-                grid-template-columns: 250px 1fr 250px;
-            }
+        .coordinates {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 0.8rem;
+            opacity: 0.5;
         }
 
-        @media (max-width: 900px) {
-            .dashboard {
-                grid-template-areas: 
-                    "header"
-                    "center-panel"
-                    "left-panel"
-                    "right-panel"
-                    "bottom-controls";
-                grid-template-columns: 1fr;
-                grid-template-rows: 80px 300px auto auto 120px;
-            }
-            
-            .reactor-diagram {
-                width: 250px;
-                height: 300px;
-            }
+        .static-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff41, transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateY(0vh); }
+            100% { transform: translateY(100vh); }
+        }
+
+        .warning {
+            color: #ffaa00;
+            font-size: 0.8rem;
+            text-align: center;
+            margin-top: 2rem;
+            opacity: 0.7;
+        }
+
+        .button {
+            background: transparent;
+            border: 2px solid #00ff41;
+            color: #00ff41;
+            padding: 12px 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            cursor: pointer;
+            letter-spacing: 0.1rem;
+            transition: all 0.3s ease;
+            margin: 1rem;
+        }
+
+        .button:hover {
+            background: #00ff41;
+            color: #0a0a0a;
+            box-shadow: 0 0 20px #00ff41;
+        }
+
+        .classified {
+            filter: blur(2px);
+            transition: filter 0.3s ease;
+        }
+
+        .classified:hover {
+            filter: blur(0px);
+        }
+
+        @media (max-width: 768px) {
+            .logo { font-size: 2.5rem; }
+            .terminal { padding: 1rem; }
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <!-- Header Section -->
-        <div class="header">
-            <div class="plant-name">MERIDIAN RESEARCH REACTOR</div>
-            <div style="font-size: 9px; color: #888888; margin-top: 2px; line-height: 1.2;">
-                TRIGA MARK III • 500kW THERMAL • DOCKET 50-186<br>
-                UNIVERSITY OF MERIDIAN NUCLEAR ENGINEERING DEPT.
+    <div class="static-line"></div>
+    <div class="coordinates">
+        LAT: <span class="redacted">██.████</span> | LONG: <span class="redacted">███.████</span>
+    </div>
+    
+    <div class="container">
+        <div class="logo glitch">NUKEH LABS</div>
+        <div class="subtitle">RESEARCH • <span class="redacted">CLASSIFIED</span> • DEVELOPMENT</div>
+        
+        <div class="terminal">
+            <div class="terminal-header">
+                <span>SECURE TERMINAL v3.7.2</span>
+                <span>STATUS: <span style="color: #ffaa00;">RESTRICTED</span></span>
             </div>
-            <div class="status-indicator">
-                <div class="status-light green"></div>
-                <span>OPERATIONAL</span>
-            </div>
-            <div class="datetime" id="datetime"></div>
-            <div style="font-size: 8px; color: #666666; margin-top: 8px;">
-                <div>LICENSE: R-125 EXP: 12/2029</div>
-                <div>FUEL: LEU 20% U-235</div>
-                <div>OPERATOR: <span id="operator-badge">SRO-2489</span></div>
-            </div>
-        </div>
-
-        <!-- Left Panel - Meters and Gauges -->
-        <div class="left-panel">
-            <div class="meter-section">
-                <div class="meter-title">Core Temperature</div>
-                <div class="digital-display" id="core-temp">315°C</div>
-                <div class="meter" id="temp-meter">
-                    <div class="meter-scale">
-                        <!-- Temperature scale from 250°C to 400°C for TRIGA -->
-                        <div class="meter-tick major" style="transform: rotate(-135deg);"></div>
-                        <div class="meter-number" style="top: 80%; left: 25%;">250</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(-108deg);"></div>
-                        <div class="meter-tick" style="transform: rotate(-81deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(-54deg);"></div>
-                        <div class="meter-number" style="top: 35%; left: 80%;">300</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(-27deg);"></div>
-                        <div class="meter-tick" style="transform: rotate(0deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(27deg);"></div>
-                        <div class="meter-number" style="top: 35%; right: 80%;">350</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(54deg);"></div>
-                        <div class="meter-tick" style="transform: rotate(81deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(108deg);"></div>
-                        <div class="meter-number" style="top: 80%; right: 25%;">400</div>
-                        <div class="meter-tick" style="transform: rotate(135deg);"></div>
-                    </div>
-                    <div class="meter-needle" id="temp-needle" style="--rotation: -20deg;"></div>
-                    <div class="meter-center"></div>
-                    <div class="meter-value" id="temp-status">NOMINAL</div>
-                    <div class="meter-label">°C</div>
-                </div>
-            </div>
-
-            <div class="meter-section">
-                <div class="meter-title">Pool Pressure</div>
-                <div class="digital-display" id="pressure">1.50 bar</div>
-                <div class="meter" id="pressure-meter">
-                    <div class="meter-scale">
-                        <!-- Pressure scale from 0 to 3 bar for TRIGA pool -->
-                        <div class="meter-tick major" style="transform: rotate(-135deg);"></div>
-                        <div class="meter-number" style="top: 80%; left: 25%;">0</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(-108deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(-81deg);"></div>
-                        <div class="meter-number" style="top: 55%; left: 15%;">0.5</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(-54deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(-27deg);"></div>
-                        <div class="meter-number" style="top: 25%; left: 35%;">1.0</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(0deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(27deg);"></div>
-                        <div class="meter-number" style="top: 25%; right: 35%;">1.5</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(54deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(81deg);"></div>
-                        <div class="meter-number" style="top: 55%; right: 15%;">2.0</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(108deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(135deg);"></div>
-                        <div class="meter-number" style="top: 80%; right: 25%;">3.0</div>
-                    </div>
-                    <div class="meter-needle" id="pressure-needle" style="--rotation: 0deg;"></div>
-                    <div class="meter-center"></div>
-                    <div class="meter-value" id="pressure-status">STABLE</div>
-                    <div class="meter-label">bar</div>
-                </div>
-            </div>
-
-            <div class="meter-section">
-                <div class="meter-title">Neutron Flux</div>
-                <div class="digital-display" id="neutron-flux">3.2E+13</div>
-                <div class="meter" id="flux-meter">
-                    <div class="meter-scale">
-                        <!-- Neutron flux scale logarithmic -->
-                        <div class="meter-tick major" style="transform: rotate(-135deg);"></div>
-                        <div class="meter-number" style="top: 80%; left: 25%;">1E12</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(-108deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(-81deg);"></div>
-                        <div class="meter-number" style="top: 55%; left: 15%;">5E12</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(-54deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(-27deg);"></div>
-                        <div class="meter-number" style="top: 25%; left: 35%;">1E13</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(0deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(27deg);"></div>
-                        <div class="meter-number" style="top: 25%; right: 35%;">5E13</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(54deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(81deg);"></div>
-                        <div class="meter-number" style="top: 55%; right: 15%;">1E14</div>
-                        
-                        <div class="meter-tick" style="transform: rotate(108deg);"></div>
-                        <div class="meter-tick major" style="transform: rotate(135deg);"></div>
-                    </div>
-                    <div class="meter-needle" id="flux-needle" style="--rotation: -15deg;"></div>
-                    <div class="meter-center"></div>
-                    <div class="meter-value" id="flux-status">CRITICAL</div>
-                    <div class="meter-label">n/cm²s</div>
-                </div>
-            </div>
-
-            <div class="meter-section">
-                <div class="meter-title">Power Output</div>
-                <div class="digital-display" id="power-output">485 kW</div>
+            <div class="terminal-content">
+                <div class="typing">ACCESSING NUKEH LABORATORY MAINFRAME...</div>
+                <br>
+                <div>CONNECTION ESTABLISHED</div>
+                <div>SECURITY CLEARANCE: <span class="redacted">LEVEL 4</span></div>
+                <div>PROJECT STATUS: <span class="classified">ACTIVE - PHASE III</span></div>
+                <div>LAST INCIDENT: <span class="redacted">████ DAYS AGO</span></div>
+                <br>
+                <div style="color: #ff0000;">⚠ WARNING: UNAUTHORIZED ACCESS DETECTED</div>
+                <div style="color: #ff0000;">INITIATING COUNTERMEASURES IN 00:00:<span id="countdown">47</span></div>
             </div>
         </div>
 
-        <!-- Center Panel - Reactor Schematic -->
-        <div class="center-panel">
-            <h2 style="margin-bottom: 15px; color: #00cccc;">TRIGA REACTOR POOL</h2>
-            <div class="reactor-diagram">
-                <!-- TRIGA Reactor Pool -->
-                <div class="reactor-pool">
-                    <div class="water-level"></div>
-                    <div class="water-level"></div>
-                    <div class="water-level"></div>
-                    
-                    <!-- TRIGA Core Tank -->
-                    <div class="core-tank">
-                        <!-- TRIGA Reactor Core -->
-                        <div class="reactor-core" id="reactor-core">
-                            <div class="fuel-assemblies">
-                                <!-- TRIGA Fuel Elements in Circular Pattern -->
-                                <div class="fuel-element standard"></div> <!-- Center -->
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element instrumented"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element graphite"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element instrumented"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element graphite"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element instrumented"></div>
-                                <div class="fuel-element standard"></div>
-                                <div class="fuel-element standard"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Pool Cooling System -->
-                    <div class="pool-cooling"></div>
-                    <div class="heat-exchanger"></div>
-                    <div class="circulation-arrow"></div>
-                    <div class="circulation-arrow"></div>
-                </div>
-                
-                <!-- Research Reactor Control Rod System -->
-                <div class="control-rod-assembly safety-rod" data-rod="safety-1">
-                    <div class="control-rod-drive" data-rod-name="SAFETY-1" data-position="75%"></div>
-                    <div class="control-rod" style="--rod-position: 20px;"></div>
-                </div>
-                <div class="control-rod-assembly shim-rod" data-rod="shim-1">
-                    <div class="control-rod-drive" data-rod-name="SHIM-1" data-position="82%"></div>
-                    <div class="control-rod" style="--rod-position: 14px;"></div>
-                </div>
-                <div class="control-rod-assembly safety-rod" data-rod="safety-2">
-                    <div class="control-rod-drive" data-rod-name="SAFETY-2" data-position="75%"></div>
-                    <div class="control-rod" style="--rod-position: 20px;"></div>
-                </div>
-                <div class="control-rod-assembly shim-rod" data-rod="shim-2">
-                    <div class="control-rod-drive" data-rod-name="SHIM-2" data-position="78%"></div>
-                    <div class="control-rod" style="--rod-position: 18px;"></div>
-                </div>
-                <div class="control-rod-assembly regulating-rod" data-rod="reg-1">
-                    <div class="control-rod-drive" data-rod-name="REG-1" data-position="45%"></div>
-                    <div class="control-rod" style="--rod-position: 44px;"></div>
-                </div>
-                <div class="control-rod-assembly shim-rod" data-rod="shim-3">
-                    <div class="control-rod-drive" data-rod-name="SHIM-3" data-position="80%"></div>
-                    <div class="control-rod" style="--rod-position: 16px;"></div>
-                </div>
-                <div class="control-rod-assembly shim-rod" data-rod="shim-4">
-                    <div class="control-rod-drive" data-rod-name="SHIM-4" data-position="77%"></div>
-                    <div class="control-rod" style="--rod-position: 19px;"></div>
-                </div>
-                
-                <!-- Neutron Detectors -->
-                <div class="neutron-detector"></div>
-                <div class="neutron-detector"></div>
-                <div class="neutron-detector"></div>
-                <div class="neutron-detector"></div>
-            </div>
-            <div style="margin-top: 15px; text-align: center; font-size: 10px; line-height: 1.3;">
-                <div style="color: #ff4444; margin-bottom: 3px;">SAFETY RODS: 75% INSERTED</div>
-                <div style="color: #44ff44; margin-bottom: 3px;">SHIM RODS: 79% INSERTED</div>
-                <div style="color: #ffff44; margin-bottom: 3px;">REG ROD: 45% INSERTED</div>
-                <div style="color: #0099ff; margin-bottom: 3px;">POOL TEMP: 38°C NORMAL</div>
-                <div style="color: #00aaff; margin-bottom: 3px;">CORE TEMP: 315°C NOMINAL</div>
-                <div style="color: #00ff41; margin-bottom: 3px;">POOL LEVEL: NORMAL</div>
-                <div style="color: #ffff00;">REACTOR: CRITICAL</div>
-            </div>
+        <div class="access-code">
+            ACCESS CODE REQUIRED
+            <br>
+            <small>VIOLATION OF SECURITY PROTOCOLS WILL RESULT IN IMMEDIATE TERMINATION</small>
         </div>
 
-        <!-- Right Panel - Status Indicators -->
-        <div class="right-panel">
-            <div class="status-section">
-                <div class="meter-title">System Status</div>
-                <div class="status-item">
-                    <span class="status-label">Primary Loop</span>
-                    <span class="status-value" style="color: #00ff41;">ONLINE</span>
-                    <div class="warning-light" style="background: #00ff41;"></div>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Secondary Loop</span>
-                    <span class="status-value" style="color: #00ff41;">ONLINE</span>
-                    <div class="warning-light" style="background: #00ff41;"></div>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Turbine</span>
-                    <span class="status-value" style="color: #00ff41;">ACTIVE</span>
-                    <div class="warning-light" style="background: #00ff41;"></div>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Generator</span>
-                    <span class="status-value" style="color: #00ff41;">GENERATING</span>
-                    <div class="warning-light" style="background: #00ff41;"></div>
-                </div>
-            </div>
+        <button class="button" onclick="initiateSequence()">INITIATE SEQUENCE</button>
+        <button class="button" onclick="accessArchives()">ACCESS ARCHIVES</button>
 
-            <div class="status-section">
-                <div class="meter-title">Safety Systems</div>
-                <div class="status-item">
-                    <span class="status-label">ECCS</span>
-                    <span class="status-value" style="color: #00ff41;">STANDBY</span>
-                    <div class="warning-light" style="background: #00ff41;"></div>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Containment</span>
-                    <span class="status-value" style="color: #00ff41;">SECURE</span>
-                    <div class="warning-light" style="background: #00ff41;"></div>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Radiation Mon.</span>
-                    <span class="status-value" style="color: #ffff00;">ELEVATED</span>
-                    <div class="warning-light active" style="background: #ffff00;"></div>
-                </div>
-            </div>
-
-            <div class="status-section">
-                <div class="meter-title">Alerts</div>
-                <div class="status-item">
-                    <span class="status-label">Critical Alarms</span>
-                    <span class="status-value" style="color: #00ff41;">0</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Warnings</span>
-                    <span class="status-value" style="color: #ffff00;">2</span>
-                </div>
-                <div class="status-item">
-                    <span class="status-label">Maintenance</span>
-                    <span class="status-value" style="color: #00cccc;">1</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Bottom Controls -->
-        <div class="bottom-controls">
-            <button class="control-button" onclick="acknowledgeAlert()">
-                ACKNOWLEDGE
-            </button>
-            <button class="control-button" onclick="systemTest()">
-                SYSTEM TEST
-            </button>
-            <button class="control-button" onclick="maintenance()">
-                MAINTENANCE
-            </button>
-            <button class="control-button" onclick="restartReactor()" style="background: linear-gradient(135deg, #002200 0%, #001100 100%); border-color: #00ff00;">
-                REACTOR START
-            </button>
-            <button class="control-button emergency" onclick="emergencyShutdown()">
-                EMERGENCY SCRAM
-            </button>
+        <div class="warning">
+            This facility operates under the <span class="redacted">DHARMA INITIATIVE</span> protocols.<br>
+            All activities are monitored and recorded.<br>
+            <span class="classified">THE NUMBERS: 4 8 15 16 23 42</span>
         </div>
     </div>
 
     <script>
-        // Update date and time display
-        function updateDateTime() {
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit'
-            });
-            const timeStr = now.toLocaleTimeString('en-US', {
-                hour12: false,
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            document.getElementById('datetime').innerHTML = `${dateStr}<br>${timeStr}`;
-        }
-
-        // Global variables for realistic thermal simulation (TRIGA reactor)
-        let currentCoreTemp = 315; // TRIGA operates at much lower temps
-        let targetCoreTemp = 315;
-        let tempChangeRate = 0.2; // °C per update cycle
-        
-        // Simulate dynamic data updates
-        function updateSensorData() {
-            // Realistic TRIGA core temperature simulation with thermal inertia
-            // TRIGA reactors operate at much lower temperatures (300-400°C)
-            if (Math.abs(currentCoreTemp - targetCoreTemp) < 1) {
-                // Set new target temperature occasionally
-                if (Math.random() < 0.1) { // 10% chance to change target
-                    targetCoreTemp = 315 + (Math.random() - 0.5) * 20; // ±10°C range
-                    targetCoreTemp = Math.max(305, Math.min(325, targetCoreTemp));
-                }
-            }
-            
-            // Move current temperature slowly toward target
-            if (currentCoreTemp < targetCoreTemp) {
-                currentCoreTemp = Math.min(targetCoreTemp, currentCoreTemp + tempChangeRate);
-            } else if (currentCoreTemp > targetCoreTemp) {
-                currentCoreTemp = Math.max(targetCoreTemp, currentCoreTemp - tempChangeRate);
-            }
-            
-            // Add minor random fluctuations (±1°C)
-            const tempNoise = (Math.random() - 0.5) * 2;
-            const displayTemp = Math.max(300, Math.min(350, currentCoreTemp + tempNoise));
-            
-            document.getElementById('core-temp').textContent = `${Math.round(displayTemp)}°C`;
-            
-            // Update temperature needle position (250-400°C scale for TRIGA, -135° to +135°)
-            const tempRange = 400 - 250;
-            const tempAngle = -135 + ((displayTemp - 250) / tempRange) * 270;
-            document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
-            
-            // Update temperature status for TRIGA operating range
-            const tempStatus = displayTemp > 330 ? 'HIGH' : displayTemp < 300 ? 'LOW' : 'NOMINAL';
-            document.getElementById('temp-status').textContent = tempStatus;
-
-            // TRIGA Pool Pressure (atmospheric + hydrostatic head)
-            const basePressure = 1.5; // ~1.5 bar for pool reactor (atmospheric + water column)
-            const pressure = basePressure + (Math.random() - 0.5) * 0.2; // ±0.1 bar variation
-            const clampedPressure = Math.max(1.3, Math.min(1.8, pressure)); // Realistic pool pressure range
-            document.getElementById('pressure').textContent = `${clampedPressure.toFixed(2)} bar`;
-            
-            // Update pressure needle position (0-3 bar scale for pool reactor, -135° to +135°)
-            const pressureAngle = -135 + (clampedPressure / 3) * 270;
-            document.getElementById('pressure-needle').style.setProperty('--rotation', `${pressureAngle}deg`);
-            
-            // Update pressure status with proper thresholds for pool reactor
-            let pressureStatus;
-            if (clampedPressure >= 1.7) {
-                pressureStatus = 'HIGH';
-            } else if (clampedPressure <= 1.4) {
-                pressureStatus = 'LOW';
-            } else {
-                pressureStatus = 'STABLE';
-            }
-            document.getElementById('pressure-status').textContent = pressureStatus;
-
-            // Neutron flux fluctuation (logarithmic scale)
-            const baseFlux = 3.2;
-            const flux = baseFlux + (Math.random() - 0.5) * 1.0;
-            const clampedFlux = Math.max(2.0, Math.min(4.5, flux));
-            document.getElementById('neutron-flux').textContent = `${clampedFlux.toFixed(1)}E+13`;
-            
-            // Update flux needle position (logarithmic scale approximation)
-            // 1E13 is at -27°, 3E13 is around 0°, 5E13 is at +27°
-            let fluxAngle;
-            if (clampedFlux <= 1.0) fluxAngle = -135;
-            else if (clampedFlux <= 3.0) fluxAngle = -27 + ((clampedFlux - 1.0) / 2.0) * 27;
-            else if (clampedFlux <= 5.0) fluxAngle = 0 + ((clampedFlux - 3.0) / 2.0) * 27;
-            else fluxAngle = 27 + ((clampedFlux - 5.0) / 5.0) * 108;
-            
-            document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
-            
-            // Update flux status
-            const fluxStatus = clampedFlux > 4.0 ? 'SUPER-CRIT' : clampedFlux < 2.5 ? 'SUB-CRIT' : 'CRITICAL';
-            document.getElementById('flux-status').textContent = fluxStatus;
-
-            // Power output fluctuation (500kW TRIGA reactor)
-            const basePower = 485; // 485kW nominal for 500kW licensed
-            const power = basePower + (Math.random() - 0.5) * 30;
-            const clampedPower = Math.max(450, Math.min(520, power));
-            document.getElementById('power-output').textContent = `${Math.round(clampedPower)} kW`;
-            
-            // Update reactor core appearance based on readings
-            updateReactorCoreVisuals(displayTemp, clampedPressure, clampedFlux, clampedPower);
-        }
-
-        // Update reactor core visuals based on sensor readings
-        function updateReactorCoreVisuals(temperature, pressure, flux, power) {
-            const core = document.querySelector('.reactor-core');
-            const fuelRods = document.querySelectorAll('.fuel-rod');
-            
-            // Remove all state classes first
-            core.classList.remove('critical', 'scrammed', 'overload');
-            
-            // Determine TRIGA reactor state based on readings
-            if (power > 500 || temperature > 340 || flux > 4.0) {
-                core.classList.add('critical');
-            } else if (power < 50 || temperature < 280 || flux < 1.0) {
-                core.classList.add('scrammed');
-            }
-            
-            // Update individual TRIGA fuel element appearance
-            const fuelElements = document.querySelectorAll('.fuel-element');
-            fuelElements.forEach((element, index) => {
-                // Skip graphite reflector elements
-                if (element.classList.contains('graphite')) return;
-                
-                // Calculate TRIGA fuel element intensity based on neutron flux and power
-                const fluxIntensity = Math.max(0.3, Math.min(1.2, flux / 3.2));
-                const powerIntensity = Math.max(0.2, Math.min(1.0, power / 485)); // TRIGA 485kW
-                const combinedIntensity = (fluxIntensity + powerIntensity) / 2;
-                
-                element.style.filter = `brightness(${0.4 + combinedIntensity * 0.8})`;
-                
-                // Adjust animation speed based on neutron flux
-                const animationSpeed = Math.max(1, 4 - (flux / 3.2) * 2);
-                element.style.animationDuration = `${animationSpeed}s`;
-                
-                // Add temperature-based glow for TRIGA temperatures
-                if (temperature > 330) {
-                    element.style.boxShadow = `0 0 6px rgba(255, 165, 0, ${(temperature - 300) / 100})`;
-                } else if (temperature < 300) {
-                    element.style.boxShadow = `0 0 4px rgba(0, 150, 255, ${(320 - temperature) / 50})`;
-                } else {
-                    element.style.boxShadow = '0 0 4px var(--fuel-glow)';
-                }
-            });
-        }
-
-        // Control button functions
-        function acknowledgeAlert() {
-            console.log('Alert acknowledged');
-            // Flash button effect
-            event.target.style.background = 'linear-gradient(135deg, #004400 0%, #003300 100%)';
-            setTimeout(() => {
-                event.target.style.background = '';
-            }, 200);
-        }
-
-        function systemTest() {
-            console.log('System test initiated');
-            // Flash button effect
-            event.target.style.background = 'linear-gradient(135deg, #004400 0%, #003300 100%)';
-            setTimeout(() => {
-                event.target.style.background = '';
-            }, 200);
-        }
-
-        function maintenance() {
-            console.log('Maintenance mode activated');
-            // Flash button effect
-            event.target.style.background = 'linear-gradient(135deg, #004400 0%, #003300 100%)';
-            setTimeout(() => {
-                event.target.style.background = '';
-            }, 200);
-        }
-
-        function emergencyShutdown() {
-            // Show realistic reactor control room confirmation dialog
-            const scramConfirmation = document.createElement('div');
-            scramConfirmation.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: rgba(0, 0, 0, 0.8);
-                z-index: 10000;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                font-family: 'Courier New', monospace;
-            `;
-            
-            scramConfirmation.innerHTML = `
-                <div style="
-                    background: linear-gradient(135deg, #330000 0%, #660000 100%);
-                    border: 3px solid #ff0000;
-                    padding: 30px;
-                    max-width: 500px;
-                    text-align: center;
-                    color: #ffffff;
-                    box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-                    animation: alert-pulse 1s ease-in-out infinite alternate;
-                ">
-                    <div style="font-size: 24px; color: #ff0000; margin-bottom: 20px;">
-                        ⚠️ EMERGENCY REACTOR SCRAM ⚠️
-                    </div>
-                    <div style="font-size: 14px; line-height: 1.6; margin-bottom: 25px;">
-                        <strong>WARNING:</strong> This will immediately shut down the reactor<br><br>
-                        
-                        <div style="text-align: left; margin: 15px 0;">
-                        • All control rods will be inserted<br>
-                        • Reactor power drops to zero<br>
-                        • Core temperature will decrease<br>
-                        • Neutron flux becomes subcritical<br>
-                        • Event logged in operator record
-                        </div>
-                    </div>
-                    
-                    <div style="margin-top: 25px;">
-                        <button id="confirm-scram" style="
-                            background: #ff0000;
-                            color: white;
-                            border: 2px solid #ffffff;
-                            padding: 10px 20px;
-                            margin: 0 10px;
-                            font-family: 'Courier New', monospace;
-                            font-weight: bold;
-                            cursor: pointer;
-                            font-size: 14px;
-                        ">CONFIRM SCRAM</button>
-                        
-                        <button id="cancel-scram" style="
-                            background: #006600;
-                            color: white;
-                            border: 2px solid #ffffff;
-                            padding: 10px 20px;
-                            margin: 0 10px;
-                            font-family: 'Courier New', monospace;
-                            font-weight: bold;
-                            cursor: pointer;
-                            font-size: 14px;
-                        ">CANCEL</button>
-                    </div>
-                </div>
-                
-                <style>
-                    @keyframes alert-pulse {
-                        0% { box-shadow: 0 0 30px rgba(255, 0, 0, 0.5); }
-                        100% { box-shadow: 0 0 50px rgba(255, 0, 0, 1); }
-                    }
-                </style>
-            `;
-            
-            document.body.appendChild(scramConfirmation);
-            
-            // Handle confirmation
-            document.getElementById('confirm-scram').addEventListener('click', function() {
-                document.body.removeChild(scramConfirmation);
-                console.log('EMERGENCY SCRAM INITIATED - CONFIRMED BY OPERATOR');
-                executeEmergencyScram();
-            });
-            
-            document.getElementById('cancel-scram').addEventListener('click', function() {
-                document.body.removeChild(scramConfirmation);
-                console.log('EMERGENCY SCRAM CANCELLED by operator');
-            });
-            
-            // Allow Escape key to cancel
-            function handleEscapeKey(e) {
-                if (e.key === 'Escape') {
-                    document.body.removeChild(scramConfirmation);
-                    console.log('EMERGENCY SCRAM CANCELLED by operator');
-                    document.removeEventListener('keydown', handleEscapeKey);
-                }
-            }
-            document.addEventListener('keydown', handleEscapeKey);
-        }
-        
-        function executeEmergencyScram() {
-            console.log('EXECUTING EMERGENCY SCRAM SEQUENCE');
-            
-            // Record SCRAM event in memory
-            reactorMemory.scramCount = (reactorMemory.scramCount || 0) + 1;
-            reactorMemory.lastScramTime = Date.now();
-            reactorMemory.reactorStatus = 'SCRAMMED';
-            
-            // Flash all SCRAM buttons
-            document.querySelectorAll('button').forEach(button => {
-                if (button.textContent.includes('SCRAM') || button.textContent.includes('EMERGENCY')) {
-                    button.style.background = 'linear-gradient(135deg, #440000 0%, #330000 100%)';
-                    setTimeout(() => {
-                        button.style.background = '';
-                    }, 200);
-                }
-            });
-            
-            // Initiate SCRAM sequence
-            initiateScramSequence();
-        }
-
-        function initiateScramSequence() {
-            // Update system status to SCRAMMING
-            const statusIndicator = document.querySelector('.status-indicator span');
-            const statusLight = document.querySelector('.status-light');
-            
-            statusIndicator.textContent = 'SCRAMMING';
-            statusLight.className = 'status-light red';
-            
-            // Disable all launch buttons
-            document.querySelectorAll('.launch-button').forEach(button => {
-                button.disabled = true;
-                button.style.opacity = '0.5';
-            });
-            
-            // Rapidly insert all control rods
-            document.querySelectorAll('.control-rod').forEach((rod, index) => {
-                setTimeout(() => {
-                    rod.style.animation = 'none';
-                    rod.style.transform = 'translateY(60px)';
-                    rod.style.transition = 'transform 2s ease-out';
-                }, index * 200);
-            });
-            
-            // Reduce TRIGA reactor power rapidly
-            let powerLevel = 485; // Current TRIGA power
-            let tempLevel = currentCoreTemp; // Use current temperature
-            let fluxLevel = 3.2;
-            
-            const scramInterval = setInterval(() => {
-                powerLevel = Math.max(0, powerLevel - 50);
-                tempLevel = Math.max(280, tempLevel - 3); // Slow cooling
-                fluxLevel = Math.max(0.1, fluxLevel - 0.32);
-                
-                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} kW`;
-                document.getElementById('core-temp').textContent = `${Math.round(tempLevel)}°C`;
-                document.getElementById('neutron-flux').textContent = `${fluxLevel.toFixed(1)}E+13`;
-                
-                // Update needle positions for TRIGA scale (250-400°C)
-                const tempRange = 400 - 250;
-                const tempAngle = -135 + ((tempLevel - 250) / tempRange) * 270;
-                const fluxAngle = fluxLevel <= 1.0 ? -135 : -27 + ((fluxLevel - 1.0) / 2.0) * 27;
-                
-                document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
-                document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
-                
-                // Update global temperature variables to prevent jumps
-                currentCoreTemp = tempLevel;
-                targetCoreTemp = tempLevel;
-                
-                // Update core visual states during SCRAM
-                const core = document.querySelector('.reactor-core');
-                core.classList.remove('critical', 'overload');
-                core.classList.add('scrammed');
-                
-                // Update fuel rod appearance during shutdown
-                const fuelRods = document.querySelectorAll('.fuel-rod');
-                fuelRods.forEach((rod, index) => {
-                    const intensity = Math.max(0.1, powerLevel / 850);
-                    rod.style.filter = `brightness(${0.2 + intensity * 0.3})`;
-                    rod.style.animationDuration = '4s'; // Slow neutron flux during shutdown
-                });
-                
-                // Update status indicators
-                document.getElementById('temp-status').textContent = tempLevel < 500 ? 'COLD' : 'COOLING';
-                document.getElementById('flux-status').textContent = fluxLevel < 1.0 ? 'SHUTDOWN' : 'SUB-CRIT';
-                
-                if (powerLevel <= 0) {
-                    clearInterval(scramInterval);
-                    completeScram();
-                }
-            }, 500);
-        }
-
-        function completeScram() {
-            // Update final status
-            const statusIndicator = document.querySelector('.status-indicator span');
-            statusIndicator.textContent = 'SHUTDOWN';
-            
-            // Update system status displays
-            document.querySelectorAll('.status-value').forEach(element => {
-                if (element.textContent.includes('ONLINE') || element.textContent.includes('ACTIVE')) {
-                    element.textContent = 'OFFLINE';
-                    element.style.color = '#ff0000';
-                }
-            });
-            
-            // Update warning lights
-            document.querySelectorAll('.warning-light').forEach(light => {
-                light.style.background = '#ff0000';
-                light.classList.add('active');
-            });
-            
-            // Update alerts count
-            document.querySelector('.status-item:nth-last-child(3) .status-value').textContent = '1';
-            document.querySelector('.status-item:nth-last-child(3) .status-value').style.color = '#ff0000';
-            
-            console.log('REACTOR SHUTDOWN COMPLETE');
-            console.log('All control rods fully inserted');
-            console.log('Primary systems offline');
-            console.log('Reactor in cold shutdown state');
-            
-            // Save SCRAM event to memory
-            saveReactorState();
-        }
-
-        // Initialize and start intervals
-        document.addEventListener('DOMContentLoaded', function() {
-            // Load reactor state from memory first
-            loadReactorState();
-            
-            // Restore visual state
-            restoreVisualState();
-            
-            updateDateTime();
-            updateSensorData();
-            
-            // Initialize control rod system
-            initializeControlRods();
-            
-            // Update time every second
-            setInterval(updateDateTime, 1000);
-            
-            // Update sensor data every 2 seconds
-            setInterval(updateSensorData, 2000);
-            
-            // Auto-save every 30 seconds
-            setInterval(saveReactorState, 30000);
-            
-            // Display operator statistics
-            displayOperatorStats();
-            
-            console.log('MERIDIAN Research Reactor Control Dashboard Initialized');
-            console.log('TRIGA Mark III - 500kW Thermal Power Licensed');
-            console.log('System Status: All primary systems online');
-            console.log('LEU Fuel: 20% Enriched U-235 Elements');
-            console.log('Control Room Operator Console Ready');
-            console.log('Interactive control rods: Click to adjust positions');
-            console.log('Memory system: Auto-saving every 30 seconds');
-            console.log('Operating License R-125 valid through December 2029');
-        });
-
-        // Reactor restart function
-        function restartReactor() {
-            console.log('REACTOR RESTART SEQUENCE INITIATED');
-            
-            // Reset all systems to operational
-            const statusIndicator = document.querySelector('.status-indicator span');
-            const statusLight = document.querySelector('.status-light');
-            
-            statusIndicator.textContent = 'STARTING UP';
-            statusLight.className = 'status-light yellow';
-            
-            // Re-enable buttons
-            document.querySelectorAll('.launch-button').forEach(button => {
-                button.disabled = false;
-                button.style.opacity = '1';
-            });
-            
-            // Gradually restore TRIGA power
-            let powerLevel = 0;
-            let tempLevel = 280; // TRIGA cold temperature
-            let fluxLevel = 0.1;
-            
-            const startupInterval = setInterval(() => {
-                powerLevel = Math.min(485, powerLevel + 15); // TRIGA max power
-                tempLevel = Math.min(315, tempLevel + 2); // Slow heating to 315°C
-                fluxLevel = Math.min(3.2, fluxLevel + 0.1);
-                
-                document.getElementById('power-output').textContent = `${Math.round(powerLevel)} kW`;
-                document.getElementById('core-temp').textContent = `${Math.round(tempLevel)}°C`;
-                document.getElementById('neutron-flux').textContent = `${fluxLevel.toFixed(1)}E+13`;
-                
-                // Update needle positions for TRIGA scale (250-400°C)
-                const tempRange = 400 - 250;
-                const tempAngle = -135 + ((tempLevel - 250) / tempRange) * 270;
-                const fluxAngle = fluxLevel <= 1.0 ? -135 : -27 + ((fluxLevel - 1.0) / 2.0) * 27;
-                
-                document.getElementById('temp-needle').style.setProperty('--rotation', `${tempAngle}deg`);
-                document.getElementById('flux-needle').style.setProperty('--rotation', `${fluxAngle}deg`);
-                
-                // Update global temperature variables to prevent jumps
-                currentCoreTemp = tempLevel;
-                targetCoreTemp = tempLevel;
-                
-                // Update core visual states during startup
-                const core = document.querySelector('.reactor-core');
-                core.classList.remove('scrammed', 'overload');
-                
-                if (powerLevel >= 600) {
-                    core.classList.add('critical');
-                } else {
-                    core.classList.remove('critical');
-                }
-                
-                // Update fuel rod appearance during startup
-                const fuelRods = document.querySelectorAll('.fuel-rod');
-                fuelRods.forEach((rod, index) => {
-                    const intensity = Math.max(0.3, Math.min(1, fluxLevel / 3.2));
-                    rod.style.filter = `brightness(${0.4 + intensity * 0.8})`;
-                    
-                    // Animate based on neutron flux levels
-                    if (fluxLevel > 1.5) {
-                        rod.style.animationDuration = `${3 - (fluxLevel/3.2) * 1.5}s`;
-                    }
-                });
-                
-                // Update TRIGA status indicators
-                document.getElementById('temp-status').textContent = tempLevel > 310 ? 'NOMINAL' : 'HEATING';
-                document.getElementById('flux-status').textContent = fluxLevel > 2.5 ? 'CRITICAL' : 'SUB-CRIT';
-                
-                if (powerLevel >= 485) {
-                    clearInterval(startupInterval);
-                    statusIndicator.textContent = 'OPERATIONAL';
-                    statusLight.className = 'status-light green';
-                    
-                    // Reset system status displays
-                    document.querySelectorAll('.status-value').forEach(element => {
-                        if (element.textContent.includes('OFFLINE')) {
-                            element.textContent = 'ONLINE';
-                            element.style.color = '#00ff41';
-                        }
-                    });
-                    
-                    // Reset warning lights
-                    document.querySelectorAll('.warning-light').forEach(light => {
-                        light.style.background = '#00ff41';
-                        light.classList.remove('active');
-                    });
-                    
-                    console.log('REACTOR STARTUP COMPLETE');
-                    console.log('All systems nominal');
-                }
-            }, 800);
-        }
-
-        // Persistent memory system for reactor state
-        const REACTOR_MEMORY_KEY = 'meridian_reactor_state';
-        
-        // Default reactor state
-        const defaultReactorState = {
-            controlRodPositions: {
-                'safety-1': 75,
-                'safety-2': 75,
-                'shim-1': 82,
-                'shim-2': 78,
-                'shim-3': 80,
-                'shim-4': 77,
-                'reg-1': 45
-            },
-            coreTemperature: 315,
-            targetCoreTemperature: 315,
-            neutronFlux: 3.2,
-            reactorCriticality: 1.0,
-            reactorStatus: 'OPERATIONAL',
-            lastOperatorId: 'UNKNOWN',
-            sessionStartTime: Date.now(),
-            totalOperatingHours: 0,
-            scramCount: 0,
-            lastScramTime: null
-        };
-        
-        // Global variables for control rod positions and reactor physics
-        let controlRodPositions = {};
-        let reactorCriticality = 1.0; // k-effective
-        let reactorMemory = {};
-        
-        // Memory management functions
-        function saveReactorState() {
-            reactorMemory = {
-                ...reactorMemory,
-                controlRodPositions: { ...controlRodPositions },
-                coreTemperature: currentCoreTemp,
-                targetCoreTemperature: targetCoreTemp,
-                neutronFlux: currentNeutronFlux,
-                reactorCriticality: reactorCriticality,
-                lastSaveTime: Date.now(),
-                totalOperatingHours: reactorMemory.totalOperatingHours + ((Date.now() - reactorMemory.sessionStartTime) / 3600000)
-            };
-            
-            try {
-                localStorage.setItem(REACTOR_MEMORY_KEY, JSON.stringify(reactorMemory));
-                console.log('✅ Reactor state saved to memory');
-            } catch (error) {
-                console.warn('⚠️ Failed to save reactor state:', error);
-            }
-        }
-        
-        function loadReactorState() {
-            try {
-                const savedState = localStorage.getItem(REACTOR_MEMORY_KEY);
-                if (savedState) {
-                    reactorMemory = { ...defaultReactorState, ...JSON.parse(savedState) };
-                    console.log('📁 Reactor state loaded from memory');
-                    console.log(`🕐 Last session: ${new Date(reactorMemory.lastSaveTime || 0).toLocaleString()}`);
-                    console.log(`⏱️ Total operating hours: ${reactorMemory.totalOperatingHours.toFixed(1)}h`);
-                    console.log(`🚨 SCRAM events: ${reactorMemory.scramCount}`);
-                } else {
-                    reactorMemory = { ...defaultReactorState };
-                    reactorMemory.sessionStartTime = Date.now();
-                    console.log('🆕 Initializing new reactor memory');
-                }
-            } catch (error) {
-                console.warn('⚠️ Failed to load reactor state, using defaults:', error);
-                reactorMemory = { ...defaultReactorState };
-                reactorMemory.sessionStartTime = Date.now();
-            }
-            
-            // Restore global variables
-            controlRodPositions = { ...reactorMemory.controlRodPositions };
-            currentCoreTemp = reactorMemory.coreTemperature || 2847;
-            targetCoreTemp = reactorMemory.targetCoreTemperature || 2847;
-            currentNeutronFlux = reactorMemory.neutronFlux || 3.2;
-            reactorCriticality = reactorMemory.reactorCriticality || 1.0;
-        }
-        
-        function resetReactorMemory() {
-            reactorMemory = { ...defaultReactorState };
-            reactorMemory.sessionStartTime = Date.now();
-            localStorage.removeItem(REACTOR_MEMORY_KEY);
-            console.log('🗑️ Reactor memory reset to factory defaults');
-        }
-        
-        function getOperatorStats() {
-            const sessionHours = (Date.now() - reactorMemory.sessionStartTime) / 3600000;
-            const totalHours = reactorMemory.totalOperatingHours + sessionHours;
-            
-            return {
-                sessionTime: sessionHours.toFixed(2),
-                totalTime: totalHours.toFixed(1),
-                scramCount: reactorMemory.scramCount,
-                lastScram: reactorMemory.lastScramTime ? new Date(reactorMemory.lastScramTime).toLocaleString() : 'None',
-                efficiency: Math.max(0, 100 - (reactorMemory.scramCount * 5)).toFixed(1)
-            };
-        }
-        
-        function restoreVisualState() {
-            // Restore control rod positions
-            Object.keys(controlRodPositions).forEach(rodId => {
-                updateControlRodPosition(rodId, controlRodPositions[rodId]);
-            });
-            
-            // Update reactor physics and visuals
-            updateReactorPhysics();
-            
-            console.log('🔄 Visual state restored from memory');
-        }
-        
-        function displayOperatorStats() {
-            const stats = getOperatorStats();
-            console.log('👨‍💼 OPERATOR STATISTICS:');
-            console.log(`   Session Time: ${stats.sessionTime} hours`);
-            console.log(`   Total Time: ${stats.totalTime} hours`);
-            console.log(`   SCRAM Events: ${stats.scramCount}`);
-            console.log(`   Last SCRAM: ${stats.lastScram}`);
-            console.log(`   Efficiency: ${stats.efficiency}%`);
-            
-            // Add stats to header if space allows
-            const plantInfo = document.querySelector('.plant-info');
-            if (plantInfo) {
-                const statsDiv = document.createElement('div');
-                statsDiv.style.cssText = 'font-size: 10px; color: #888888; margin-top: 5px;';
-                statsDiv.innerHTML = `Session: ${stats.sessionTime}h | Total: ${stats.totalTime}h | SCRAMs: ${stats.scramCount} | Eff: ${stats.efficiency}%`;
-                plantInfo.appendChild(statsDiv);
-            }
-        }
-        
-        // Control rod interaction system
-        function initializeControlRods() {
-            document.querySelectorAll('.control-rod-assembly').forEach(assembly => {
-                assembly.addEventListener('click', function() {
-                    const rodId = this.getAttribute('data-rod');
-                    adjustControlRod(rodId);
-                });
-            });
-        }
-        
-        function adjustControlRod(rodId) {
-            const currentPosition = controlRodPositions[rodId];
-            let newPosition;
-            
-            // Different behavior for different rod types
-            if (rodId.includes('reg')) {
-                // Regulating rod: fine adjustments ±5%
-                newPosition = currentPosition + (Math.random() > 0.5 ? 5 : -5);
-            } else if (rodId.includes('shim')) {
-                // Shim rods: medium adjustments ±10%
-                newPosition = currentPosition + (Math.random() > 0.5 ? 10 : -10);
-            } else {
-                // Safety rods: don't move unless in emergency
-                console.log(`Safety rod ${rodId} movement requires authorization`);
-                return;
-            }
-            
-            // Clamp position between 0% (fully withdrawn) and 100% (fully inserted)
-            newPosition = Math.max(0, Math.min(100, newPosition));
-            controlRodPositions[rodId] = newPosition;
-            
-            // Update visual position
-            updateControlRodPosition(rodId, newPosition);
-            
-            // Update reactor criticality
-            updateReactorPhysics();
-            
-            // Save state after rod adjustment
-            saveReactorState();
-            
-            console.log(`${rodId.toUpperCase()}: moved to ${newPosition}% insertion`);
-        }
-        
-        function updateControlRodPosition(rodId, position) {
-            const assembly = document.querySelector(`[data-rod="${rodId}"]`);
-            const rod = assembly.querySelector('.control-rod');
-            const drive = assembly.querySelector('.control-rod-drive');
-            
-            // Calculate visual position (0px = fully withdrawn, 80px = fully inserted)
-            const visualPosition = (100 - position) * 0.8; // Invert because higher % = deeper insertion
-            rod.style.setProperty('--rod-position', `${visualPosition}px`);
-            
-            // Update position display
-            drive.setAttribute('data-position', `${Math.round(position)}%`);
-        }
-        
-        function updateReactorPhysics() {
-            // Calculate average rod insertion
-            const rodValues = Object.values(controlRodPositions);
-            const avgInsertion = rodValues.reduce((a, b) => a + b, 0) / rodValues.length;
-            
-            // Calculate criticality (simplified model)
-            // More insertion = lower k-effective
-            reactorCriticality = 1.2 - (avgInsertion / 100) * 0.4;
-            
-            // Update neutron flux based on criticality
-            if (reactorCriticality > 1.0) {
-                // Supercritical - increasing power
-                currentNeutronFlux = Math.min(4.5, currentNeutronFlux * 1.02);
-            } else if (reactorCriticality < 1.0) {
-                // Subcritical - decreasing power
-                currentNeutronFlux = Math.max(0.5, currentNeutronFlux * 0.98);
-            }
-            
-            // Update status display
-            updateReactorStatus();
-        }
-        
-        // Global variable for neutron flux simulation
-        let currentNeutronFlux = 3.2;
-        
-        function updateReactorStatus() {
-            // Update rod position displays
-            const safetyRods = [controlRodPositions['safety-1'], controlRodPositions['safety-2']];
-            const shimRods = [controlRodPositions['shim-1'], controlRodPositions['shim-2'], 
-                             controlRodPositions['shim-3'], controlRodPositions['shim-4']];
-            const regRod = controlRodPositions['reg-1'];
-            
-            const avgSafety = Math.round(safetyRods.reduce((a, b) => a + b, 0) / safetyRods.length);
-            const avgShim = Math.round(shimRods.reduce((a, b) => a + b, 0) / shimRods.length);
-            
-            // Update status text
-            const statusLines = document.querySelectorAll('.center-panel div[style*="margin-top"] div');
-            if (statusLines.length >= 6) {
-                statusLines[0].innerHTML = `<span style="color: #ff4444;">SAFETY RODS: ${avgSafety}% INSERTED</span>`;
-                statusLines[1].innerHTML = `<span style="color: #44ff44;">SHIM RODS: ${avgShim}% INSERTED</span>`;
-                statusLines[2].innerHTML = `<span style="color: #ffff44;">REG ROD: ${regRod}% INSERTED</span>`;
-                
-                // Update reactor state based on criticality
-                let reactorState = 'CRITICAL';
-                let stateColor = '#ffff00';
-                if (reactorCriticality > 1.05) {
-                    reactorState = 'SUPER-CRITICAL';
-                    stateColor = '#ff8800';
-                } else if (reactorCriticality < 0.95) {
-                    reactorState = 'SUB-CRITICAL';
-                    stateColor = '#8888ff';
-                }
-                statusLines[5].innerHTML = `<span style="color: ${stateColor};">REACTOR: ${reactorState}</span>`;
-            }
-        }
-
-        // Easter egg functions
-        let konamiCode = [];
-        const konamiSequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'KeyB', 'KeyA'];
-        let clickSequence = [];
-        let lastClickTime = 0;
-
-        function activateGodMode() {
-            console.log('🎮 GOD MODE ACTIVATED');
-            console.log('⚡ Unlimited power generation enabled');
-            console.log('🛡️ All safety systems bypassed');
-            
-            // Override power generation
-            document.getElementById('power-output').textContent = '9999 MW';
-            document.getElementById('core-temp').textContent = '∞°C';
-            document.getElementById('neutron-flux').textContent = '∞E+∞';
-            
-            // Add god mode visual effects
-            const core = document.querySelector('.reactor-core');
-            core.style.animation = 'god-mode-pulse 0.5s infinite alternate';
-            core.style.filter = 'brightness(3) saturate(2)';
-            
-            // Add CSS for god mode
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes god-mode-pulse {
-                    0% { box-shadow: 0 0 50px #ff0000, 0 0 100px #ffff00; }
-                    100% { box-shadow: 0 0 100px #ff0000, 0 0 200px #ffff00; }
-                }
-            `;
-            document.head.appendChild(style);
-            
-            // Show temporary message
-            showEasterEggMessage('⚡ GOD MODE ACTIVATED ⚡', '#ffff00');
-        }
-
-        function activateMatrixMode() {
-            console.log('💊 MATRIX MODE ACTIVATED');
-            console.log('🔍 Reality distortion field enabled');
-            
-            // Change all text to matrix-style
-            document.body.style.fontFamily = 'monospace';
-            document.body.style.filter = 'hue-rotate(120deg)';
-            
-            // Add falling characters
-            createMatrixRain();
-            
-            showEasterEggMessage('💊 WELCOME TO THE MATRIX 💊', '#00ff41');
-        }
-
-        function activateRetroMode() {
-            console.log('📺 RETRO MODE ACTIVATED');
-            console.log('🕹️ Enabling maximum nostalgia');
-            
-            // Enhance CRT effects
-            document.body.style.filter = 'sepia(20%) contrast(1.2)';
-            const scanlines = document.body.querySelector('::before');
-            
-            // Add retro sound effect simulation
-            let frequency = 400;
-            const beepInterval = setInterval(() => {
-                console.log(`BEEP ${frequency}Hz`);
-                frequency += 100;
-                if (frequency > 1000) {
-                    clearInterval(beepInterval);
-                }
-            }, 200);
-            
-            showEasterEggMessage('📺 RETRO MODE ENGAGED 📺', '#00ffff');
-        }
-
-        function activateDebugMode() {
-            console.log('🐛 DEBUG MODE ACTIVATED');
-            console.log('🔧 Developer tools enabled');
-            
-            // Show hidden debug info
-            const debugPanel = document.createElement('div');
-            debugPanel.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 10px;
-                background: rgba(0, 0, 0, 0.9);
-                color: #00ff41;
-                padding: 10px;
-                border: 1px solid #00ff41;
-                font-family: monospace;
-                font-size: 10px;
-                z-index: 10000;
-                max-width: 200px;
-            `;
-            
-            function updateDebugInfo() {
-                const uptime = Math.floor((Date.now() - gameState.uptime) / 1000);
-                debugPanel.innerHTML = `
-                    <div>🐛 DEBUG PANEL</div>
-                    <div>FPS: ${Math.floor(Math.random() * 60 + 30)}</div>
-                    <div>Memory: ${Math.floor(Math.random() * 100 + 50)}MB</div>
-                    <div>Uptime: ${uptime}s</div>
-                    <div>Threads: ${Math.floor(Math.random() * 8 + 4)}</div>
-                    <div>Temp: ${Math.floor(Math.random() * 20 + 45)}°C</div>
-                `;
-            }
-            
-            updateDebugInfo();
-            setInterval(updateDebugInfo, 1000);
-            document.body.appendChild(debugPanel);
-            
-            showEasterEggMessage('🐛 DEBUG MODE ENABLED 🐛', '#ff6600');
-        }
-
-        function createMatrixRain() {
-            const canvas = document.createElement('canvas');
-            canvas.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100vw;
-                height: 100vh;
-                pointer-events: none;
-                z-index: 5;
-                opacity: 0.1;
-            `;
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            
-            const ctx = canvas.getContext('2d');
-            const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
-            const fontSize = 14;
-            const columns = canvas.width / fontSize;
-            const drops = [];
-            
-            for (let i = 0; i < columns; i++) {
-                drops[i] = 1;
-            }
-            
-            function draw() {
-                ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                
-                ctx.fillStyle = '#00ff41';
-                ctx.font = `${fontSize}px monospace`;
-                
-                for (let i = 0; i < drops.length; i++) {
-                    const text = chars[Math.floor(Math.random() * chars.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                    
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
-                }
-            }
-            
-            document.body.appendChild(canvas);
-            setInterval(draw, 35);
-            
-            // Remove after 30 seconds
-            setTimeout(() => {
-                document.body.removeChild(canvas);
-            }, 30000);
-        }
-
-        function showEasterEggMessage(message, color) {
-            const msgDiv = document.createElement('div');
-            msgDiv.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                background: rgba(0, 0, 0, 0.9);
-                color: ${color};
-                padding: 20px 40px;
-                border: 2px solid ${color};
-                font-size: 24px;
-                font-weight: bold;
-                font-family: monospace;
-                z-index: 10000;
-                text-align: center;
-                box-shadow: 0 0 30px ${color};
-                animation: easter-egg-flash 3s ease-out;
-            `;
-            msgDiv.textContent = message;
-            
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes easter-egg-flash {
-                    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-                    20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); }
-                    80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-                    100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-                }
-            `;
-            document.head.appendChild(style);
-            document.body.appendChild(msgDiv);
-            
-            setTimeout(() => {
-                document.body.removeChild(msgDiv);
-                document.head.removeChild(style);
-            }, 3000);
-        }
-
-        function secretOperatorMessages() {
-            const messages = [
-                "🤫 Operator: Did you hear about the coffee machine in sector 7?",
-                "☕ Operator: The night shift leaves the best snacks in the break room",
-                "🎮 Operator: Someone's been playing games on the backup terminal",
-                "🍕 Operator: Pizza delivery guy got lost in the reactor building again",
-                "🐱 Operator: The facility cat triggered the motion sensors last night",
-                "🎵 Operator: Day shift changed the emergency alert sound to Rick Roll",
-                "🔧 Operator: Maintenance found a rubber duck in the cooling system",
-                "📱 Operator: WiFi password is still 'password123' - don't tell management"
-            ];
-            
-            const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-            console.log(randomMessage);
-            
-            // Show message in corner briefly
-            const cornerMsg = document.createElement('div');
-            cornerMsg.style.cssText = `
-                position: fixed;
-                bottom: 20px;
-                left: 20px;
-                background: rgba(0, 255, 65, 0.1);
-                color: #00ff41;
-                padding: 10px;
-                border: 1px solid #00ff41;
-                font-size: 12px;
-                font-family: monospace;
-                max-width: 300px;
-                z-index: 1000;
-                animation: slide-in 0.5s ease-out;
-            `;
-            cornerMsg.textContent = randomMessage.replace(/🤫|☕|🎮|🍕|🐱|🎵|🔧|📱/, '');
-            
-            const slideStyle = document.createElement('style');
-            slideStyle.textContent = `
-                @keyframes slide-in {
-                    from { transform: translateX(-100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(slideStyle);
-            document.body.appendChild(cornerMsg);
-            
-            setTimeout(() => {
-                document.body.removeChild(cornerMsg);
-                document.head.removeChild(slideStyle);
-            }, 4000);
-        }
-
-        // Add some keyboard shortcuts for interactivity and easter eggs
-        document.addEventListener('keydown', function(event) {
-            // Track Konami code
-            konamiCode.push(event.code);
-            if (konamiCode.length > konamiSequence.length) {
-                konamiCode.shift();
-            }
-            
-            if (JSON.stringify(konamiCode) === JSON.stringify(konamiSequence)) {
-                activateGodMode();
-                konamiCode = [];
-            }
-            
-            switch(event.key) {
-                case 'a':
-                case 'A':
-                    acknowledgeAlert();
-                    break;
-                case 't':
-                case 'T':
-                    systemTest();
-                    break;
-                case 'm':
-                case 'M':
-                    maintenance();
-                    break;
-                case 'r':
-                case 'R':
-                    restartReactor();
-                    break;
-                case 'Escape':
-                    emergencyShutdown();
-                    break;
-                case 's':
-                case 'S':
-                    if (event.ctrlKey) {
-                        event.preventDefault();
-                        saveReactorState();
-                        console.log('💾 Manual save completed');
-                    }
-                    break;
-                case 'Delete':
-                    if (event.ctrlKey && event.shiftKey) {
-                        event.preventDefault();
-                        resetReactorMemory();
-                        location.reload();
-                    }
-                    break;
-                // Easter egg shortcuts
-                case 'F1':
-                    event.preventDefault();
-                    activateDebugMode();
-                    break;
-                case 'F12':
-                    event.preventDefault();
-                    activateMatrixMode();
-                    break;
-                case '`':
-                case '~':
-                    secretOperatorMessages();
-                    break;
-            }
-            
-            // Secret key combinations
-            if (event.ctrlKey && event.shiftKey && event.key === 'R') {
-                event.preventDefault();
-                activateRetroMode();
-            }
-        });
-
-        // Click sequence easter egg
-        document.addEventListener('click', function(event) {
-            const currentTime = Date.now();
-            
-            if (currentTime - lastClickTime < 500) {
-                clickSequence.push(event.target.tagName);
-                if (clickSequence.length > 10) {
-                    clickSequence.shift();
-                }
-                
-                // Secret click pattern on reactor core
-                if (event.target.classList.contains('reactor-core')) {
-                    clickSequence.push('CORE');
-                    
-                    if (clickSequence.filter(x => x === 'CORE').length >= 5) {
-                        console.log('🎯 REACTOR CORE EASTER EGG ACTIVATED');
-                        const core = document.querySelector('.reactor-core');
-                        core.style.animation = 'core-easter-egg 2s ease-in-out';
-                        
-                        const eggStyle = document.createElement('style');
-                        eggStyle.textContent = `
-                            @keyframes core-easter-egg {
-                                0%, 100% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-                                25% { transform: translate(-50%, -50%) rotate(90deg) scale(1.2); }
-                                50% { transform: translate(-50%, -50%) rotate(180deg) scale(0.8); }
-                                75% { transform: translate(-50%, -50%) rotate(270deg) scale(1.2); }
-                            }
-                        `;
-                        document.head.appendChild(eggStyle);
-                        
-                        showEasterEggMessage('🎯 CORE OVERLOAD! 🎯', '#ff6600');
-                        clickSequence = [];
-                        
-                        setTimeout(() => {
-                            core.style.animation = 'core-heat 3s ease-in-out infinite alternate';
-                            document.head.removeChild(eggStyle);
-                        }, 2000);
-                    }
-                }
-            } else {
-                clickSequence = [];
-            }
-            
-            lastClickTime = currentTime;
-        });
-
-        // Random secret messages during normal operation
+        let countdown = 47;
         setInterval(() => {
-            if (Math.random() < 0.001) { // Very rare
-                secretOperatorMessages();
+            countdown = countdown > 10 ? countdown - 1 : Math.floor(Math.random() * 60) + 10;
+            document.getElementById('countdown').textContent = countdown.toString().padStart(2, '0');
+        }, 1000);
+
+        function initiateSequence() {
+            document.body.style.animation = 'glitch 0.5s infinite';
+            setTimeout(() => {
+                alert('SEQUENCE INITIATED\n\nSTANDBY FOR FURTHER INSTRUCTIONS\n\n[CONNECTION TERMINATED]');
+                document.body.style.animation = '';
+            }, 2000);
+        }
+
+        function accessArchives() {
+            const responses = [
+                'ACCESS DENIED - INSUFFICIENT CLEARANCE',
+                'ARCHIVE CORRUPTED - DATA RECOVERY IN PROGRESS',
+                'SECURITY BREACH DETECTED - LOCKDOWN INITIATED',
+                'THE ISLAND REMEMBERS',
+                'NOT PENNYS BOAT'
+            ];
+            alert(responses[Math.floor(Math.random() * responses.length)]);
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Escape') {
+                document.body.style.filter = 'invert(1)';
+                setTimeout(() => {
+                    document.body.style.filter = '';
+                }, 200);
             }
-        }, 10000);
-        
-        // Save state when user leaves the page
-        window.addEventListener('beforeunload', function(event) {
-            saveReactorState();
-            console.log('💾 Auto-saved reactor state before page unload');
         });
-        
-        // Save state when window loses focus (user switches tabs)
-        window.addEventListener('blur', function() {
-            saveReactorState();
-        });
+
+        setInterval(() => {
+            if (Math.random() < 0.02) {
+                document.querySelector('.logo').style.color = '#ff0000';
+                setTimeout(() => {
+                    document.querySelector('.logo').style.color = '#00ff41';
+                }, 100);
+            }
+        }, 1000);
     </script>
 </body>
 </html>
