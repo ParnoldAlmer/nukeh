@@ -65,13 +65,38 @@
 
         .terminal {
             padding: 20px;
-            height: 100vh;
+            height: calc(100vh - 40px);
             overflow-y: auto;
             background: #000;
             font-size: 14px;
             white-space: pre-wrap;
             position: relative;
             z-index: 1;
+        }
+
+        .command-line {
+            display: flex;
+            margin-bottom: 5px;
+        }
+
+        .prompt-text {
+            color: #00ff00;
+            margin-right: 5px;
+        }
+
+        .command-input {
+            background: transparent;
+            border: none;
+            color: #00ff00;
+            font-family: 'Courier Prime', monospace;
+            font-size: 14px;
+            outline: none;
+            flex: 1;
+            caret-color: #00ff00;
+        }
+
+        .output {
+            margin-bottom: 10px;
         }
 
         .terminal::-webkit-scrollbar {
@@ -174,7 +199,13 @@
         <div class="matrix-bg" id="matrix"></div>
         <div class="terminal" id="terminal">
             <div id="boot-content"></div>
-            <div id="main-content" style="display: none;"></div>
+            <div id="shell-content" style="display: none;">
+                <div id="shell-output"></div>
+                <div class="command-line">
+                    <span class="prompt-text" id="prompt">nukeh@research:~$</span>
+                    <input type="text" class="command-input" id="command-input" autocomplete="off" spellcheck="false">
+                </div>
+            </div>
         </div>
         <div class="status-line">
             NUKEH RESEARCH STATION | UNIX SYSTEM V.4.2 | USER: <span class="classified">████████</span> | CLEARANCE: <span class="classified">OMEGA-7</span>
@@ -182,6 +213,100 @@
     </div>
 
     <script>
+        // File system simulation
+        const fileSystem = {
+            '/': {
+                type: 'directory',
+                contents: {
+                    'home': {
+                        type: 'directory',
+                        contents: {
+                            'nukeh_admin': {
+                                type: 'directory',
+                                contents: {
+                                    '.classified_notes': {
+                                        type: 'file',
+                                        content: 'CLASSIFIED: PROJECT LOOKING GLASS\n\nThe numbers 4 8 15 16 23 42 appear in all quantum calculations.\nDr. Candle believes they may be coordinates to another dimension.\nSubject 108 continues to exhibit temporal displacement symptoms.\n\nNOTE: Do not let Widmore know about the island\'s properties.',
+                                        permissions: '-rw-------',
+                                        size: '73',
+                                        modified: 'Jun 24 03:47'
+                                    },
+                                    'quantum_calc': {
+                                        type: 'file',
+                                        content: '#!/bin/bash\n# Quantum Field Calculator\necho "Calculating quantum field stability..."\necho "Current stability: $((RANDOM % 100))%"\necho "Magnetic declination: $((RANDOM % 360)) degrees"\necho "WARNING: Temporal anomaly detected" >&2',
+                                        permissions: '-rwxr-xr-x',
+                                        size: '2048',
+                                        modified: 'Jun 23 16:42',
+                                        executable: true
+                                    },
+                                    'incident_report.txt': {
+                                        type: 'file',
+                                        content: 'INCIDENT REPORT #2847\nDATE: 24/06/1993 02:33:07\nCLASSIFICATION: EYES ONLY\n\nSubject experienced temporal displacement during Experiment 108.\nDuration: 108 minutes.\nElectromagnetic anomaly detected in Sector 7.\nAll personnel evacuated as per Protocol 815.\n\nRecovery team found subject 4.8km from original position.\nSubject claims to have seen "flashes of another time".\nRecommend immediate psychiatric evaluation.\n\nThe numbers... they keep appearing.\n4 8 15 16 23 42\n\nDr. Marvin Candle - Chief Researcher\nDHARMA Initiative Authorized Personnel Only',
+                                        permissions: '-rw-r--r--',
+                                        size: '156',
+                                        modified: 'Jun 24 02:33'
+                                    },
+                                    'the_equation.dat': {
+                                        type: 'file',
+                                        content: 'x² + y² = 4815162342\nΨ(x,t) = Ae^(i(kx-ωt))\nE = mc² × 108\n\n[ENCRYPTED DATA FOLLOWS]\n4f 8a 15 b2 16 c9 23 d4 42 e7...\n\nValenzetti Equation confirmed.\nThe numbers are the key to everything.\nIsland coordinates: 4°815\' N, 162°342\' W\n\nIf the button is not pressed every 108 minutes,\nthe electromagnetic buildup will...\n\n[FILE CORRUPTED]',
+                                        permissions: '-rw-------',
+                                        size: '4815',
+                                        modified: 'Jun 16 23:42'
+                                    },
+                                    'experiment_logs': {
+                                        type: 'directory',
+                                        contents: {
+                                            'log_001.txt': {
+                                                type: 'file',
+                                                content: 'Day 1: Initial quantum field tests successful.\nSubject response within normal parameters.\n\nDay 7: Unusual electromagnetic readings in Sector 7.\nRecommend increased monitoring.\n\nDay 15: The hatch has been sealed. No one goes down there anymore.\n\nDay 23: We found the button. God help us all.',
+                                                permissions: '-rw-r--r--',
+                                                size: '256',
+                                                modified: 'Jun 20 09:15'
+                                            }
+                                        }
+                                    },
+                                    'security_footage': {
+                                        type: 'directory',
+                                        contents: {
+                                            'sector7_anomaly.avi': {
+                                                type: 'file',
+                                                content: '[BINARY VIDEO DATA - CORRUPTED]\nTimestamp: 03:47:12\nCamera: SEC-7-ALPHA\nEvent: TEMPORAL DISPLACEMENT\nSubject appears to vanish for 108 frames\nReappears in different location\nSecurity classification: TOP SECRET',
+                                                permissions: '-rw-------',
+                                                size: '1GB',
+                                                modified: 'Jun 19 11:28'
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    'var': {
+                        type: 'directory',
+                        contents: {
+                            'log': {
+                                type: 'directory',
+                                contents: {
+                                    'quantum.log': {
+                                        type: 'file',
+                                        content: '[03:47:12] Quantum field stability: 94.7%\n[03:47:23] Electromagnetic pulse detected - Sector 7\n[03:47:31] WARNING: Temporal distortion field active\n[03:47:45] Particle accelerator: ONLINE\n[03:48:02] Containment breach in Lab C - Level 3\n[03:48:15] Emergency protocols activated\n[03:48:29] Unknown signal source detected - Island coordinates\n[03:48:47] ALERT: Subject 108 missing from chamber\n[03:49:03] Geomagnetic anomaly - 19.2 degrees deviation\n[03:49:16] Recovery team dispatched to Grid 23-42\n[03:49:34] The numbers... they\'re in the signal pattern\n[03:49:51] Time displacement confirmed: +108 minutes\n[03:50:08] Subject 108 recovered - psychological evaluation pending\n[03:50:23] Dr. Candle requesting immediate consultation\n[03:50:41] Quantum signature matches theoretical models\n[03:50:58] WARNING: Another pulse incoming...',
+                                        permissions: '-rw-r--r--',
+                                        size: '2KB',
+                                        modified: 'Jun 24 03:50'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        let currentPath = '/home/nukeh_admin';
+        let commandHistory = [];
+        let historyIndex = -1;
+        let isShellActive = false;
+
         const bootSequence = [
             'NUKEH RESEARCH STATION UNIX SYSTEM V4.2',
             'Copyright (c) 1987-1993 Nukeh Laboratories Inc.',
@@ -210,68 +335,11 @@
             'Classification Level: TOP SECRET',
             'Project: LOOKING GLASS',
             '',
-            '$ ls -la /home/nukeh_admin/',
-            'total 47',
-            'drwxr-xr-x  5 root     wheel   512 Jun 24 03:47 .',
-            'drwxr-xr-x 12 root     wheel   512 Jun 15 14:23 ..',
-            '-rw-------  1 nukeh    staff    73 Jun 24 03:47 .classified_notes',
-            '-rwxr-xr-x  1 nukeh    staff  2048 Jun 23 16:42 quantum_calc',
-            'drwx------  2 nukeh    staff   512 Jun 20 09:15 experiment_logs',
-            '-rw-r--r--  1 nukeh    staff   156 Jun 24 02:33 incident_report.txt',
-            'drwx------  2 nukeh    staff   512 Jun 19 11:28 security_footage',
-            '-rw-------  1 nukeh    staff  4815 Jun 16 23:42 the_equation.dat',
-            '',
-            '$ cat incident_report.txt',
-            '',
-            'INCIDENT REPORT #2847',
-            'DATE: 24/06/1993 02:33:07',
-            'CLASSIFICATION: EYES ONLY',
-            '',
-            'Subject experienced temporal displacement during Experiment 108.',
-            'Duration: 108 minutes.',
-            'Electromagnetic anomaly detected in Sector 7.',
-            'All personnel evacuated as per Protocol 815.',
-            '',
-            'Recovery team found subject 4.8km from original position.',
-            'Subject claims to have seen "flashes of another time".',
-            'Recommend immediate psychiatric evaluation.',
-            '',
-            'The numbers... they keep appearing.',
-            '4 8 15 16 23 42',
-            '',
-            'Dr. Marvin Candle - Chief Researcher',
-            'DHARMA Initiative Authorized Personnel Only',
-            '',
-            '$ ps aux | grep quantum',
-            'nukeh     1847  0.0  2.3  4815 2342 ?  S  03:47  0:23 quantum_monitor',
-            'nukeh     2108  8.1 15.6 16234 8157 ?  R  03:52  1:08 quantum_field_gen',
-            'nukeh     2347  0.0  0.8  1623  428 ?  S  03:54  0:00 anomaly_detector',
-            '',
-            '$ tail -f /var/log/quantum.log',
-        ];
-
-        const logEntries = [
-            '[03:47:12] Quantum field stability: 94.7%',
-            '[03:47:23] Electromagnetic pulse detected - Sector 7',
-            '[03:47:31] WARNING: Temporal distortion field active',
-            '[03:47:45] Particle accelerator: ONLINE',
-            '[03:48:02] Containment breach in Lab C - Level 3',
-            '[03:48:15] Emergency protocols activated',
-            '[03:48:29] Unknown signal source detected - Island coordinates',
-            '[03:48:47] ALERT: Subject 108 missing from chamber',
-            '[03:49:03] Geomagnetic anomaly - 19.2 degrees deviation',
-            '[03:49:16] Recovery team dispatched to Grid 23-42',
-            '[03:49:34] The numbers... they\'re in the signal pattern',
-            '[03:49:51] Time displacement confirmed: +108 minutes',
-            '[03:50:08] Subject 108 recovered - psychological evaluation pending',
-            '[03:50:23] Dr. Candle requesting immediate consultation',
-            '[03:50:41] Quantum signature matches theoretical models',
-            '[03:50:58] WARNING: Another pulse incoming...',
+            'Type "help" for available commands.',
+            ''
         ];
 
         let bootIndex = 0;
-        let logIndex = 0;
-        let isBooting = true;
 
         function typeText(element, text, callback) {
             let i = 0;
@@ -288,7 +356,6 @@
 
         function bootSystem() {
             const bootContent = document.getElementById('boot-content');
-            const mainContent = document.getElementById('main-content');
             
             if (bootIndex < bootSequence.length) {
                 const line = document.createElement('div');
@@ -305,42 +372,241 @@
                 setTimeout(() => {
                     typeText(line, bootSequence[bootIndex], () => {
                         bootIndex++;
-                        setTimeout(bootSystem, Math.random() * 500 + 200);
+                        setTimeout(bootSystem, Math.random() * 300 + 100);
                     });
-                }, 100);
+                }, 50);
                 
                 bootContent.scrollTop = bootContent.scrollHeight;
             } else {
                 setTimeout(() => {
-                    isBooting = false;
-                    startLogStream();
+                    startShell();
                 }, 1000);
             }
         }
 
-        function startLogStream() {
-            const bootContent = document.getElementById('boot-content');
+        function startShell() {
+            document.getElementById('boot-content').style.display = 'none';
+            document.getElementById('shell-content').style.display = 'block';
+            document.getElementById('command-input').focus();
+            isShellActive = true;
+            updatePrompt();
+        }
+
+        function updatePrompt() {
+            const promptDisplay = currentPath.replace('/home/nukeh_admin', '~');
+            document.getElementById('prompt').textContent = `nukeh@research:${promptDisplay}$ `;
+        }
+
+        function resolvePath(path, currentPath) {
+            if (path.startsWith('/')) {
+                return path;
+            }
             
-            setInterval(() => {
-                if (logIndex < logEntries.length) {
-                    const line = document.createElement('div');
-                    line.className = 'boot-sequence';
+            if (path === '..') {
+                const parts = currentPath.split('/').filter(p => p);
+                parts.pop();
+                return '/' + parts.join('/');
+            }
+            
+            if (path === '.') {
+                return currentPath;
+            }
+            
+            return currentPath === '/' ? '/' + path : currentPath + '/' + path;
+        }
+
+        function getFileSystemNode(path) {
+            const parts = path.split('/').filter(p => p);
+            let current = fileSystem['/'];
+            
+            for (const part of parts) {
+                if (current.type !== 'directory' || !current.contents[part]) {
+                    return null;
+                }
+                current = current.contents[part];
+            }
+            
+            return current;
+        }
+
+        function executeCommand(command) {
+            const parts = command.trim().split(/\s+/);
+            const cmd = parts[0];
+            const args = parts.slice(1);
+            
+            commandHistory.push(command);
+            historyIndex = commandHistory.length;
+            
+            let output = '';
+            
+            switch (cmd) {
+                case 'ls':
+                    const lsPath = args[0] ? resolvePath(args[0], currentPath) : currentPath;
+                    const lsNode = getFileSystemNode(lsPath);
                     
-                    if (logEntries[logIndex].includes('WARNING') || logEntries[logIndex].includes('ALERT')) {
-                        line.className += ' warning';
-                    } else if (logEntries[logIndex].includes('numbers')) {
-                        line.className += ' classified';
+                    if (!lsNode) {
+                        output = `ls: ${args[0] || '.'}: No such file or directory`;
+                        break;
                     }
                     
-                    bootContent.appendChild(line);
-                    line.textContent = logEntries[logIndex];
+                    if (lsNode.type !== 'directory') {
+                        output = lsPath.split('/').pop();
+                        break;
+                    }
                     
-                    logIndex++;
-                    if (logIndex >= logEntries.length) logIndex = 0;
+                    if (args.includes('-la') || args.includes('-al')) {
+                        output = 'total 47\n';
+                        output += 'drwxr-xr-x  5 nukeh    staff   512 Jun 24 03:47 .\n';
+                        output += 'drwxr-xr-x 12 root     wheel   512 Jun 15 14:23 ..\n';
+                        
+                        for (const [name, node] of Object.entries(lsNode.contents)) {
+                            const perms = node.permissions || (node.type === 'directory' ? 'drwxr-xr-x' : '-rw-r--r--');
+                            const size = node.size || '512';
+                            const modified = node.modified || 'Jun 24 03:47';
+                            output += `${perms}  1 nukeh    staff  ${size.padStart(4)} ${modified} ${name}\n`;
+                        }
+                    } else {
+                        output = Object.keys(lsNode.contents).join('  ');
+                    }
+                    break;
                     
-                    bootContent.scrollTop = bootContent.scrollHeight;
+                case 'cat':
+                    if (!args[0]) {
+                        output = 'cat: missing file operand';
+                        break;
+                    }
+                    
+                    const catPath = resolvePath(args[0], currentPath);
+                    const catNode = getFileSystemNode(catPath);
+                    
+                    if (!catNode) {
+                        output = `cat: ${args[0]}: No such file or directory`;
+                    } else if (catNode.type === 'directory') {
+                        output = `cat: ${args[0]}: Is a directory`;
+                    } else {
+                        output = catNode.content;
+                    }
+                    break;
+                    
+                case 'cd':
+                    const newPath = args[0] ? resolvePath(args[0], currentPath) : '/home/nukeh_admin';
+                    const cdNode = getFileSystemNode(newPath);
+                    
+                    if (!cdNode) {
+                        output = `cd: ${args[0]}: No such file or directory`;
+                    } else if (cdNode.type !== 'directory') {
+                        output = `cd: ${args[0]}: Not a directory`;
+                    } else {
+                        currentPath = newPath;
+                        updatePrompt();
+                    }
+                    break;
+                    
+                case 'pwd':
+                    output = currentPath;
+                    break;
+                    
+                case 'whoami':
+                    output = 'nukeh_admin';
+                    break;
+                    
+                case 'date':
+                    output = 'Wed Jun 24 03:47:12 PST 1993';
+                    break;
+                    
+                case 'ps':
+                    if (args.includes('aux') || args.includes('-aux')) {
+                        output = 'USER       PID  %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\n';
+                        output += 'nukeh     1847  0.0  2.3   4815  2342 ?        S    03:47   0:23 quantum_monitor\n';
+                        output += 'nukeh     2108  8.1 15.6  16234  8157 ?        R    03:52   1:08 quantum_field_gen\n';
+                        output += 'nukeh     2347  0.0  0.8   1623   428 ?        S    03:54   0:00 anomaly_detector\n';
+                        output += 'nukeh     4815  0.1  1.6   2342  1623 ?        S    04:08   0:00 dharma_protocol\n';
+                        output += 'nukeh     1623  0.0  0.4    842   234 pts/0    S    04:15   0:00 bash';
+                    } else {
+                        output = '  PID TTY          TIME CMD\n 1623 pts/0    00:00:00 bash';
+                    }
+                    break;
+                    
+                case 'help':
+                    output = 'Available commands:\n';
+                    output += 'ls [-la]     - list directory contents\n';
+                    output += 'cd [dir]     - change directory\n';
+                    output += 'cat [file]   - display file contents\n';
+                    output += 'pwd          - print working directory\n';
+                    output += 'ps [aux]     - show running processes\n';
+                    output += 'whoami       - display current user\n';
+                    output += 'date         - show current date\n';
+                    output += 'clear        - clear screen\n';
+                    output += 'help         - show this help\n';
+                    output += '\nClassified commands require special authorization.';
+                    break;
+                    
+                case 'clear':
+                    document.getElementById('shell-output').innerHTML = '';
+                    return;
+                    
+                case './quantum_calc':
+                    if (currentPath === '/home/nukeh_admin') {
+                        output = 'Calculating quantum field stability...\n';
+                        output += `Current stability: ${Math.floor(Math.random() * 100)}%\n`;
+                        output += `Magnetic declination: ${Math.floor(Math.random() * 360)} degrees\n`;
+                        output += 'WARNING: Temporal anomaly detected';
+                    } else {
+                        output = './quantum_calc: No such file or directory';
+                    }
+                    break;
+                    
+                case '4815162342':
+                    output = 'DHARMA INITIATIVE OVERRIDE ACCEPTED\n';
+                    output += 'Welcome, Jacob.\n';
+                    output += 'The island is calling...';
+                    break;
+                    
+                default:
+                    if (cmd) {
+                        const mysteriousResponses = [
+                            'command not found: ' + cmd,
+                            'bash: ' + cmd + ': command not found',
+                            'The island does not recognize this command.',
+                            'Access denied. The numbers are the key.',
+                            'We have to go back.',
+                            'Not Penny\'s boat.',
+                            'See you in another life, brother.'
+                        ];
+                        output = mysteriousResponses[Math.floor(Math.random() * mysteriousResponses.length)];
+                    }
+            }
+            
+            if (output) {
+                addOutput(command, output);
+            } else if (cmd) {
+                addOutput(command, '');
+            }
+        }
+
+        function addOutput(command, output) {
+            const shellOutput = document.getElementById('shell-output');
+            const commandDiv = document.createElement('div');
+            commandDiv.innerHTML = `<span class="prompt-text">nukeh@research:${currentPath.replace('/home/nukeh_admin', '~')}$</span> ${command}`;
+            shellOutput.appendChild(commandDiv);
+            
+            if (output) {
+                const outputDiv = document.createElement('div');
+                outputDiv.className = 'output';
+                
+                if (output.includes('WARNING') || output.includes('ALERT')) {
+                    outputDiv.className += ' warning';
+                } else if (output.includes('ERROR') || output.includes('command not found')) {
+                    outputDiv.className += ' error';
+                } else if (output.includes('CLASSIFIED') || output.includes('4 8 15 16 23 42')) {
+                    outputDiv.className += ' classified';
                 }
-            }, Math.random() * 3000 + 2000);
+                
+                outputDiv.textContent = output;
+                shellOutput.appendChild(outputDiv);
+            }
+            
+            document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
         }
 
         function createMatrixEffect() {
@@ -364,24 +630,28 @@
             }
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !isBooting) {
-                const responses = [
-                    '$ access denied - insufficient privileges',
-                    '$ command not found: ' + Math.random().toString(36).substring(7),
-                    '$ security violation logged',
-                    '$ the island is calling',
-                    '$ 4815162342',
-                    '$ we have to go back',
-                    '$ not pennys boat'
-                ];
-                
-                const bootContent = document.getElementById('boot-content');
-                const line = document.createElement('div');
-                line.className = 'error';
-                line.textContent = responses[Math.floor(Math.random() * responses.length)];
-                bootContent.appendChild(line);
-                bootContent.scrollTop = bootContent.scrollHeight;
+        document.getElementById('command-input').addEventListener('keydown', (e) => {
+            if (!isShellActive) return;
+            
+            if (e.key === 'Enter') {
+                const command = e.target.value.trim();
+                e.target.value = '';
+                executeCommand(command);
+            } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    e.target.value = commandHistory[historyIndex];
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    e.target.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    e.target.value = '';
+                }
             }
         });
 
