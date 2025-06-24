@@ -516,10 +516,15 @@
             if (strings.length === 0) return '';
             if (strings.length === 1) return strings[0];
             
+            // Remove trailing slashes for comparison
+            const cleanStrings = strings.map(s => s.replace(/\/$/, ''));
+            
             let prefix = '';
-            for (let i = 0; i < strings[0].length; i++) {
-                const char = strings[0][i];
-                if (strings.every(str => str[i] === char)) {
+            const minLength = Math.min(...cleanStrings.map(s => s.length));
+            
+            for (let i = 0; i < minLength; i++) {
+                const char = cleanStrings[0][i];
+                if (cleanStrings.every(str => str[i] === char)) {
                     prefix += char;
                 } else {
                     break;
@@ -579,9 +584,16 @@
                     }
                 }
                 
+                // Check if we should add trailing slashes based on command
+                const isFileCommand = parts[0] && ['cat', 'less', 'more', 'head', 'tail'].includes(parts[0]);
+                
                 matches = matches.map(name => {
                     if (name === '.' || name === '..') return name + '/';
                     const isDir = parentNode.contents[name] && parentNode.contents[name].type === 'directory';
+                    // For file commands, don't add trailing slash to directories
+                    if (isFileCommand && isDir) {
+                        return name;
+                    }
                     return isDir ? name + '/' : name;
                 });
                 
