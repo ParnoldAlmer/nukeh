@@ -633,7 +633,7 @@
                     clearInterval(timer);
                     if (callback) callback();
                 }
-            }, Math.random() * 50 + 25);
+            }, Math.random() * 10 + 5);
         }
 
         function bootSystem() {
@@ -654,15 +654,15 @@
                 setTimeout(() => {
                     typeText(line, bootSequence[bootIndex], () => {
                         bootIndex++;
-                        setTimeout(bootSystem, Math.random() * 300 + 100);
+                        setTimeout(bootSystem, Math.random() * 50 + 10);
                     });
-                }, 50);
+                }, 10);
                 
                 bootContent.scrollTop = bootContent.scrollHeight;
             } else {
                 setTimeout(() => {
                     startShell();
-                }, 1000);
+                }, 200);
             }
         }
 
