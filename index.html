@@ -658,7 +658,7 @@
 
         const bootSequence = [
             'NUKEH NEURAL RESEARCH FACILITY UNIX SYSTEM V7.42',
-            'Copyright (c) 2019-2024 Nukeh Consciousness Labs',
+            'Copyright (c) 2019-2025 Nukeh Consciousness Labs',
             '',
             'Memory Test: 7742KB OK',
             'Processor: Neural-Link Quantum Core 7.42GHz',
@@ -678,7 +678,7 @@
             'Login: nukeh_admin',
             'Password: ⬢⬢⬢⬢⬢⬢⬢⬢',
             '',
-            'Last login: Fri Nov 15 07:42:33 2024 from neural.nukeh.local',
+            `Last login: ${new Date().toString()} from neural.nukeh.local`,
             '',
             'Welcome to NUKEH NEURAL RESEARCH FACILITY',
             'Classification Level: BEYOND BLACK',
@@ -860,7 +860,7 @@
                     break;
                     
                 case 'date':
-                    output = 'Fri Nov 15 07:42:33 PST 2024';
+                    output = new Date().toString();
                     break;
                     
                 case 'ps':
@@ -985,7 +985,7 @@
                     
                 case 'uname':
                     if (args.includes('-a')) {
-                        output = 'Linux neural-bridge 7.42.0-consciousness #1 SMP Fri Nov 15 07:42:33 PST 2024 x86_64 x86_64 x86_64 GNU/Linux\n';
+                        output = `Linux neural-bridge 7.42.0-consciousness #1 SMP ${new Date().toString()} x86_64 x86_64 x86_64 GNU/Linux\n`;
                         output += 'Nukeh Consciousness OS - Neural Bridge Edition';
                     } else {
                         output = 'Linux';
