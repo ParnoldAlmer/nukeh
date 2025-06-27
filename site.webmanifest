@@ -1,0 +1,26 @@
+{
+    "name": "NUKEH Consciousness Research",
+    "short_name": "NUKEH",
+    "description": "Interactive terminal experience exploring consciousness research, quantum mechanics, and neural networks",
+    "start_url": "/",
+    "display": "fullscreen",
+    "background_color": "#000000",
+    "theme_color": "#00ff00",
+    "orientation": "any",
+    "icons": [
+        {
+            "src": "/favicon-32x32.png",
+            "sizes": "32x32",
+            "type": "image/png"
+        },
+        {
+            "src": "/apple-touch-icon.png",
+            "sizes": "180x180",
+            "type": "image/png"
+        }
+    ],
+    "categories": ["education", "entertainment", "productivity"],
+    "lang": "en",
+    "scope": "/",
+    "prefer_related_applications": false
+}
