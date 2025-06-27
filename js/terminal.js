@@ -171,7 +171,7 @@ Unauthorized access is strictly prohibited.`;
         const uptime = Math.floor((new Date().getTime() - startTime) / 1000);
         const hours = Math.floor(uptime / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
-        return `${hours}:${minutes:02d} up ${Math.floor(hours/24)} days, ${hours%24} hours, load average: 0.42, 0.37, 0.41`;
+        return `${hours}:${minutes.toString().padStart(2, '0')} up ${Math.floor(hours/24)} days, ${hours%24} hours, load average: 0.42, 0.37, 0.41`;
     }
 
     getProcesses() {
