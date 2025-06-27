@@ -171,17 +171,18 @@ Unauthorized access is strictly prohibited.`;
         const uptime = Math.floor((new Date().getTime() - startTime) / 1000);
         const hours = Math.floor(uptime / 3600);
         const minutes = Math.floor((uptime % 3600) / 60);
-        return `${hours}:${minutes.toString().padStart(2, '0')} up ${Math.floor(hours/24)} days, ${hours%24} hours, load average: 0.42, 0.37, 0.41`;
+        const formattedMinutes = minutes.toString().padStart(2, '0');
+        return hours + ':' + formattedMinutes + ' up ' + Math.floor(hours/24) + ' days, ' + (hours%24) + ' hours, load average: 0.42, 0.37, 0.41';
     }
 
     getProcesses() {
-        return `PID    COMMAND
-1234   consciousness_monitor
-1337   neural_bridge_daemon
-2048   pattern_analyzer
-4096   quantum_interface
-7742   hexagon_processor
-8192   reality_distortion_field`;
+        return 'PID    COMMAND\n' +
+               '1234   consciousness_monitor\n' +
+               '1337   neural_bridge_daemon\n' +
+               '2048   pattern_analyzer\n' +
+               '4096   quantum_interface\n' +
+               '7742   hexagon_processor\n' +
+               '8192   reality_distortion_field';
     }
 
     setupEventListeners() {
