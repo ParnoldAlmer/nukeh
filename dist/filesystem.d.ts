@@ -481,6 +481,7 @@ export class FileSystem {
         };
     };
     logger: import("./utils/logger.js").Logger;
+    initializationPromise: Promise<void>;
     initialized: boolean;
     initializeFilesystem(): Promise<void>;
     ensureInitialized(): Promise<void>;

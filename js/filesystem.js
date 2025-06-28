@@ -301,8 +301,10 @@ export class FileSystem {
         this.currentPath = CONFIG.FILESYSTEM.DEFAULT_PATH;
         this.filesystem = filesystem;
         this.logger = filesystemLogger;
+        this.initializationPromise = null;
         this.initialized = false;
-        this.initializeFilesystem();
+        // Start initialization but don't wait for it in constructor
+        this.initializationPromise = this.initializeFilesystem();
     }
 
     async initializeFilesystem() {
@@ -325,12 +327,13 @@ export class FileSystem {
             this.logger.info('Filesystem initialized with all character data');
         } catch (error) {
             this.logger.error('Failed to initialize filesystem', error);
+            this.initialized = true; // Mark as initialized even on error to prevent hanging
         }
     }
 
     async ensureInitialized() {
-        if (!this.initialized) {
-            await this.initializeFilesystem();
+        if (this.initializationPromise) {
+            await this.initializationPromise;
         }
     }
 
