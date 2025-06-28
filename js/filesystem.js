@@ -1,5 +1,8 @@
 // NUKEH Filesystem Data Module
 import { loadCharacterData } from './data/characters.js';
+import { CONFIG } from './config/constants.js';
+import { filesystemLogger } from './utils/logger.js';
+import { ErrorHandler, FileSystemError } from './utils/errors.js';
 
 export const filesystem = {
     '/': {
@@ -295,77 +298,139 @@ Pattern signature: ⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢�
 // Filesystem Navigation Functions
 export class FileSystem {
     constructor() {
-        this.currentPath = '/home/nukeh_admin';
+        this.currentPath = CONFIG.FILESYSTEM.DEFAULT_PATH;
         this.filesystem = filesystem;
+        this.logger = filesystemLogger;
     }
 
     resolvePath(path) {
-        if (path.startsWith('/')) {
-            return path;
-        }
-        if (path === '..') {
-            return this.currentPath.split('/').slice(0, -1).join('/') || '/';
-        }
-        if (path === '.') {
-            return this.currentPath;
-        }
-        return this.currentPath === '/' ? '/' + path : this.currentPath + '/' + path;
+        return ErrorHandler.handleSync(() => {
+            if (!path) {
+                throw new FileSystemError('Path cannot be empty', path, 'resolve');
+            }
+            
+            if (path.startsWith('/')) {
+                return path;
+            }
+            if (path === '..') {
+                const parts = this.currentPath.split('/').slice(0, -1);
+                return parts.join('/') || CONFIG.FILESYSTEM.ROOT_PATH;
+            }
+            if (path === '.') {
+                return this.currentPath;
+            }
+            return this.currentPath === CONFIG.FILESYSTEM.ROOT_PATH ? 
+                CONFIG.FILESYSTEM.ROOT_PATH + path : 
+                this.currentPath + '/' + path;
+        }, 'FileSystem.resolvePath').data;
     }
 
     async getItem(path) {
-        const fullPath = this.resolvePath(path);
-        const parts = fullPath.split('/').filter(p => p);
-        let current = this.filesystem['/'];
-        
-        for (const part of parts) {
-            if (current && current.contents && current.contents[part]) {
-                current = current.contents[part];
-            } else {
-                // Try to lazy load character data
-                if (parts.length >= 3 && parts[0] === 'home' && ['a_volkov', 'r_keller', 'pattern_communications'].includes(part)) {
-                    const characterData = await loadCharacterData(part);
-                    if (characterData && current && current.contents) {
-                        current.contents[part] = characterData;
-                        current = characterData;
-                        continue;
-                    }
-                }
-                return null;
+        return ErrorHandler.handleAsync(async () => {
+            const fullPath = this.resolvePath(path);
+            this.logger.debug('Getting item', { path, fullPath });
+            
+            const parts = fullPath.split('/').filter(p => p);
+            let current = this.filesystem[CONFIG.FILESYSTEM.ROOT_PATH];
+            
+            if (!current) {
+                throw new FileSystemError('Root filesystem not found', fullPath, 'getItem');
             }
-        }
-        return current;
+            
+            for (const part of parts) {
+                if (current && current.contents && current.contents[part]) {
+                    current = current.contents[part];
+                } else {
+                    // Try to lazy load character data
+                    if (parts.length >= 3 && parts[0] === 'home' && 
+                        ['a_volkov', 'r_keller', 'pattern_communications'].includes(part)) {
+                        const characterData = await loadCharacterData(part);
+                        if (characterData && current && current.contents) {
+                            current.contents[part] = characterData;
+                            current = characterData;
+                            continue;
+                        }
+                    }
+                    return null;
+                }
+            }
+            return current;
+        }, 'FileSystem.getItem').then(result => result.success ? result.data : null);
     }
 
     async ls(path = '.') {
-        const item = await this.getItem(path);
-        if (!item) return 'ls: cannot access \'' + path + '\': No such file or directory';
-        if (item.type !== 'directory') return 'ls: ' + path + ': Not a directory';
+        const result = await ErrorHandler.handleAsync(async () => {
+            const item = await this.getItem(path);
+            
+            if (!item) {
+                throw new FileSystemError(`cannot access '${path}': No such file or directory`, path, 'ls');
+            }
+            
+            if (item.type !== 'directory') {
+                throw new FileSystemError(`'${path}': Not a directory`, path, 'ls');
+            }
+            
+            const entries = Object.keys(item.contents || {});
+            this.logger.debug('Listed directory', { path, entryCount: entries.length });
+            
+            return entries.length === 0 ? '' : entries.join('  ');
+        }, 'FileSystem.ls');
         
-        const entries = Object.keys(item.contents || {});
-        if (entries.length === 0) {
-            return '';
-        }
-        return entries.join('  ');
+        return result.success ? result.data : `ls: ${result.error.message}`;
     }
 
     async cd(path) {
-        if (!path) path = '/home/nukeh_admin';
-        const item = await this.getItem(path);
-        if (!item) return 'cd: ' + path + ': No such file or directory';
-        if (item.type !== 'directory') return 'cd: ' + path + ': Not a directory';
+        const result = await ErrorHandler.handleAsync(async () => {
+            const targetPath = path || CONFIG.FILESYSTEM.DEFAULT_PATH;
+            const item = await this.getItem(targetPath);
+            
+            if (!item) {
+                throw new FileSystemError(`'${targetPath}': No such file or directory`, targetPath, 'cd');
+            }
+            
+            if (item.type !== 'directory') {
+                throw new FileSystemError(`'${targetPath}': Not a directory`, targetPath, 'cd');
+            }
+            
+            const oldPath = this.currentPath;
+            this.currentPath = this.resolvePath(targetPath);
+            
+            this.logger.debug('Changed directory', { from: oldPath, to: this.currentPath });
+            return '';
+        }, 'FileSystem.cd');
         
-        this.currentPath = this.resolvePath(path);
-        return '';
+        return result.success ? result.data : `cd: ${result.error.message}`;
     }
 
     async cat(path) {
-        const item = await this.getItem(path);
-        if (!item) return 'cat: ' + path + ': No such file or directory';
-        if (item.type !== 'file') return 'cat: ' + path + ': Is a directory';
-        return item.content || '';
+        const result = await ErrorHandler.handleAsync(async () => {
+            if (!path) {
+                throw new FileSystemError('missing file operand', null, 'cat');
+            }
+            
+            const item = await this.getItem(path);
+            
+            if (!item) {
+                throw new FileSystemError(`'${path}': No such file or directory`, path, 'cat');
+            }
+            
+            if (item.type !== 'file') {
+                throw new FileSystemError(`'${path}': Is a directory`, path, 'cat');
+            }
+            
+            this.logger.debug('Read file', { path, size: item.content?.length || 0 });
+            return item.content || '';
+        }, 'FileSystem.cat');
+        
+        return result.success ? result.data : `cat: ${result.error.message}`;
     }
 
     pwd() {
+        this.logger.debug('Current directory requested', { path: this.currentPath });
         return this.currentPath;
+    }
+    
+    getCurrentNode() {
+        return this.getItem('.');
     }
 }

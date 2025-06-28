@@ -1,0 +1,17 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "NUKEH Terminal Interface",
+  "description": "Neural Bridge consciousness interface terminal with advanced filesystem simulation",
+  "folders": ["js", "css", "docs"],
+  "excludeFolders": ["node_modules", "dist", ".git"],
+  "excludeFiles": ["*.log", "*.tmp", "server.log"],
+  "rules": [
+    "Use ES6 modules for modular architecture",
+    "Implement TypeScript for type safety",
+    "Follow defensive programming practices",
+    "Use Context7 MCP for documentation integration",
+    "Maintain immersive consciousness theme",
+    "Implement comprehensive error handling"
+  ],
+  "previousVersions": []
+}
