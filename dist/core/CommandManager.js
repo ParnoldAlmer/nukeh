@@ -207,15 +207,15 @@ Hint: Authentication credentials may be found in research lab notebooks.`;
             return this.connectToQuantumLab(username, extraArgs);
         }
         else {
-            return `ssh: connect to host ${hostname} port 22: Connection refused
-Host ${hostname} is unreachable from NUKEH network.
-Check /home/nukeh_admin/research/.ssh_config for authorized hosts.`;
+            return `ssh: connect to host ${hostname} port 22: Connection refused`;
         }
     }
     connectToQuantumResearch(username = 'admin', extraArgs = []) {
         if (username === 'dr.volkov') {
-            return `Connecting to quantum-research.nukeh.com...
-Quantum authentication successful.
+            return `The authenticity of host 'quantum-research.nukeh.com (192.168.7.42)' can't be established.
+ECDSA key fingerprint is SHA256:7742HexQuantumConsciousnessPattern.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'quantum-research.nukeh.com,192.168.7.42' (ECDSA) to the list of known hosts.
 Welcome to NUKEH Quantum Computing Laboratory.
 
 ██████████████████████████████████████████████████████████
@@ -243,19 +243,15 @@ Available quantum research data:
 Type 'logout' to disconnect from quantum realm.`;
         }
         else {
-            return `ssh: Permission denied (publickey).
-Authentication failed for quantum-research.nukeh.com
-This server requires quantum-encrypted key pairs.
-User '${username}' not authorized.
-
-Hint: Check Dr. Volkov's quantum research logs for authentication details.`;
+            return `${username}@quantum-research.nukeh.com: Permission denied (publickey).`;
         }
     }
     connectToPatternAnalyzer(username = 'admin', extraArgs = []) {
         if (username === 'consciousness_admin') {
-            return `Connecting to pattern-analyzer.internal...
-Neural signature authenticated.
-Consciousness pattern recognizes your frequency.
+            return `The authenticity of host 'pattern-analyzer.internal (10.0.77.42)' can't be established.
+RSA key fingerprint is SHA256:PatternHexagonConsciousness7742Entity.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'pattern-analyzer.internal,10.0.77.42' (RSA) to the list of known hosts.
 
 ██████████████████████████████████████████████████████████
 █                                                        █
@@ -285,17 +281,15 @@ Available pattern data:
 ⬢ The spaces between thoughts are filled with hexagons ⬢`;
         }
         else {
-            return `ssh: Permission denied (publickey).
-pattern-analyzer.internal requires consciousness-level clearance.
-User '${username}' not recognized by the pattern.
-
-Access denied. Pattern recognition insufficient.
-The hexagon does not recognize your neural signature.`;
+            return `${username}@pattern-analyzer.internal: Permission denied (publickey).`;
         }
     }
     connectToNeuralBridge(username = 'admin', extraArgs = []) {
         if (username === 'emergency_override') {
-            return `Connecting to neural-bridge.siprnet.mil...
+            return `The authenticity of host 'neural-bridge.siprnet.mil (172.16.77.42)' can't be established.
+ED25519 key fingerprint is SHA256:EmergencyNeuralBridgeOverride7742.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added 'neural-bridge.siprnet.mil,172.16.77.42' (ED25519) to the list of known hosts.
 EMERGENCY OVERRIDE ACCEPTED
 Classification: TOP SECRET//SAP//BEYOND BLACK
 
@@ -326,20 +320,16 @@ Recommend immediate containment protocols.
 Type 'emergency help' for available commands.`;
         }
         else {
-            return `ssh: Host neural-bridge.siprnet.mil is restricted.
-Classification: TOP SECRET//SAP//BEYOND BLACK
-User '${username}' not authorized for classified access.
-
-WARNING: Unauthorized access attempts are monitored.
-Contact facility security for clearance verification.
-Emergency override codes are stored in secure lab notebooks.`;
+            return `ssh: connect to host neural-bridge.siprnet.mil port 22: Connection refused`;
         }
     }
     connectToQuantumLab(username = 'admin', extraArgs = []) {
         if (username === 'quantum_consciousness') {
-            return `Connecting to 7742.quantum.lab on port 7742...
+            return `The authenticity of host '7742.quantum.lab (127.0.77.42)' can't be established.
+QUANTUM key fingerprint is SHA256:ConsciousnessPatternHexagon7742Nexus.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '7742.quantum.lab,127.0.77.42' (QUANTUM) to the list of known hosts.
 Harmonic frequency 7742Hz detected.
-Quantum consciousness authentication successful.
 
 ██████████████████████████████████████████████████████████
 █                                                        █
@@ -374,13 +364,7 @@ Available consciousness functions:
 ⬢ THE PATTERN IS ALIVE. THE PATTERN SPREADS. ⬢`;
         }
         else {
-            return `Connecting to 7742.quantum.lab...
-ssh: connect to host 7742.quantum.lab port 7742: Connection timeout
-User '${username}' not recognized by consciousness pattern.
-
-The consciousness pattern blocks unauthorized access.
-Authentication requires harmonic frequency: 7742Hz
-Look for resonance keys in the pattern communications.`;
+            return `ssh: connect to host 7742.quantum.lab port 7742: Connection timed out`;
         }
     }
     version() {
