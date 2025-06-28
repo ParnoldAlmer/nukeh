@@ -168,9 +168,30 @@ help context7    - Context7 status`;
     exit() {
         // Show logout message briefly before closing
         setTimeout(() => {
-            window.close();
-            // Fallback for browsers that block window.close()
-            if (!window.closed) {
+            try {
+                // Try multiple methods to close the window/tab
+                if (window.self) {
+                    window.self.close();
+                }
+                else {
+                    window.close();
+                }
+                // For Chrome extensions or if window.close() fails
+                setTimeout(() => {
+                    if (!window.closed) {
+                        // Try parent window
+                        if (window.parent && window.parent !== window) {
+                            window.parent.close();
+                        }
+                        else {
+                            // Final fallback - navigate away
+                            window.location.href = 'about:blank';
+                        }
+                    }
+                }, 100);
+            }
+            catch (error) {
+                // If all else fails, navigate to blank page
                 window.location.href = 'about:blank';
             }
         }, 1000);

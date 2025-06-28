@@ -2107,8 +2107,22 @@ help context7    - Context7 status`;
   }
   exit() {
     setTimeout(() => {
-      window.close();
-      if (!window.closed) {
+      try {
+        if (window.self) {
+          window.self.close();
+        } else {
+          window.close();
+        }
+        setTimeout(() => {
+          if (!window.closed) {
+            if (window.parent && window.parent !== window) {
+              window.parent.close();
+            } else {
+              window.location.href = "about:blank";
+            }
+          }
+        }, 100);
+      } catch (error) {
         window.location.href = "about:blank";
       }
     }, 1e3);

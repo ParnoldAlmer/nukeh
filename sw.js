@@ -37,6 +37,12 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', (event) => {
+    // Skip caching for chrome-extension and other unsupported schemes
+    const url = new URL(event.request.url);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+        return;
+    }
+    
     event.respondWith(
         caches.match(event.request)
             .then((response) => {
@@ -48,19 +54,31 @@ self.addEventListener('fetch', (event) => {
                 // Otherwise fetch from network
                 return fetch(event.request)
                     .then((response) => {
-                        // Check if valid response
+                        // Check if valid response and cacheable
                         if (!response || response.status !== 200 || response.type !== 'basic') {
                             return response;
                         }
                         
-                        // Clone response to cache
-                        const responseToCache = response.clone();
-                        caches.open(CACHE_NAME)
-                            .then((cache) => {
-                                cache.put(event.request, responseToCache);
-                            });
+                        // Only cache HTTP/HTTPS requests
+                        const requestUrl = new URL(event.request.url);
+                        if (requestUrl.protocol === 'http:' || requestUrl.protocol === 'https:') {
+                            // Clone response to cache
+                            const responseToCache = response.clone();
+                            caches.open(CACHE_NAME)
+                                .then((cache) => {
+                                    cache.put(event.request, responseToCache);
+                                })
+                                .catch((error) => {
+                                    // Silently ignore cache errors for unsupported schemes
+                                    console.debug('Cache put failed:', error);
+                                });
+                        }
                         
                         return response;
+                    })
+                    .catch((error) => {
+                        console.debug('Fetch failed:', error);
+                        return new Response('Network error', { status: 503 });
                     });
             })
     );
