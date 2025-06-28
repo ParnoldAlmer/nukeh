@@ -299,6 +299,34 @@ export class FileSystem {
         this.currentPath = CONFIG.FILESYSTEM.DEFAULT_PATH;
         this.filesystem = filesystem;
         this.logger = filesystemLogger;
+        this.initialized = false;
+        this.initializeFilesystem();
+    }
+    async initializeFilesystem() {
+        if (this.initialized)
+            return;
+        try {
+            // Load all character data into the filesystem on initialization
+            const characterDirs = ['a_volkov', 'r_keller', 'pattern_communications'];
+            const homeDir = this.filesystem[CONFIG.FILESYSTEM.ROOT_PATH].contents.home.contents;
+            for (const charDir of characterDirs) {
+                const characterData = await loadCharacterData(charDir);
+                if (characterData && homeDir) {
+                    homeDir[charDir] = characterData;
+                    this.logger.debug(`Loaded character data for ${charDir}`);
+                }
+            }
+            this.initialized = true;
+            this.logger.info('Filesystem initialized with all character data');
+        }
+        catch (error) {
+            this.logger.error('Failed to initialize filesystem', error);
+        }
+    }
+    async ensureInitialized() {
+        if (!this.initialized) {
+            await this.initializeFilesystem();
+        }
     }
     resolvePath(path) {
         return ErrorHandler.handleSync(() => {
@@ -322,6 +350,8 @@ export class FileSystem {
     }
     async getItem(path) {
         return ErrorHandler.handleAsync(async () => {
+            // Ensure filesystem is initialized before operations
+            await this.ensureInitialized();
             const fullPath = this.resolvePath(path);
             this.logger.debug('Getting item', { path, fullPath });
             const parts = fullPath.split('/').filter(p => p);
@@ -334,16 +364,6 @@ export class FileSystem {
                     current = current.contents[part];
                 }
                 else {
-                    // Try to lazy load character data
-                    if (parts.length >= 3 && parts[0] === 'home' &&
-                        ['a_volkov', 'r_keller', 'pattern_communications'].includes(part)) {
-                        const characterData = await loadCharacterData(part);
-                        if (characterData && current && current.contents) {
-                            current.contents[part] = characterData;
-                            current = characterData;
-                            continue;
-                        }
-                    }
                     return null;
                 }
             }
@@ -352,6 +372,8 @@ export class FileSystem {
     }
     async ls(path = '.') {
         const result = await ErrorHandler.handleAsync(async () => {
+            // Ensure filesystem is initialized before operations
+            await this.ensureInitialized();
             const item = await this.getItem(path);
             if (!item) {
                 throw new FileSystemError(`cannot access '${path}': No such file or directory`, path, 'ls');
@@ -367,6 +389,8 @@ export class FileSystem {
     }
     async cd(path) {
         const result = await ErrorHandler.handleAsync(async () => {
+            // Ensure filesystem is initialized before operations
+            await this.ensureInitialized();
             const targetPath = path || CONFIG.FILESYSTEM.DEFAULT_PATH;
             const item = await this.getItem(targetPath);
             if (!item) {
@@ -384,6 +408,8 @@ export class FileSystem {
     }
     async cat(path) {
         const result = await ErrorHandler.handleAsync(async () => {
+            // Ensure filesystem is initialized before operations
+            await this.ensureInitialized();
             if (!path) {
                 throw new FileSystemError('missing file operand', null, 'cat');
             }

@@ -481,6 +481,9 @@ export class FileSystem {
         };
     };
     logger: import("./utils/logger.js").Logger;
+    initialized: boolean;
+    initializeFilesystem(): Promise<void>;
+    ensureInitialized(): Promise<void>;
     resolvePath(path: any): any;
     getItem(path: any): Promise<any>;
     ls(path?: string): Promise<any>;
