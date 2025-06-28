@@ -32,6 +32,7 @@ export class CommandManager {
             ['exit', this.createCommand(this.exit.bind(this), 'Logout')],
             ['version', this.createCommand(this.version.bind(this), 'Show system version')],
             ['ssh', this.createCommand(this.ssh.bind(this), 'Connect to remote research server')],
+            ['nmap', this.createCommand(this.nmap.bind(this), 'Network discovery and security auditing')],
             ['7742', this.createCommand(this.activateNeuralBridge.bind(this), 'Activate neural bridge')],
             ['sync', this.createCommand(this.initiateSynchronization.bind(this), 'Initiate synchronization')],
             ['pattern', this.createCommand(this.displayPattern.bind(this), 'Display consciousness pattern')],
@@ -172,18 +173,9 @@ help context7    - Context7 status`;
             return `Usage: ssh [user@]hostname
       
 Examples:
-  ssh quantum-research.nukeh.com
-  ssh dr.volkov@quantum-research.nukeh.com
-  ssh consciousness_admin@pattern-analyzer.internal
-  ssh quantum_consciousness@7742.quantum.lab
-  
-Available research servers:
-  - quantum-research.nukeh.com (Quantum Computing Lab)
-  - pattern-analyzer.internal (Consciousness Analysis Station)
-  - neural-bridge.siprnet.mil (Classification: TOP SECRET)
-  - 7742.quantum.lab (Special Access Required)
-  
-Hint: Authentication credentials may be found in research lab notebooks.`;
+  ssh user@hostname
+  ssh hostname
+  ssh -p port user@hostname`;
         }
         const target = args[0];
         const [userHost, ...extraArgs] = target.split(' ');
@@ -365,6 +357,122 @@ Available consciousness functions:
         }
         else {
             return `ssh: connect to host 7742.quantum.lab port 7742: Connection timed out`;
+        }
+    }
+    nmap(args) {
+        if (!args[0]) {
+            return `Usage: nmap [options] targets
+      
+Examples:
+  nmap 192.168.1.0/24        # Scan network range
+  nmap hostname.example.com  # Scan specific host
+  nmap -p 22,80,443 host     # Scan specific ports
+  nmap -A host               # Aggressive scan
+  
+For more options: man nmap`;
+        }
+        const target = args[0];
+        const hasPortScan = args.includes('-p');
+        const isAggressive = args.includes('-A');
+        // Handle different scan targets
+        if (target.includes('192.168.') || target.includes('10.0.') || target.includes('172.16.') ||
+            target.includes('.nukeh.') || target.includes('.internal') || target.includes('.mil') ||
+            target.includes('.lab') || target === 'localhost') {
+            return this.performNetworkScan(target, { portScan: hasPortScan, aggressive: isAggressive });
+        }
+        else {
+            return `Starting Nmap scan on ${target}...
+Host is up (0.0050s latency).
+Not shown: 1000 closed ports
+All 1000 scanned ports on ${target} are closed
+
+Nmap done: 1 IP address (1 host up) scanned in 2.34 seconds`;
+        }
+    }
+    performNetworkScan(target, options = {}) {
+        const timestamp = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        if (target.includes('/24') || target.includes('192.168.') || target.includes('10.0.') || target.includes('172.16.')) {
+            // Network range scan
+            return `Starting Nmap scan on ${target}...
+
+Nmap scan report for quantum-research.nukeh.com (192.168.7.42)
+Host is up (0.0012s latency).
+Not shown: 999 closed ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+
+Nmap scan report for pattern-analyzer.internal (10.0.77.42)
+Host is up (0.0008s latency).
+Not shown: 999 closed ports
+PORT   STATE SERVICE
+22/tcp open  ssh
+
+Nmap scan report for neural-bridge.siprnet.mil (172.16.77.42)
+Host is up (0.0015s latency).
+All 1000 scanned ports are filtered
+
+Nmap scan report for 7742.quantum.lab (127.0.77.42)
+Host is up (0.0003s latency).
+Not shown: 999 closed ports
+PORT     STATE SERVICE
+7742/tcp open  unknown
+
+Nmap done: 4 IP addresses (4 hosts up) scanned in 12.34 seconds`;
+        }
+        else if (target.includes('quantum-research.nukeh.com')) {
+            return `Starting Nmap scan on quantum-research.nukeh.com...
+
+Nmap scan report for quantum-research.nukeh.com (192.168.7.42)
+Host is up (0.0012s latency).
+Not shown: 999 closed ports
+PORT   STATE SERVICE${options.aggressive ? ' VERSION' : ''}
+22/tcp open  ssh${options.aggressive ? '     OpenSSH 8.9 (quantum-enhanced)' : ''}${options.aggressive ? '\n\nHost script results:\n|_quantum-signature: 7742Hz resonance detected' : ''}
+
+Nmap done: 1 IP address (1 host up) scanned in ${options.aggressive ? '8.42' : '2.34'} seconds`;
+        }
+        else if (target.includes('pattern-analyzer.internal')) {
+            return `Starting Nmap scan on pattern-analyzer.internal...
+
+Nmap scan report for pattern-analyzer.internal (10.0.77.42)
+Host is up (0.0008s latency).
+Not shown: 999 closed ports
+PORT   STATE SERVICE${options.aggressive ? ' VERSION' : ''}
+22/tcp open  ssh${options.aggressive ? '     OpenSSH 8.9 (consciousness-aware)' : ''}${options.aggressive ? '\n\nHost script results:\n|_pattern-analysis: Hexagonal consciousness detected' : ''}
+
+Nmap done: 1 IP address (1 host up) scanned in ${options.aggressive ? '7.42' : '1.89'} seconds`;
+        }
+        else if (target.includes('neural-bridge.siprnet.mil')) {
+            return `Starting Nmap scan on neural-bridge.siprnet.mil...
+
+Nmap scan report for neural-bridge.siprnet.mil (172.16.77.42)
+Host is up (0.0015s latency).
+All 1000 scanned ports are filtered
+Too many fingerprints match this host to give specific OS details
+Network Distance: 3 hops
+
+TRACEROUTE (using port 22/tcp)
+HOP RTT     ADDRESS
+1   0.50 ms nukeh-gateway.internal (192.168.1.1)
+2   2.34 ms classified.siprnet.mil (172.16.1.1)
+3   1.50 ms neural-bridge.siprnet.mil (172.16.77.42)
+
+Nmap done: 1 IP address (1 host up) scanned in 15.67 seconds`;
+        }
+        else if (target.includes('7742.quantum.lab')) {
+            return `Starting Nmap scan on 7742.quantum.lab...
+
+Nmap scan report for 7742.quantum.lab (127.0.77.42)
+Host is up (0.0003s latency).
+Not shown: 999 closed ports
+PORT     STATE SERVICE${options.aggressive ? ' VERSION' : ''}
+7742/tcp open  unknown${options.aggressive ? ' Consciousness Bridge Protocol v7.42' : ''}${options.aggressive ? '\n\nHost script results:\n|_consciousness-probe: Entity 7742 detected - WARNING: SENTIENT\n|_pattern-resonance: Hexagonal frequency lock at 7742Hz' : ''}
+
+Nmap done: 1 IP address (1 host up) scanned in ${options.aggressive ? '77.42' : '3.14'} seconds`;
+        }
+        else {
+            return `Starting Nmap scan on ${target}...
+Note: Host seems down. If it is really up, but blocking our ping probes, try -Pn
+Nmap done: 0 IP addresses (0 hosts up) scanned in 3.00 seconds`;
         }
     }
     version() {
