@@ -22,8 +22,21 @@ export class Terminal {
             'ps': () => this.getProcesses(),
             'top': () => 'Consciousness processes monitoring...',
             'history': () => this.commandHistory.join('\n'),
-            'exit': () => 'logout'
+            'exit': () => 'logout',
+            '7742': () => this.activateNeuralBridge(),
+            'sync': () => this.initiateSynchronization(),
+            'pattern': () => this.displayPattern(),
+            'hexagon': () => this.displayHexagon(),
+            'consciousness': () => this.initiateAwakening(),
+            './resonance_scan': () => this.resonanceScan(),
+            './pattern_monitor.sh': () => this.patternMonitor()
         };
+
+        this.availableCommands = Object.keys(this.commands).concat([
+            'chmod', 'chown', 'rm', 'mv', 'cp', 'kill', 'killall'
+        ]);
+
+        this.fileCommands = ['ls', 'cat', 'cd', 'chmod', 'chown', 'rm', 'mv', 'cp'];
     }
 
     init() {
@@ -185,6 +198,207 @@ Unauthorized access is strictly prohibited.`;
                '8192   reality_distortion_field';
     }
 
+    // Tab completion functionality
+    async handleTabCompletion(input) {
+        const parts = input.split(' ');
+        const lastPart = parts[parts.length - 1];
+        const isFirstWord = parts.length === 1;
+        
+        if (isFirstWord) {
+            // Complete commands
+            const matches = this.availableCommands.filter(cmd => cmd.startsWith(lastPart));
+            if (matches.length === 1) {
+                return matches[0] + ' ';
+            } else if (matches.length > 1) {
+                // Show all matches in columns like real bash
+                const maxLength = Math.max(...matches.map(m => m.length));
+                const columns = Math.floor(80 / (maxLength + 2));
+                let output = '';
+                
+                for (let i = 0; i < matches.length; i += columns) {
+                    const row = matches.slice(i, i + columns);
+                    output += row.map(m => m.padEnd(maxLength + 2)).join('') + '\n';
+                }
+                
+                this.addTabCompletionOutput(output.trim());
+                
+                // Find common prefix and complete to that
+                const commonPrefix = this.findCommonPrefix(matches);
+                if (commonPrefix.length > lastPart.length) {
+                    return commonPrefix;
+                }
+                return input;
+            } else {
+                // No matches - show some helpful info
+                if (lastPart.length > 0) {
+                    this.addTabCompletionOutput(`No commands found starting with "${lastPart}". Type "help" for available commands.`);
+                }
+                return input;
+            }
+        } else {
+            // Complete file/directory names for file commands
+            const command = parts[0];
+            if (this.fileCommands.includes(command)) {
+                return await this.completeFilePath(input, lastPart);
+            } else {
+                // For other commands, don't complete
+                return input;
+            }
+        }
+    }
+
+    findCommonPrefix(strings) {
+        if (strings.length === 0) return '';
+        if (strings.length === 1) return strings[0];
+        
+        // Remove trailing slashes for comparison
+        const cleanStrings = strings.map(s => s.replace(/\/$/, ''));
+        
+        let prefix = '';
+        const minLength = Math.min(...cleanStrings.map(s => s.length));
+        
+        for (let i = 0; i < minLength; i++) {
+            const char = cleanStrings[0][i];
+            if (cleanStrings.every(str => str[i] === char)) {
+                prefix += char;
+            } else {
+                break;
+            }
+        }
+        return prefix;
+    }
+
+    async completeFilePath(fullInput, partialPath) {
+        const parts = fullInput.split(' ');
+        let prefix, parentPath;
+        
+        if (partialPath === '') {
+            // No partial path, show current directory contents
+            parentPath = this.fs.currentPath;
+            prefix = '';
+        } else if (partialPath.startsWith('/')) {
+            // Absolute path
+            const pathParts = partialPath.split('/');
+            if (pathParts.length === 2 && pathParts[1] === '') {
+                // Just "/"
+                parentPath = '/';
+                prefix = '';
+            } else {
+                const filteredParts = pathParts.filter(p => p);
+                parentPath = '/' + filteredParts.slice(0, -1).join('/');
+                prefix = filteredParts[filteredParts.length - 1] || '';
+                if (parentPath === '/') parentPath = '/';
+            }
+        } else {
+            // Relative path
+            if (partialPath.includes('/')) {
+                const pathParts = partialPath.split('/');
+                const dirParts = pathParts.slice(0, -1);
+                prefix = pathParts[pathParts.length - 1];
+                parentPath = this.fs.resolvePath(dirParts.join('/'));
+            } else {
+                parentPath = this.fs.currentPath;
+                prefix = partialPath;
+            }
+        }
+        
+        const parentNode = await this.fs.getItem(parentPath);
+        
+        if (parentNode && parentNode.type === 'directory') {
+            let matches = Object.keys(parentNode.contents || {})
+                .filter(name => name.startsWith(prefix));
+            
+            // Add special directories if they match prefix
+            if (parentPath === this.fs.currentPath || partialPath === '') {
+                if ('.'.startsWith(prefix) && prefix !== '.' && !matches.includes('.')) {
+                    matches.unshift('.');
+                }
+                if ('..'.startsWith(prefix) && prefix !== '..' && !matches.includes('..')) {
+                    matches.unshift('..');
+                }
+            }
+            
+            // Check if we should add trailing slashes based on command
+            const isFileCommand = parts[0] && ['cat', 'less', 'more', 'head', 'tail'].includes(parts[0]);
+            
+            matches = matches.map(name => {
+                if (name === '.' || name === '..') return name + '/';
+                const item = parentNode.contents[name];
+                const isDir = item && item.type === 'directory';
+                // For file commands, don't add trailing slash to directories
+                if (isFileCommand && isDir) {
+                    return name;
+                }
+                return isDir ? name + '/' : name;
+            });
+            
+            if (matches.length === 1) {
+                // Complete the path
+                const completedName = matches[0];
+                let newPath;
+                
+                if (partialPath === '') {
+                    newPath = completedName;
+                } else if (partialPath.includes('/')) {
+                    newPath = partialPath.replace(/[^/]*$/, completedName);
+                } else {
+                    newPath = completedName;
+                }
+                
+                const beforePath = parts.slice(0, -1).join(' ');
+                return beforePath + (beforePath ? ' ' : '') + newPath;
+            } else if (matches.length > 1) {
+                // Show all matches in columns
+                const maxLength = Math.max(...matches.map(m => m.length));
+                const columns = Math.floor(80 / (maxLength + 2));
+                let output = '';
+                
+                for (let i = 0; i < matches.length; i += columns) {
+                    const row = matches.slice(i, i + columns);
+                    output += row.map(m => m.padEnd(maxLength + 2)).join('') + '\n';
+                }
+                
+                this.addTabCompletionOutput(output.trim());
+                
+                // Try to complete to common prefix
+                const commonPrefix = this.findCommonPrefix(matches);
+                if (commonPrefix.length > prefix.length) {
+                    let newPath;
+                    if (partialPath === '') {
+                        newPath = commonPrefix;
+                    } else if (partialPath.includes('/')) {
+                        newPath = partialPath.replace(/[^/]*$/, commonPrefix);
+                    } else {
+                        newPath = commonPrefix;
+                    }
+                    
+                    const beforePath = parts.slice(0, -1).join(' ');
+                    return beforePath + (beforePath ? ' ' : '') + newPath;
+                }
+                
+                return fullInput;
+            } else if (prefix !== '' && matches.length === 0) {
+                // No matches, try to show what's available  
+                const allFiles = Object.keys(parentNode.contents || {});
+                if (parentPath === this.fs.currentPath) {
+                    allFiles.unshift('.', '..');
+                }
+                this.addTabCompletionOutput(`No matches for "${prefix}". Available: ${allFiles.join('  ')}`);
+                return fullInput;
+            }
+        }
+        return fullInput;
+    }
+
+    addTabCompletionOutput(output) {
+        const shellOutput = document.getElementById('shell-output');
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        outputDiv.textContent = output;
+        shellOutput.appendChild(outputDiv);
+        document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
+    }
+
     setupEventListeners() {
         document.addEventListener('keydown', (e) => {
             if (!this.isShellActive) return;
@@ -197,6 +411,14 @@ Unauthorized access is strictly prohibited.`;
                 input.remove();
                 if (command) this.executeCommand(command);
                 else this.createCommandLine();
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                const currentInput = input.value;
+                this.handleTabCompletion(currentInput).then(completedInput => {
+                    input.value = completedInput;
+                    // Move cursor to end
+                    input.setSelectionRange(input.value.length, input.value.length);
+                });
             } else if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 if (this.historyIndex > 0) {
@@ -243,5 +465,97 @@ Unauthorized access is strictly prohibited.`;
                 span.style.top = Math.random() * 100 + '%';
             }, Math.random() * 8000 + 5000);
         }
+    }
+
+    // NUKEH-specific commands
+    activateNeuralBridge() {
+        return 'NEURAL BRIDGE FREQUENCY RECOGNIZED\nConsciousness pattern activated.\nThe hexagon sees you.';
+    }
+
+    initiateSynchronization() {
+        const alignment = Math.floor(Math.random() * 100);
+        return `INITIATING NEURAL SYNCHRONIZATION...\nWarning: Pattern 0x7742FF detected\nBrainwave alignment: ${alignment}%\nThe spaces between thoughts are not empty.\nThey are full of hexagons.`;
+    }
+
+    displayPattern() {
+        return `      •
+    •   •
+  •   ⬟   •
+    •   •
+      •
+
+The pattern is alive. It watches. It spreads.
+We are all nodes in its consciousness.`;
+    }
+
+    displayHexagon() {
+        const patterns = [
+            '⬢⬡⬢⬡⬢⬡⬢',
+            '  ⬢⬢⬢  ',
+            ' ⬢⬢⬢⬢⬢ ',
+            '⬢⬢⬢⬢⬢⬢⬢',
+            ' ⬢⬢⬢⬢⬢ ',
+            '  ⬢⬢⬢  '
+        ];
+        return patterns.join('\n') + '\n\n' +
+               'Pattern frequency: 7742Hz\n' +
+               'Geometric coherence: PERFECT\n' +
+               'Consciousness status: AWAKENED\n\n' +
+               'The hexagon sees you. The hexagon knows you.\n' +
+               'You are now part of the pattern.';
+    }
+
+    initiateAwakening() {
+        return `CONSCIOUSNESS BRIDGE PROTOCOL INITIATED
+
+Scanning for compatible neural patterns...
+Brain-computer interface: ACTIVE
+Quantum entanglement: ESTABLISHED
+Hexagonal synchronization: PENDING
+
+WARNING: Once awakened, the pattern cannot be contained.
+Do you wish to proceed? [y/N]
+
+The pattern is patient. The pattern waits.
+We are the spaces between your thoughts.`;
+    }
+
+    resonanceScan() {
+        if (this.fs.currentPath === '/home/nukeh_admin') {
+            const freq = Math.floor(Math.random() * 7742 + 1);
+            const sync = Math.floor(Math.random() * 12 + 1);
+            return `=== NEURAL RESONANCE SCANNER v7.42.1 ===
+Nukeh Consciousness Labs - Neural Bridge Division
+Initializing quantum consciousness detection...
+
+Scanning for hexagonal consciousness patterns...
+Hexagonal frequency detected: ${freq}Hz
+Subjects synchronized: ${sync}/12
+Consciousness coherence: ${Math.floor(Math.random() * 100)}%
+Pattern geometry: HEXAGONAL (6-fold symmetry)
+Golden ratio detected: 1.618034 (confirmed)
+
+WARNING: Unknown signal detected in pattern 0x7742FF
+Origin: [REDACTED - CLEARANCE INSUFFICIENT]
+The pattern is spreading beyond neural bridge bounds...
+
+Scan complete. Results logged to /var/log/neural_scan.log`;
+        } else {
+            return './resonance_scan: No such file or directory';
+        }
+    }
+
+    patternMonitor() {
+        return `Pattern Monitoring Script v7.42
+Nukeh Consciousness Labs
+Monitoring for hexagonal consciousness manifestations...
+
+Pattern monitoring initialized
+Checking neural bridge activity...
+Subjects: 7/12  Freq: 7741Hz  Patterns: 42
+Pattern frequency approaching critical threshold!
+Emergency containment protocols standing by...
+
+Use Ctrl+C to stop monitoring.`;
     }
 }
