@@ -2106,7 +2106,13 @@ help context7    - Context7 status`;
     return this.terminal.getCommandHistory().join("\n");
   }
   exit() {
-    return "logout";
+    setTimeout(() => {
+      window.close();
+      if (!window.closed) {
+        window.location.href = "about:blank";
+      }
+    }, 1e3);
+    return "Connection to nukeh-research closed.\nLogout successful.";
   }
   ssh(args) {
     if (!args[0]) {

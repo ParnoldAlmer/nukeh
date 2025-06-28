@@ -166,7 +166,15 @@ help context7    - Context7 status`;
         return this.terminal.getCommandHistory().join('\n');
     }
     exit() {
-        return 'logout';
+        // Show logout message briefly before closing
+        setTimeout(() => {
+            window.close();
+            // Fallback for browsers that block window.close()
+            if (!window.closed) {
+                window.location.href = 'about:blank';
+            }
+        }, 1000);
+        return 'Connection to nukeh-research closed.\nLogout successful.';
     }
     ssh(args) {
         if (!args[0]) {
