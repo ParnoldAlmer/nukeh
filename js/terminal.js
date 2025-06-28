@@ -474,17 +474,28 @@ WARNING: Pattern 0x7742FF exhibits autonomous behavior.`;
         const parts = textBeforeCursor.split(' ');
         const currentWord = parts[parts.length - 1];
         
+        console.log('Tab completion debug:', {
+            inputValue,
+            textBeforeCursor,
+            parts,
+            currentWord,
+            partsLength: parts.length
+        });
+        
         let completions = [];
         
         if (parts.length === 1) {
             // Complete command names
             const commands = Object.keys(this.commands);
             completions = commands.filter(cmd => cmd.startsWith(currentWord));
+            console.log('Command completions:', completions);
         } else {
             // Complete file/directory paths
             const command = parts[0];
-            if (['cat', 'ls', 'cd'].includes(command)) {
+            console.log('File completion for command:', command, 'currentWord:', currentWord);
+            if (['cat', 'ls', 'cd', './resonance_scan', './pattern_monitor.sh'].includes(command) || command.startsWith('./')) {
                 completions = await this.completeFilePath(inputValue, currentWord);
+                console.log('File completions:', completions);
             }
         }
         
