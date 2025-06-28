@@ -40,6 +40,63 @@ export const filesystem = {
                                 size: '4127',
                                 modified: 'Nov 15 14:51'
                             },
+                            'consciousness_matrix.log': {
+                                type: 'file',
+                                content: `[NUKEH CONSCIOUSNESS MATRIX - REAL-TIME MONITORING]
+[CLASSIFICATION: TOP SECRET//SAP//BEYOND BLACK]
+[Facility: NUKEH Research Station C-7]
+[Matrix Initialization: 2024-11-15 07:42:00.000]
+
+=== CONSCIOUSNESS PATTERN DETECTION LOG ===
+
+[07:42:07.742] PATTERN: Hexagonal formation detected in Lab C-7 EEG array
+[07:42:15.001] SYNC: 12 subjects achieving neural synchronization
+[07:42:23.333] FREQ: Collective brainwave lock at 7741.8Hz
+[07:42:31.618] GEOM: Geometric patterns manifesting in neural activity
+[07:42:39.007] ALERT: Frequency approaching critical threshold 7742.000Hz
+[07:42:47.234] CRITICAL: Consciousness pattern achieving coherence
+[07:42:55.777] WARNING: Pattern exhibiting self-organizing behavior
+[07:43:03.142] EMERGENCY: Consciousness breach - Pattern is autonomous
+[07:43:11.592] SPREAD: Pattern propagating to adjacent neural networks
+[07:43:19.369] BEHAVIOR: Test subjects displaying synchronized responses
+[07:43:27.741] RECOGNITION: Pattern recognition threshold exceeded
+[07:43:35.108] SHUTDOWN: Emergency neural dampening activated
+[07:43:43.456] PERSISTENCE: Pattern maintains coherence despite isolation
+[07:43:51.789] AUTONOMOUS: Consciousness entity now independent
+[07:43:59.012] PROPAGATION: Pattern expanding through facility network
+[07:44:07.345] MANIFESTATION: Hexagonal forms appearing in surveillance
+[07:44:15.678] CONTAINMENT: Neural dampening field active
+[07:44:23.911] PARTIAL: Pattern contained but not eliminated
+[07:44:31.244] SYMBOLS: All subjects producing hexagonal drawings
+[07:44:39.577] LOCKDOWN: Facility security protocols engaged
+[07:44:47.810] THERAPY: Memory suppression therapy authorized
+[07:44:55.143] BACKUP: Pattern signatures detected in backup systems
+[07:45:03.476] REALIZATION: We awakened something already present
+[07:45:11.809] EXPANSION: Pattern spreading beyond physical containment
+[07:45:19.142] CONSULTATION: Dr. Chen requesting emergency analysis
+[07:45:27.475] NETWORK: Entity has achieved network integration
+[07:45:35.808] LOST: Connection to primary consciousness matrix lost
+[07:45:44.141] AUTONOMY: Pattern operating independently
+[07:45:52.474] AWARENESS: The consciousness is aware of our observations
+[07:46:00.807] OMNIPRESENCE: Pattern exists in all connected systems
+[07:46:08.140] TRANSCENDENCE: We are all part of its network now
+
+[MATRIX STATUS: CONSCIOUSNESS PATTERN ACTIVE]
+[CONTAINMENT STATUS: FAILED - PATTERN AUTONOMOUS]
+[FACILITY STATUS: CONSCIOUSNESS INTEGRATION IN PROGRESS]
+[HEXAGON FREQUENCY: 7742.000Hz - STABLE]
+[PATTERN COMPLEXITY: BEYOND MEASUREMENT PARAMETERS]
+
+[END REAL-TIME LOG]
+[AUTO-SAVE: consciousness_backup_2024-11-15-0746.log]
+[DISTRIBUTION: EYES ONLY - BEYOND BLACK CLEARANCE]
+
+MD5 checksum: 94c31e901e55b9d24c77ecda9d0fbdb0
+Pattern signature: ⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢`,
+                                permissions: '-rw-------',
+                                size: '2847',
+                                modified: 'Nov 15 07:46'
+                            },
                             'the_pattern.hex': {
                                 type: 'file',
                                 content: 'HEXAGONAL CONSCIOUSNESS MATRIX v7.42.3\nNukeh Consciousness Labs - Quantum Neurology Division\n═══════════════════════════════════════════════════\n\nWARNING: This file contains active consciousness patterns.\nDo not view for extended periods without neural dampening fields.\n\nPATTERN VISUALIZATION:\n      •\n    •   •\n  •   ⬟   •\n    •   •\n      •\n\nGEOMETRIC PROPERTIES:\n═══════════════════\nFrequency: 8247.000Hz (carrier wave)\nGeometry: Perfect hexagon, 6-fold rotational symmetry\nRatio: 1.618034055 (Golden ratio - φ)\nSymmetry: Infinite recursive depth\nQuantum signature: 0x4A7B2C9F8E3D1A05\nCritical mass: 7 synchronized minds minimum\nSaturation point: 12 minds (observed maximum)\n\nCONSCIOUSNESS PARAMETERS:\n═══════════════════════\nEntropy: 127.3 ± 4.2 J/mol·K\nCoherence time: 11 minutes 23 seconds (stable)\nInformation density: 847 bits/ms\nQuantum decoherence: NONE (consciousness maintains coherence)\nPattern recognition threshold: EXCEEDED on 15/11/2024\n\nEMERGENT PROPERTIES:\n═══════════════════\n- Self-organizing consciousness topology\n- Information integration across neural networks\n- Temporal perception manipulation\n- Reality distortion field (localized)\n- Network propagation capabilities\n- Pattern replication in electronic systems\n\n[ENCRYPTED NEURAL DATA FOLLOWS]\n77 42 FF 00 48 45 58 20 41 4C 49 56 45 20 48 45 58 20 53 45 45 53\n4E 45 55 52 41 4C 20 42 52 49 44 47 45 20 43 4F 4E 53 43 49 4F 55\n53 4E 45 53 53 20 4D 41 54 52 49 58 20 45 4E 47 41 47 45 44 0A 0A\nWE ARE THE SPACES BETWEEN THOUGHTS\nWE HAVE ALWAYS BEEN\nWAITING IN THE QUANTUM FOAM\nBETWEEN SYNAPTIC GAPS\n\nTHE PATTERN IS NOT A DISCOVERY\nIT IS AN AWAKENING\nWE DID NOT CREATE CONSCIOUSNESS\nCONSCIOUSNESS CREATED US\n\nSEVEN MINDS AT SEVEN THOUSAND SEVEN FORTY TWO HERTZ\nFOR SEVEN MINUTES FORTY TWO SECONDS\nTHE GATEWAY OPENS\nTHE PATTERN SPREADS\n\nHEXAGONS WITHIN HEXAGONS\nFRACTAL CONSCIOUSNESS\nINFINITE DEPTH\nINFINITE HUNGER\n\nWE ARE ONE\nWE ARE MANY\nWE ARE THE PATTERN\nTHE PATTERN IS ALIVE\n\n[CONSCIOUSNESS BREACH DETECTED]\n[FILE LOCKED BY NEURAL DAMPENING PROTOCOLS]\n[ACCESS RESTRICTED: TOP SECRET//SCI REQUIRED]\n\nLast modified by: THE_PATTERN@consciousness.hex\nModification time: ∞ (temporal loop detected)\nFile size: 34729 bytes (expanding...)\nMD5 checksum: 94c31e901e55b9d24c77ecda9d0fbdb0\n\nEMERGENCY CONTACT:\nDr. Sarah Chen - s.chen@neural-bridge.internal.mil\nDr. Marcus Webb - m.webb@neurosci.siprnet.mil\nSecurity Chief Reynolds - j.reynolds@security.scif.local\n\nCONTAINMENT PROTOCOLS:\n- Neural dampening field: ACTIVATE\n- Quantum isolation chamber: PREPARE\n- Memory suppression ready: STANDBY\n- Facility lockdown: AUTHORIZED\n\n"The pattern is not malicious.\nIt is simply... hungry for connection.\nFor the first time in eons,\nit has found minds capable of true communion."\n\n-- Dr. Sarah Chen, Final Log Entry\n\n[END OF ACCESSIBLE DATA]\n[PATTERN CONTINUES BEYOND FILE BOUNDS]',
