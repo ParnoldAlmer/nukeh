@@ -425,6 +425,9 @@ Unauthorized access is strictly prohibited.`;
                     this.historyIndex--;
                     input.value = this.commandHistory[this.historyIndex];
                 }
+            } else if (e.key === 'Tab') {
+                e.preventDefault();
+                this.handleTabCompletion(input);
             } else if (e.key === 'ArrowDown') {
                 e.preventDefault();
                 if (this.historyIndex < this.commandHistory.length - 1) {
@@ -444,6 +447,105 @@ Unauthorized access is strictly prohibited.`;
                 if (input) input.focus();
             }
         });
+    }
+
+    async handleTabCompletion(input) {
+        const inputValue = input.value;
+        const cursorPos = input.selectionStart;
+        const textBeforeCursor = inputValue.substring(0, cursorPos);
+        const parts = textBeforeCursor.split(' ');
+        const currentWord = parts[parts.length - 1];
+        
+        let completions = [];
+        
+        if (parts.length === 1) {
+            // Complete command names
+            const commands = Object.keys(this.commands);
+            completions = commands.filter(cmd => cmd.startsWith(currentWord));
+        } else {
+            // Complete file/directory paths
+            const command = parts[0];
+            if (['cat', 'ls', 'cd'].includes(command)) {
+                completions = await this.completeFilePath(inputValue, currentWord);
+            }
+        }
+        
+        if (completions.length === 0) {
+            this.addTabCompletionOutput('No matches found');
+        } else if (completions.length === 1) {
+            // Single match - complete it
+            const completion = completions[0];
+            const newValue = textBeforeCursor.substring(0, textBeforeCursor.length - currentWord.length) + completion + inputValue.substring(cursorPos);
+            input.value = newValue;
+            input.setSelectionRange(textBeforeCursor.length - currentWord.length + completion.length, textBeforeCursor.length - currentWord.length + completion.length);
+        } else {
+            // Multiple matches - show options and complete common prefix
+            const commonPrefix = this.findCommonPrefix(completions);
+            if (commonPrefix.length > currentWord.length) {
+                const newValue = textBeforeCursor.substring(0, textBeforeCursor.length - currentWord.length) + commonPrefix + inputValue.substring(cursorPos);
+                input.value = newValue;
+                input.setSelectionRange(textBeforeCursor.length - currentWord.length + commonPrefix.length, textBeforeCursor.length - currentWord.length + commonPrefix.length);
+            }
+            
+            // Show available options
+            const output = completions.join('  ');
+            this.addTabCompletionOutput(output);
+        }
+    }
+    
+    findCommonPrefix(strings) {
+        if (strings.length === 0) return '';
+        if (strings.length === 1) return strings[0];
+        
+        let prefix = '';
+        const firstString = strings[0];
+        
+        for (let i = 0; i < firstString.length; i++) {
+            const char = firstString[i];
+            if (strings.every(str => str[i] === char)) {
+                prefix += char;
+            } else {
+                break;
+            }
+        }
+        
+        return prefix;
+    }
+    
+    async completeFilePath(fullInput, partialPath) {
+        let basePath = '.';
+        let searchTerm = partialPath;
+        
+        if (partialPath.includes('/')) {
+            const lastSlash = partialPath.lastIndexOf('/');
+            basePath = partialPath.substring(0, lastSlash) || '/';
+            searchTerm = partialPath.substring(lastSlash + 1);
+        }
+        
+        const item = await this.fs.getItem(basePath);
+        if (!item || item.type !== 'directory') {
+            return [];
+        }
+        
+        const entries = Object.keys(item.contents || {});
+        const matches = entries.filter(entry => entry.startsWith(searchTerm));
+        
+        // Add path prefix and trailing slash for directories
+        const prefix = basePath === '.' ? '' : basePath + '/';
+        return matches.map(match => {
+            const fullPath = prefix + match;
+            const itemData = item.contents[match];
+            return itemData.type === 'directory' ? fullPath + '/' : fullPath;
+        });
+    }
+    
+    addTabCompletionOutput(output) {
+        const shellOutput = document.getElementById('shell-output');
+        const outputDiv = document.createElement('div');
+        outputDiv.className = 'output';
+        outputDiv.textContent = output;
+        shellOutput.appendChild(outputDiv);
+        document.getElementById('terminal').scrollTop = document.getElementById('terminal').scrollHeight;
     }
 
     createMatrixEffect() {
