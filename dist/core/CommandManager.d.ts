@@ -43,6 +43,11 @@ export class CommandManager {
     top(): string;
     history(): any;
     exit(): string;
+    ssh(args: any): string;
+    connectToQuantumResearch(username?: string, extraArgs?: any[]): string;
+    connectToPatternAnalyzer(username?: string, extraArgs?: any[]): string;
+    connectToNeuralBridge(username?: string, extraArgs?: any[]): string;
+    connectToQuantumLab(username?: string, extraArgs?: any[]): string;
     version(): string;
     activateNeuralBridge(): string;
     initiateSynchronization(): string;

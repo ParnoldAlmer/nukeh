@@ -17,6 +17,13 @@ export namespace characterData {
                 size: string;
                 modified: string;
             };
+            'lab_notebook_secure.txt': {
+                type: string;
+                content: string;
+                permissions: string;
+                size: string;
+                modified: string;
+            };
         };
     }
     namespace r_keller {

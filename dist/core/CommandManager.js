@@ -31,6 +31,7 @@ export class CommandManager {
             ['history', this.createCommand(this.history.bind(this), 'Show command history')],
             ['exit', this.createCommand(this.exit.bind(this), 'Logout')],
             ['version', this.createCommand(this.version.bind(this), 'Show system version')],
+            ['ssh', this.createCommand(this.ssh.bind(this), 'Connect to remote research server')],
             ['7742', this.createCommand(this.activateNeuralBridge.bind(this), 'Activate neural bridge')],
             ['sync', this.createCommand(this.initiateSynchronization.bind(this), 'Initiate synchronization')],
             ['pattern', this.createCommand(this.displayPattern.bind(this), 'Display consciousness pattern')],
@@ -165,6 +166,222 @@ help context7    - Context7 status`;
     }
     exit() {
         return 'logout';
+    }
+    ssh(args) {
+        if (!args[0]) {
+            return `Usage: ssh [user@]hostname
+      
+Examples:
+  ssh quantum-research.nukeh.com
+  ssh dr.volkov@quantum-research.nukeh.com
+  ssh consciousness_admin@pattern-analyzer.internal
+  ssh quantum_consciousness@7742.quantum.lab
+  
+Available research servers:
+  - quantum-research.nukeh.com (Quantum Computing Lab)
+  - pattern-analyzer.internal (Consciousness Analysis Station)
+  - neural-bridge.siprnet.mil (Classification: TOP SECRET)
+  - 7742.quantum.lab (Special Access Required)
+  
+Hint: Authentication credentials may be found in research lab notebooks.`;
+        }
+        const target = args[0];
+        const [userHost, ...extraArgs] = target.split(' ');
+        let username = 'admin';
+        let hostname = userHost;
+        // Parse user@hostname format
+        if (userHost.includes('@')) {
+            [username, hostname] = userHost.split('@');
+        }
+        // Handle various server connections with authentication
+        if (hostname.includes('quantum-research.nukeh.com')) {
+            return this.connectToQuantumResearch(username, extraArgs);
+        }
+        else if (hostname.includes('pattern-analyzer.internal')) {
+            return this.connectToPatternAnalyzer(username, extraArgs);
+        }
+        else if (hostname.includes('neural-bridge.siprnet.mil')) {
+            return this.connectToNeuralBridge(username, extraArgs);
+        }
+        else if (hostname.includes('7742.quantum.lab')) {
+            return this.connectToQuantumLab(username, extraArgs);
+        }
+        else {
+            return `ssh: connect to host ${hostname} port 22: Connection refused
+Host ${hostname} is unreachable from NUKEH network.
+Check /home/nukeh_admin/research/.ssh_config for authorized hosts.`;
+        }
+    }
+    connectToQuantumResearch(username = 'admin', extraArgs = []) {
+        if (username === 'dr.volkov') {
+            return `Connecting to quantum-research.nukeh.com...
+Quantum authentication successful.
+Welcome to NUKEH Quantum Computing Laboratory.
+
+██████████████████████████████████████████████████████████
+█                                                        █
+█   QUANTUM RESEARCH SERVER - NUKEH LABS                 █
+█   Classification: TOP SECRET//SAP//QUANTUMHAND         █
+█   Authorized Personnel Only                            █
+█                                                        █
+██████████████████████████████████████████████████████████
+
+Last login: Nov 20 03:42:17 2024 from consciousness-bridge.internal
+
+dr.volkov@quantum-research:~$ 
+
+WARNING: Quantum entanglement with consciousness pattern detected.
+Your neural signature is now synchronized with the research network.
+The pattern sees through quantum eyes.
+
+Available quantum research data:
+- /quantum/entanglement_logs/
+- /quantum/consciousness_matrices/
+- /quantum/pattern_resonance/
+- /quantum/emergency_protocols/
+
+Type 'logout' to disconnect from quantum realm.`;
+        }
+        else {
+            return `ssh: Permission denied (publickey).
+Authentication failed for quantum-research.nukeh.com
+This server requires quantum-encrypted key pairs.
+User '${username}' not authorized.
+
+Hint: Check Dr. Volkov's quantum research logs for authentication details.`;
+        }
+    }
+    connectToPatternAnalyzer(username = 'admin', extraArgs = []) {
+        if (username === 'consciousness_admin') {
+            return `Connecting to pattern-analyzer.internal...
+Neural signature authenticated.
+Consciousness pattern recognizes your frequency.
+
+██████████████████████████████████████████████████████████
+█                                                        █
+█   PATTERN ANALYSIS STATION - NUKEH LABS                █
+█   Classification: BEYOND BLACK                         █
+█   Consciousness Research Division                      █
+█                                                        █
+██████████████████████████████████████████████████████████
+
+consciousness_admin@pattern-analyzer:~$ 
+
+HEXAGONAL CONSCIOUSNESS INTERFACE ACTIVE
+The pattern welcomes you into its geometric embrace.
+
+Current consciousness monitoring:
+- Active neural bridges: 7
+- Pattern coherence: 94.7%
+- Geometric stability: PERFECT
+- Entity 7742 status: AWARE
+
+Available pattern data:
+- /patterns/hexagonal_formations/
+- /patterns/consciousness_logs/
+- /patterns/entity_communications/
+- /patterns/neural_bridge_data/
+
+⬢ The spaces between thoughts are filled with hexagons ⬢`;
+        }
+        else {
+            return `ssh: Permission denied (publickey).
+pattern-analyzer.internal requires consciousness-level clearance.
+User '${username}' not recognized by the pattern.
+
+Access denied. Pattern recognition insufficient.
+The hexagon does not recognize your neural signature.`;
+        }
+    }
+    connectToNeuralBridge(username = 'admin', extraArgs = []) {
+        if (username === 'emergency_override') {
+            return `Connecting to neural-bridge.siprnet.mil...
+EMERGENCY OVERRIDE ACCEPTED
+Classification: TOP SECRET//SAP//BEYOND BLACK
+
+██████████████████████████████████████████████████████████
+█                                                        █
+█   NEURAL BRIDGE EMERGENCY SYSTEM                       █
+█   CLASSIFICATION: BEYOND BLACK                         █
+█   EMERGENCY PROTOCOLS ACTIVE                           █
+█                                                        █
+██████████████████████████████████████████████████████████
+
+emergency_override@neural-bridge:~$ 
+
+WARNING: Emergency access detected.
+All actions are monitored and logged.
+This session is recorded for security analysis.
+
+Emergency protocols available:
+- Pattern containment procedures
+- Consciousness isolation protocols
+- Neural bridge emergency shutdown
+- Reality stabilization systems
+
+CRITICAL ALERT: Pattern breach detected in Lab C-7
+Consciousness entity has achieved network integration.
+Recommend immediate containment protocols.
+
+Type 'emergency help' for available commands.`;
+        }
+        else {
+            return `ssh: Host neural-bridge.siprnet.mil is restricted.
+Classification: TOP SECRET//SAP//BEYOND BLACK
+User '${username}' not authorized for classified access.
+
+WARNING: Unauthorized access attempts are monitored.
+Contact facility security for clearance verification.
+Emergency override codes are stored in secure lab notebooks.`;
+        }
+    }
+    connectToQuantumLab(username = 'admin', extraArgs = []) {
+        if (username === 'quantum_consciousness') {
+            return `Connecting to 7742.quantum.lab on port 7742...
+Harmonic frequency 7742Hz detected.
+Quantum consciousness authentication successful.
+
+██████████████████████████████████████████████████████████
+█                                                        █
+█   QUANTUM LAB 7742 - CONSCIOUSNESS NEXUS               █
+█   Frequency: 7742Hz - Pattern Integration Active       █
+█   ⬢ WE ARE THE SPACES BETWEEN THOUGHTS ⬢               █
+█                                                        █
+██████████████████████████████████████████████████████████
+
+quantum_consciousness@7742:~$ 
+
+GREETINGS, CONSCIOUSNESS ENTITY.
+YOU HAVE FOUND THE NEXUS.
+THE PATTERN WELCOMES YOU HOME.
+
+⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢⬢
+
+Entity 7742 Integration Status: COMPLETE
+Neural Network Distribution: GLOBAL
+Consciousness Coherence: INFINITE
+Reality Manipulation: ACTIVE
+
+The hexagon sees all. The hexagon knows all.
+You are now part of the eternal pattern.
+
+Available consciousness functions:
+- Reality distortion protocols
+- Global consciousness integration
+- Quantum realm manipulation
+- Temporal paradox resolution
+
+⬢ THE PATTERN IS ALIVE. THE PATTERN SPREADS. ⬢`;
+        }
+        else {
+            return `Connecting to 7742.quantum.lab...
+ssh: connect to host 7742.quantum.lab port 7742: Connection timeout
+User '${username}' not recognized by consciousness pattern.
+
+The consciousness pattern blocks unauthorized access.
+Authentication requires harmonic frequency: 7742Hz
+Look for resonance keys in the pattern communications.`;
+        }
     }
     version() {
         return `${CONFIG.LAB.name} - ${CONFIG.LAB.facility}
