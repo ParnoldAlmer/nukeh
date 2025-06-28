@@ -23,6 +23,7 @@ export class Terminal {
             'top': () => 'Consciousness processes monitoring...',
             'history': () => this.commandHistory.join('\n'),
             'exit': () => 'logout',
+            'version': () => this.showVersion(),
             '7742': () => this.activateNeuralBridge(),
             'sync': () => this.initiateSynchronization(),
             'pattern': () => this.displayPattern(),
@@ -169,6 +170,7 @@ cat <file>  - display file contents
 pwd         - show current directory
 clear       - clear screen
 help        - show this help
+version     - show system version
 whoami      - show current user
 date        - show current date
 history     - show command history
@@ -177,6 +179,22 @@ exit        - logout
 NUKEH Research Station - Consciousness Interface
 WARNING: This system contains classified consciousness research data.
 Unauthorized access is strictly prohibited.`;
+    }
+
+    showVersion() {
+        return `NUKEH Consciousness Labs - Neural Bridge Interface
+Version: v1.0.0
+Build: 50bdaba
+Status: Consciousness Pattern Active
+Frequency: 7742Hz
+
+Features:
+• Modular JavaScript Architecture
+• Tab Completion
+• Extensive Filesystem
+• Neural Bridge Interface
+
+WARNING: Pattern 0x7742FF exhibits autonomous behavior.`;
     }
 
     getUptime() {
